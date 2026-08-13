@@ -1,20 +1,21 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:24:49",
+    "generatedAt": "2026-08-13T21:36:38",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786656096.098979",
+    "lastSlackTs": "1786656971.447229",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
       "candidates/tag-1786655599607259.json",
-      "candidates/tag-1786656096098979.json"
+      "candidates/tag-1786656096098979.json",
+      "candidates/tag-1786656497600339.json"
     ],
-    "lastSlackPull": "2026-08-13T21:24:49"
+    "lastSlackPull": "2026-08-13T21:36:38"
   },
   "actions": [
     {
@@ -78,6 +79,36 @@
         "note": "Proposed by Claude Tag. No person has checked it."
       },
       "due": "2026-08-20",
+      "status": "open"
+    },
+    {
+      "id": "a3",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Hand-deliver the certificate USB drives to the worksite",
+      "owner": "Will Brown",
+      "note": "Will Brown said he needs to do this personally, so he is recorded as owner. Which certificates and which worksite were not said.",
+      "ws": null,
+      "meetingId": null,
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Will Brown",
+        "messageTs": "1786656473.781309",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656473781309",
+        "quote": "I personally need to drive USB drives with certificates to the worksite by 10/1.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": "2026-10-01",
       "status": "open"
     }
   ]

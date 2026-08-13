@@ -1,0 +1,32 @@
+{
+  "batch": "slack-2026-08-13-2127",
+  "capturedAt": "2026-08-13T21:28:00Z",
+  "items": [
+    {
+      "candidateId": "TAG-20260813-23",
+      "register": "action",
+      "title": "Hand-deliver the certificate USB drives to the worksite",
+      "detail": "Will Brown said he needs to do this personally, so he is recorded as owner. Which certificates and which worksite were not said.",
+      "owner": "Will Brown",
+      "due": "2026-10-01",
+      "ws": null,
+      "severity": null,
+      "decidedOn": null,
+      "meetingId": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Will Brown",
+        "messageTs": "1786656473.781309",
+        "permalink": "<https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656473781309>",
+        "quote": "I personally need to drive USB drives with certificates to the worksite by 10/1.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    }
+  ],
+  "postedBy": "U0AB8UM5278"
+}
