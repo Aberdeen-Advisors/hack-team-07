@@ -1,14 +1,55 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T16:27:40",
+    "generatedAt": "2026-08-13T20:32:21",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "clean slate \u2014 Claude Tag JSON is the only input",
+    "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "0",
-    "ingestedFiles": []
+    "lastSlackTs": "1786652612.149049",
+    "ingestedFiles": [
+      "candidates/tag-1786650032244369.json",
+      "candidates/tag-1786652612149049.json"
+    ],
+    "lastSlackPull": "2026-08-13T20:32:21"
   },
-  "risks": []
+  "risks": [
+    {
+      "id": "r1",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Security considers itself insufficiently involved in the programme",
+      "owner": "Unassigned",
+      "note": "Will reports Security as actively unhappy about their level of involvement.",
+      "ws": null,
+      "meetingId": null,
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Will Brown",
+        "messageTs": "1786652478.538779",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786652478538779",
+        "quote": "Security is pitching a fit about not being included enough",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    }
+  ]
 }
