@@ -303,13 +303,60 @@ The loop, without a backend: decisions accumulate in `localStorage`, and an "Exp
 
 </details>
 
-### M6 — Provenance that actually resolves
+### M6 — Provenance — mechanism DONE, but it cannot resolve on this data
+
+**The finding that decides this milestone: every URL in the dataset is literally `#`.** All 8 document `url` fields, all 4 `slackUrl` fields, and the one item-level `src.url`. There is no Slack workspace and no document store behind any of it, so "clicking a source opens the real message" cannot be made true by wiring — there is nothing to wire to. Fabricating plausible permalinks would produce links that 404 on stage, which is worse than admitting the gap.
+
+So M6 built the mechanism and made every state honest:
+
+- **One rule, applied everywhere: an anchor is only an anchor if it goes somewhere.** `isRealUrl()` requires an `http:`/`https:`/`mailto:` scheme. `linkOut()` renders a real link when there is one, and a dimmed "· no link" chip explaining why when there isn't. Applied at all five document render sites as well as the item list.
+- **Every item now shows a source state**, where before only 8 of 48 showed anything: 37 rows read "◦ No source" with the tooltip "seeded row — it predates Bridge", 8 read "Slack thread · no link" or "Transcript · no link".
+- **The detail popover carries a provenance block** — source, author, timestamp, and a quoted sentence when one exists, with an explicit "No sentence captured for this one" when it doesn't. `provOf()` resolves the permalink through item provenance → `src.url` → the document's `slackUrl`/`url`, taking the first that is real.
+- **Deleted:** `viewInSlack` (defined, never called) and the digest's toast-only "Jump to Slack thread" link. The "Clear filters" anchor became a button.
+
+**Verified in jsdom:** zero errors. **Zero `href="#"` anywhere on the page**, down from 35 — the item list *and* the document sections. All 45 rendered rows carry a source state. 35 dead links became labelled "no link" chips.
+
+**What this milestone cannot deliver, and what would:** demo beats 2 and 3 depend on clicking a citation and landing on the sentence. That needs a source that exists. Two ways to get one, both achievable today:
+
+1. **A real Slack channel.** Post the seed messages in the test channel, capture the permalinks, and put them in the data. Links then genuinely resolve.
+2. **A transcript in the repo, rendered in-app.** Add `data/inbox/transcripts/*.md`, store `{docId, line, quote}` on each item, and open the transcript in a modal scrolled to the highlighted line. Works offline from `file://`, needs no workspace, and demos the money beat exactly — "click the citation, land on the sentence."
+
+Option 2 is the stronger demo and the smaller dependency. Neither is invention: in both cases the quote genuinely exists in a source the app can open.
+
+### M6b — the citation lands on the sentence — DONE, verified
+
+Option 2, built. **The chain is real end to end: the quote is a substring of a numbered line in a file that ships in the repo, and the app opens that file at that line.**
+
+- **Four transcripts** in `data/inbox/transcripts/` — `steertrans`, `buildtrans`, `comptrans`, `opstrans` — written as the meeting records the mocked programme implies, 54 lines total, speaker-attributed and time-stamped. These are also the input format `scripts/ingest.md` will read.
+- **`data/transcripts.js`** carries the bodies as line-numbered arrays, generated from the `.md` files, loaded by a second classic script tag (`fetch` still blocked on `file://`).
+- **11 items now carry real provenance** — `{sourceSystem, docId, line, author, messageTs, quote, confidence}` — up from zero with a usable source. **Including 3 of the 8 decisions**, which previously had none at all.
+- **The generator asserts the chain.** Each quote is located in the transcript by exact match, the line number is read from the written file, and the stored quote is re-checked against that line. If a quote is not verbatim, generation fails rather than shipping a citation that points at the wrong line.
+- **The viewer.** Clicking a citation chip opens a modal with the transcript, the cited line highlighted and scrolled to centre, headed "This entry was created from the highlighted line. Nothing enters a register without one." Escape or the backdrop closes it.
+
+**Verified in jsdom:** zero errors. 11 citation chips render; `quoteMatchesLine` true for all 11 — every stored quote is literally the text on the line it cites. Opening `a13` lands on line 10 of the Compliance transcript with exactly one highlighted line. The popover shows the quote and an "Open the transcript at line N" button. Still zero `href="#"` page-wide.
+
+### M7 — the calendar, with visible associations — DONE, verified
+
+- **`meetingItems(id)`** is the single place that answers "what came out of this meeting", splitting into actions, decisions and risks, excluding rejected items, and reading `meetingId` with a fallback to the legacy `deliv.mid`.
+- **17 items now carry `meetingId`**, up from 9: the 9 migrated from `deliv.mid`, plus 8 more attached through their transcript — where a transcript unambiguously *is* a meeting's record, its items belong to that meeting. Only `steertrans → steer` and `comptrans → compws` were mapped; `buildtrans` and `opstrans` don't correspond to a meeting in the data, so nothing was invented for them.
+- **The calendar now marks state, not just counts.** Each meeting card carries chips for decisions taken, items overdue, and **items nobody has verified** — all derived.
+- **Meeting detail gained "Decisions taken" and "Risks raised"** sections, and every attached row — action, decision or risk — carries its verification chip and a citation button that opens the transcript at the line. The steering meeting now shows 6 actions and 2 decisions with 5 working citations.
+- **`dueBeforeNext()`** computes what is owed before a meeting's next occurrence.
+- **The `leadstrat` bug, properly diagnosed.** The spec said it lacked a `from`/`anchor` date. The real cause is that **the recurrence engine has no concept of an end date at all** — it only ever applied a lower bound, so *every* series ran to infinity. Added `until` support at both expansion sites and set `leadstrat` to end 2026-08-08, since its own description says it is on hold. It no longer appears in the current week.
+
+**Verified in jsdom:** zero errors. `leadstrat` gone from the rendered week; 2 overdue chips and 1 decisions chip rendered from data; opening the steering meeting shows "Action Items 6 / Decisions taken 2" with 5 citation buttons and 8 verification chips; clicking one opens the Steering transcript at line 15.
+
+<details><summary>Original M6 brief, for reference</summary>
+
+#### Provenance that actually resolves
 
 Verified against the file: **8 of the 48 register items carry a `src:{}` block**, none of the 8 decisions do, and there is exactly **one render site — `srcChip`** — so this is one function to fix rather than eleven. Two literal `href="#"` remain, at lines 1451 and 1478. `viewInSlack` at line 979 is defined and never called. This is the differentiator the whole pitch rests on and it currently does nothing.
 
 Every item gets real provenance: the working Slack permalink, the author, the timestamp, and the quoted sentence shown in the item's detail view. Clicking a citation lands the reader on the sentence that created the entry, not the top of a document. An item with no provenance shows an explicit "seeded — no source" marker rather than a fake link or nothing at all. Delete the toast-only link and the unused helper that was meant to open Slack and is never called.
 
 **Acceptance:** clicking any source link opens the real Slack message. Every item's detail view shows the sentence it came from. Zero `href="#"` in the item list.
+
+</details>
 
 ### M7 — The calendar, with visible associations
 
@@ -326,7 +373,49 @@ The calendar already works. Make it the second thing the PM uses, by making a me
 
 **Acceptance:** open any meeting, see its actions, deliverables and decisions with verification states; click one and land on the sentence. Open any action, click through to its meeting. A meeting holding pending items is visibly marked.
 
-### M8 — Focus the app, and make every number true
+### Layout cleanup pass — DONE
+
+From your screenshot: rows were overflowing the card (the `i` button escaped it), titles truncated to "Send the approved F…" while a source chip ate 300px, and the due date appeared twice.
+
+- `.src-chip` was `flex-shrink:0` with no max width — that was the overflow. Now shrinkable, capped at 132px, ellipsised. `.ti-row2` got `overflow:hidden` so nothing can escape the card again. Meeting chip capped at 104px.
+- **The date input left the row.** The computed label stays; the editor moved into the detail popover. That removes a control from all 45 rows.
+- Chip labels shortened, explanation moved to the tooltip: "Compliance Working Session transcript — Aug 4 · no link" became **"▤ Transcript"**, and citations read **"▤ Aug 7 · L15"**.
+- **The kind chip only renders when the list is mixed.** Filtered to Actions, every row said ACTION; that's now suppressed and returns under All and RAID.
+- Verify/reject buttons sit at 45% opacity until you hover the row, or always-on if the row is unverified.
+
+### M8 — Derived numbers — DONE, verified
+
+- **Workstream counts are derived**, via `wsOf()` → the workstream of the meeting an item was committed in. **This exposed something the hardcoded numbers were hiding:** only 15 of 45 open items can be attributed at all, against cards that claimed 74. The cards now read "N open items attributed" with a note under the grid — "30 open items are not attached to a workstream yet… items that arrived without one stay uncounted rather than being guessed at." That gap is the product's own thesis, so it belongs on screen rather than papered over.
+- **The hero pill is computed.** It said "On track" while 3 of 5 workstreams were amber. It now reads **"3 of 5 need watching"**, derived from the worst health present.
+- **The ribbon is computed.** "3 new since this morning — 1 new decision, 2 documents added" was static markup contradicting the data. It now reads "8 waiting on you to verify · 12 overdue", and hides itself when both are zero.
+- **The frozen timestamp is gone.** "Monday Aug 10, 4:35 PM ET" sat next to a live clock; the header now reads "Snapshot generated 2026-08-13 · today" from `BRIDGE_META`, and the footer states plainly that the record is the register files, not the page.
+- **Nav trimmed to the product**: Action Items, Ask Claude, Calendar, Workstreams, and a new "Needs verifying" link that applies the unverified filter. Documents and Discussion are out of the nav and off the demo path; their code stays and stays console-clean.
+- **Narrow-width nav added** — the links wrap instead of vanishing below 860px.
+
+### M9 — the write path is deleted — DONE, verified
+
+`/api/update`, `/api/submit`, `/api/refresh`, the passphrase widget, its CSS, `SESSION_PASS`, `askPass()`, the file input and `readFileB64()` are all gone. **Zero `fetch(` calls remain in the file, and no credential of any kind.**
+
+- The pending tray's "save" now calls `exportChanges()` instead of posting prose to a server.
+- Intake became a genuine local queue in `localStorage`, and says so: "Queued locally. It leaves with the next Export changes — nothing was uploaded."
+- `triggerRefresh()` no longer pretends: "The record refreshes when Claude Code regenerates the snapshot. This page only reads it."
+- The dropzone captures a dragged file's *name* to prefill the title and tells you to paste the text. No upload path exists to fail silently.
+
+### M10 — Aberdeen branding — DONE, verified
+
+Migrated as a classified value substitution rather than by hand: 109 distinct literals across 342 occurrences.
+
+- **New token set** on the palette: Aberdeen Blue `#09375F` dominant, Teal `#44B0B1` accent only, Onyx `#404040` body text, plus one status scale on Jade / Gold / Jasper — replacing the three inconsistent green/amber/red scales.
+- **97 literals migrated to tokens** by classifying each into hue and lightness families: 80 → `--line-soft`, 73 → `--surface`, 54 → `--navy`, 27 → `--link`, and the rest across the status tokens, teal and surfaces. **Zero hex literals remain outside the `:root` block** — including inside JavaScript template strings and inline `style` attributes, since `var()` is valid in any CSS value position.
+- rgba tints re-based on Aberdeen Blue and the status colours.
+- **Two brand-rule violations found and fixed.** Five components used **white text on teal** (`.intake-submit`, `.pb-save`, `.pb-count`, `.intake-ic`, `.us-sched`) — explicitly forbidden. They are now Aberdeen Blue with white text, which also enforces blue as dominant. Three used **teal text on white** (`.histbtn .hb-ic`, `.intake-chev`, `.dz-ic`) — now navy. The only remaining teal text is the hero eyebrow, which sits on an Aberdeen Blue background where teal is permitted.
+- Teal survives as borders, focus rings and accents only.
+
+**Final gate:** zero console errors and zero warnings across all four regression suites; zero external references; zero `fetch(`; zero `href="#"`; zero hex outside `:root`. 1,774 lines.
+
+<details><summary>Original M8 brief, for reference</summary>
+
+#### Focus the app, and make every number true
 
 The page currently spends its space on things that are not the product. Take them off the path.
 
