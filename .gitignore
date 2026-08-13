@@ -22,3 +22,6 @@ docs-internal/
 *.pre-scrub.html
 
 .vercel
+
+# vercel CLI local link (ids are not secrets, but keep the folder out)
+.vercel/

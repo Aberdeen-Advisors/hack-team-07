@@ -35,6 +35,7 @@ jobs:
       # The org locks GITHUB_TOKEN to read-only, so pushing needs a PAT in GH_PUSH_TOKEN.
       # Without it the job still runs and uploads the result as an artifact.
       CAN_PUSH: ${{ secrets.GH_PUSH_TOKEN != '' }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -100,8 +101,20 @@ jobs:
             data/**
             ingest-report.txt
 
-      - name: Publish
-        if: env.CAN_PUSH == 'true' && env.HOOK != ''
+      # Deploy straight from the runner. No Git connection on the Vercel project needed.
+      - name: Publish to Vercel
+        if: env.VERCEL_TOKEN != ''
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_7cuK6OCfC359QfIMgK6EpGvT
+          VERCEL_PROJECT_ID: prj_WQKCcWJwH9cmBpIIbXMTdm2SrHQ7
+        run: |
+          npm install -g vercel@latest
+          vercel deploy --prod --yes --token "$VERCEL_TOKEN"
+
+      # Alternative, only if the project is later connected to GitHub.
+      - name: Publish via deploy hook
+        if: env.VERCEL_TOKEN == '' && env.HOOK != ''
         run: curl -fsS -X POST "$HOOK" && echo "deploy triggered"
 
       - name: Report
