@@ -1,0 +1,32 @@
+{
+  "batch": "slack-2026-08-13-2121",
+  "capturedAt": "2026-08-13T21:21:30Z",
+  "items": [
+    {
+      "candidateId": "TAG-20260813-22",
+      "register": "risk",
+      "title": "Frostbite on Will Brown's thumb may leave him unable to type by 22 September",
+      "detail": "Raised by Will Brown in channel. He named himself owner and called it minor, recorded as severity Y.",
+      "owner": "Will Brown",
+      "due": "2026-09-22",
+      "ws": null,
+      "severity": "Y",
+      "decidedOn": null,
+      "meetingId": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Will Brown",
+        "messageTs": "1786656066.285489",
+        "permalink": "<https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656066285489>",
+        "quote": "Some risk that the frostbite on my thumb will render me incapable of typing by 9/22.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    }
+  ],
+  "postedBy": "U0AB8UM5278"
+}

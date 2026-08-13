@@ -1,19 +1,20 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:15:29",
+    "generatedAt": "2026-08-13T21:24:49",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786655599.607259",
+    "lastSlackTs": "1786656096.098979",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
-      "candidates/tag-1786655599607259.json"
+      "candidates/tag-1786655599607259.json",
+      "candidates/tag-1786656096098979.json"
     ],
-    "lastSlackPull": "2026-08-13T21:15:29"
+    "lastSlackPull": "2026-08-13T21:24:49"
   },
   "risks": [
     {
@@ -87,6 +88,38 @@
         "owner",
         "severity"
       ]
+    },
+    {
+      "id": "r3",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Frostbite on Will Brown's thumb may leave him unable to type by 22 September",
+      "owner": "Will Brown",
+      "note": "Raised by Will Brown in channel. He named himself owner and called it minor, recorded as severity Y.",
+      "ws": null,
+      "meetingId": null,
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Will Brown",
+        "messageTs": "1786656066.285489",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656066285489",
+        "quote": "Some risk that the frostbite on my thumb will render me incapable of typing by 9/22.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": "2026-09-22"
     }
   ]
 }
