@@ -31,6 +31,11 @@ concurrency:
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    # The commit step writes data/inbox/, which matches the push trigger above — so an ingest
+    # would start another ingest. Skip the echo run rather than let the bot chase its own tail.
+    if: >-
+      github.event_name != 'push' ||
+      !startsWith(github.event.head_commit.message, 'ingest:')
     env:
       HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
       HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
