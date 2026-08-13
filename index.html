@@ -866,6 +866,7 @@ function vTitle(it){
 function blockReason(it){
   if(isUnowned(it)) return 'Owner is unclear — set an owner before verifying this one.';
   if(it.kind==='Action' && !it.due) return 'No date on this one — set a due date before verifying.';
+  if(it.unclear && it.unclear.length) return 'Claude flagged this as unclear: '+it.unclear.join(', ')+'. Fill it in before verifying.';
   return null;
 }
 function logAudit(it,action,field,oldV,newV,note){
@@ -1169,7 +1170,7 @@ function srcChip(it){
     const when=(pr.tr.title.match(/—\s*(.+)$/)||[,pr.tr.date])[1];
     return `<button class="src-chip transcript cite" title="Opens ${esc(pr.tr.title)} at line ${pr.line} — the sentence this entry came from" onclick="event.stopPropagation();openSource('${it.id}')">▤ ${esc(when)} · L${pr.line}</button>`;
   }
-  if(pr.url) return `<a class="src-chip ${pr.kind==='transcript'?'transcript':'slack'}" href="${esc(pr.url)}" target="_blank" rel="noopener" title="Opens ${name}" onclick="event.stopPropagation()">${icon} ${name} ↗</a>`;
+  if(pr.url) return `<a class="src-chip ${pr.kind==='transcript'?'transcript':'slack'}" href="${esc(pr.url)}" target="_blank" rel="noopener" title="Opens the source message in Slack" onclick="event.stopPropagation()">${icon} ${esc(pr.author||name)} ↗</a>`;
   const short = pr.kind==='transcript' ? 'Transcript' : (pr.kind==='slack' ? 'Slack' : 'Source');
   return `<span class="src-chip unresolved" title="Source recorded as “${name}”, but no working link is stored for it">${icon} ${short}</span>`;
 }
@@ -1804,7 +1805,11 @@ function renderReview(){
     const pr=provOf(it), dm=dueMeta(it.due), why=blockReason(it), k=KIND[it.kind]||{label:it.kind};
     const cite = pr.inApp
       ? `<button class="rv-btn" onclick="openSource('${it.id}')">▤ Read it in ${esc((pr.tr.title||'').replace(/ transcript.*$/,''))} · line ${pr.line}</button>`
-      : `<span class="rv-block">No source stored for this entry — it cannot be traced back to a sentence.</span>`;
+      : pr.url
+        ? `<a class="rv-btn" href="${esc(pr.url)}" target="_blank" rel="noopener">💬 Open the message in Slack ↗</a>`
+        : pr.quote
+          ? `<span class="rv-block">Quoted, but no link stored — the sentence is above.</span>`
+          : `<span class="rv-block">No source stored for this entry — it cannot be traced back to a sentence.</span>`;
     return `<div class="rv-card">
       <div class="rv-top">
         <span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>
