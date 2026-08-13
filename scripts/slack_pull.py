@@ -118,8 +118,11 @@ def pull():
                 names[uid] = uid   # a missing users:read scope must not lose the message
         return names[uid]
 
+    BOTS = {'U0AB8UM5278'}          # Claude in Slack — its own output is not a source
     for m in msgs:
-        if m.get('subtype') in ('channel_join', 'channel_leave'):
+        if m.get('subtype') in ('channel_join', 'channel_leave', 'bot_message'):
+            continue
+        if m.get('bot_id') or m.get('user') in BOTS:
             continue
         ts = m.get('ts', '0')
         stamp = datetime.datetime.fromtimestamp(float(ts)).strftime('%H:%M:%S')
@@ -134,8 +137,8 @@ def pull():
             body = download(src)
             name = slug(f.get('title') or f.get('name'), 'slackfile' + ts.replace('.', ''))
             path = os.path.join(INBOX, name + '.md')
-            if os.path.exists(path):
-                continue
+            if os.path.exists(path) and os.path.getsize(path) > 0:
+                continue          # an emptied placeholder is a request to re-download
             open(path, 'w', encoding='utf-8').write(body)
             written.append(os.path.basename(path))
 
@@ -143,6 +146,8 @@ def pull():
         if text and not m.get('files'):
             text = re.sub(r'<@([A-Z0-9]+)(\|[^>]*)?>', lambda x: '@' + who(x.group(1)), text)
             text = re.sub(r'<(https?://[^|>]+)(\|[^>]*)?>', r'\1', text)
+            text = (text.replace('&gt;', '>').replace('&lt;', '<').replace('&amp;', '&'))
+            text = re.sub(r'^\s*>+\s*', '', text)      # Slack blockquote marker
             loose.append('[%s] %s: %s' % (stamp, who(m.get('user')), text.replace('\n', ' ')))
 
     if loose:
@@ -150,7 +155,8 @@ def pull():
         path = os.path.join(INBOX, 'slack%s.md' % day.replace('-', ''))
         header = ['# Slack channel digest — %s' % day, '',
                   'Pulled from Slack by scripts/slack_pull.py. Each line is one message.', '']
-        existing = open(path, encoding='utf-8').read().split('\n') if os.path.exists(path) else header
+        prior = open(path, encoding='utf-8').read().strip() if os.path.exists(path) else ''
+        existing = prior.split('\n') if prior else header
         open(path, 'w', encoding='utf-8').write('\n'.join(existing + loose) + '\n')
         written.append(os.path.basename(path))
 

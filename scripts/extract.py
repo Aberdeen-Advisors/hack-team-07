@@ -33,8 +33,20 @@ DECIDE = re.compile(r"\b(I'?m making the call|the call is|we are not|we're not|i
                     r"decision is|my position is a decision|we have decided|is confirmed|migrates into)\b", re.I)
 RISK   = re.compile(r"\b(is (?:a )?red|is (?:an )?amber|that'?s (?:a|the) risk|that'?s a red|"
                     r"is not booked|unresolved|we don'?t know the size)\b", re.I)
-DATE   = re.compile(r"\bby\s+(?:the\s+)?(?:(\w+day)|(\d{1,2})(?:st|nd|rd|th)?\s+of\s+(\w+)|"
-                    r"(\w+)\s+the\s+(\d{1,2})(?:st|nd|rd|th)?)\b", re.I)
+DATE_EXPLICIT = re.compile(r"\b(?:by|before|on)\s+(?:the\s+)?(?:"
+                           r"(\d{1,2})(?:st|nd|rd|th)?\s+of\s+(\w+)|"
+                           r"(\w+)\s+the\s+(\d{1,2})(?:st|nd|rd|th)?|"
+                           r"(\w+)\s+(\d{1,2})(?:st|nd|rd|th)?)\b", re.I)
+DATE_WORD     = re.compile(r"\b(?:by|before|on)\s+(\w+day|tomorrow|today|end of week|eow)\b", re.I)
+ORDINALS = {'first':1,'second':2,'third':3,'fourth':4,'fifth':5,'sixth':6,'seventh':7,'eighth':8,
+            'ninth':9,'tenth':10,'eleventh':11,'twelfth':12,'thirteenth':13,'fourteenth':14,
+            'fifteenth':15,'sixteenth':16,'seventeenth':17,'eighteenth':18,'nineteenth':19,
+            'twentieth':20,'twenty-first':21,'twenty-second':22,'twenty-third':23,'twenty-fourth':24,
+            'twenty-fifth':25,'twenty-sixth':26,'twenty-seventh':27,'twenty-eighth':28,
+            'twenty-ninth':29,'thirtieth':30,'thirty-first':31}
+ORD_DATE  = re.compile(r"\b(?:by|before|on)\s+(?:the\s+)?([a-z]+(?:-[a-z]+)?)\s+of\s+(\w+)\b", re.I)
+# "by Friday the twenty-first" / "by the eighteenth" — a day number with no month
+ORD_DAY   = re.compile(r"\b(?:by|before|on)\s+(?:\w+day\s+)?the\s+([a-z]+(?:-[a-z]+)?|\d{1,2})(?:st|nd|rd|th)?\b", re.I)
 MONTHS = {m.lower(): i for i, m in enumerate(
     ['January','February','March','April','May','June','July','August',
      'September','October','November','December'], 1)}
@@ -43,32 +55,89 @@ DOW = {d.lower(): i for i, d in enumerate(
 
 
 def iso_from(text, base_iso):
-    """Resolve 'by the twenty-first of August' / 'by Wednesday' against the meeting date."""
-    m = DATE.search(text)
-    if not m:
-        return None
+    """Resolve a stated date against the meeting date. Explicit dates beat weekday words,
+    because 'by Friday the twenty-first' means the 21st, not the next Friday."""
     base = datetime.date.fromisoformat(base_iso)
-    if m.group(1):                                        # by <weekday>
-        target = DOW.get(m.group(1).lower())
-        if target is None:
-            return None
-        ahead = (target - base.weekday()) % 7 or 7
-        return (base + datetime.timedelta(days=ahead)).isoformat()
-    if m.group(2) and m.group(3):                          # by the 21st of August
-        mon = MONTHS.get(m.group(3).lower())
-        if mon:
-            return datetime.date(base.year, mon, int(m.group(2))).isoformat()
-    if m.group(4) and m.group(5):                          # by August the 21st
-        mon = MONTHS.get(m.group(4).lower())
-        if mon:
-            return datetime.date(base.year, mon, int(m.group(5))).isoformat()
+
+    m = ORD_DATE.search(text)                       # "by the twenty-first of August"
+    if m and ORDINALS.get(m.group(1).lower()) and MONTHS.get(m.group(2).lower()):
+        try:
+            return datetime.date(base.year, MONTHS[m.group(2).lower()],
+                                 ORDINALS[m.group(1).lower()]).isoformat()
+        except ValueError:
+            pass
+
+    m = ORD_DAY.search(text)                        # "by Friday the twenty-first"
+    if m:
+        g = m.group(1).lower()
+        day = ORDINALS.get(g) or (int(g) if g.isdigit() else None)
+        if day:
+            month, year = base.month, base.year
+            if day < base.day:                      # already past — it means next month
+                month, year = (1, year + 1) if month == 12 else (month + 1, year)
+            try:
+                return datetime.date(year, month, day).isoformat()
+            except ValueError:
+                pass
+
+    m = DATE_EXPLICIT.search(text)                  # "by 21 of August" / "by August the 21st"
+    if m:
+        for day, mon in ((m.group(1), m.group(2)), (m.group(4), m.group(3)), (m.group(6), m.group(5))):
+            if day and mon and MONTHS.get((mon or '').lower()):
+                try:
+                    return datetime.date(base.year, MONTHS[mon.lower()], int(day)).isoformat()
+                except ValueError:
+                    pass
+
+    m = DATE_WORD.search(text)                      # "by Friday" / "by tomorrow"
+    if m:
+        w = m.group(1).lower()
+        if w == 'today':
+            return base.isoformat()
+        if w == 'tomorrow':
+            return (base + datetime.timedelta(days=1)).isoformat()
+        if w in ('end of week', 'eow'):
+            return (base + datetime.timedelta(days=(4 - base.weekday()) % 7)).isoformat()
+        target = DOW.get(w)
+        if target is not None:
+            ahead = (target - base.weekday()) % 7 or 7
+            return (base + datetime.timedelta(days=ahead)).isoformat()
     return None
 
 
+FILLER = re.compile(r"^(so|then|right|okay|ok|and|well|look|yes|no|yeah|sure|fine|thanks|"
+                    r"thank you|great|agreed|understood|exactly|correct|me|good)\b[\s,.:;-]*", re.I)
+
+def clause_at(text, pos):
+    """The sentence containing the match — not the first sentence of the utterance."""
+    starts = [0] + [m.end() for m in re.finditer(r'(?<=[.!?])\s+', text)]
+    ends = [m.start() for m in re.finditer(r'(?<=[.!?])\s+', text)] + [len(text)]
+    for a, b in zip(starts, ends):
+        if a <= pos < b:
+            return text[a:b].strip()
+    return text.strip()
+
+
 def title_of(text):
-    t = re.sub(r'^(so|then|right|okay|ok|and|well|look)[,\s]+', '', text.strip(), flags=re.I)
-    t = re.split(r'(?<=[a-z])[.?!]\s', t)[0].strip().rstrip('.,;:')
-    return (t[:110].rsplit(' ', 1)[0] + '…') if len(t) > 112 else t
+    t = text.strip()
+    prev = None
+    while prev != t:                       # strip stacked fillers: "Yes. Fine. I'll do X"
+        prev = t
+        t = FILLER.sub('', t).lstrip('.,;: ')
+    t = re.sub(r'^(I\'ll|I will|I am going to|I\'m going to)\s+', '', t, flags=re.I)
+    t = t[:1].upper() + t[1:] if t else t
+    t = t.rstrip('.,;:')
+    return (t[:104].rsplit(' ', 1)[0] + '…') if len(t) > 106 else t
+
+
+def worth_keeping(sentence):
+    """A commitment is a clause with substance. 'Fine' and 'Thanks' are not entries."""
+    words = re.findall(r"[A-Za-z']+", sentence)
+    if len(words) < 6:
+        return False
+    if FILLER.match(sentence) and len(words) < 9:
+        return False
+    return True
 
 
 def header_meta(lines, slug):
@@ -80,7 +149,11 @@ def header_meta(lines, slug):
         m = re.search(r'(\d{1,2})\s+(\w+)\s+(20\d{2})', head)
         if m and MONTHS.get(m.group(2).lower()):
             date = datetime.date(int(m.group(3)), MONTHS[m.group(2).lower()], int(m.group(1))).isoformat()
-    title = next((l.lstrip('# ').strip() for l in lines[:6] if l.strip() and not l.startswith('[')), slug)
+    cand = [l.lstrip('# ').strip() for l in lines[:12]
+            if l.strip() and not l.startswith('[')
+            and not re.match(r'^(meeting id|attendees|date|time|participants|recorded)\b', l.strip(), re.I)
+            and len(re.findall(r"[A-Za-z']+", l)) >= 3]
+    title = cand[0] if cand else slug
     return title[:90], date or datetime.date.today().isoformat()
 
 
@@ -88,6 +161,24 @@ def extract(path):
     slug = re.sub(r'[^a-z0-9]', '', os.path.basename(path).lower().replace('.md', '').replace('.txt', ''))[:24]
     lines = open(path, encoding='utf-8').read().split('\n')
     title, date = header_meta(lines, os.path.basename(path))
+
+    # Who actually speaks in this transcript. An owner has to be one of them.
+    roster = []
+    for raw in lines:
+        m = SPEAKER.match(raw.strip())
+        if m and m.group(2) not in roster:
+            roster.append(m.group(2))
+    first = {}
+    for full in roster:
+        first.setdefault(full.split()[0].lower(), full)
+
+    def resolve(name):
+        if not name:
+            return None
+        if name in roster:
+            return name
+        return first.get(name.split()[0].lower())      # "Tom" -> "Tom Okafor"; unknown -> None
+
     out = []
     for n, raw in enumerate(lines, 1):
         m = SPEAKER.match(raw.strip())
@@ -97,17 +188,26 @@ def extract(path):
         if len(said) < 30:
             continue
         register = owner = None
+        hit = None
         if DECIDE.search(said):
-            register, owner = 'decision', who
+            hit = DECIDE.search(said); register, owner = 'decision', resolve(who) or who
         elif RISK.search(said):
-            register, owner = 'risk', None
+            hit = RISK.search(said); register, owner = 'risk', None
         elif COMMIT.search(said):
-            register, owner = 'action', who
+            hit = COMMIT.search(said); register, owner = 'action', resolve(who) or who
         else:
             a = ASSIGN.search(said)
             if a and re.search(r'\bto\s+(publish|deliver|send|confirm|secure|produce|draft|circulate|book|chase|raise)\b', said, re.I):
-                register, owner = 'action', a.group(1)
+                hit = a
+                register = 'action'
+                # keep the full name where the transcript gives one
+                owner = resolve(a.group(1))
+                if not owner:
+                    continue        # "the record has to..." is not a person
         if not register:
+            continue
+        said = clause_at(said, hit.start())
+        if not worth_keeping(said):
             continue
         quote = said if len(said) <= 240 else said[:237].rsplit(' ', 1)[0] + '…'
         assert quote.split('…')[0] in raw, 'quote must be verbatim'

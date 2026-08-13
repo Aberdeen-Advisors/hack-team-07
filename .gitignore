@@ -25,3 +25,7 @@ docs-internal/
 
 # vercel CLI local link (ids are not secrets, but keep the folder out)
 .vercel/
+
+# python bytecode from running the scripts locally
+__pycache__/
+*.pyc
