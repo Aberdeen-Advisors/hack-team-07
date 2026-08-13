@@ -1,112 +1,14 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T20:11:11",
+    "generatedAt": "2026-08-13T16:09:05",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "scripts/extract.py over data/inbox/transcripts",
+    "source": "clean slate \u2014 every entry comes from #hack-team-7-app-dev",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786651385.035659",
-    "ingestedFiles": [
-      "20260810latsec01security.md",
-      "20260812latpmo02weeklypr.md",
-      "20260814lattech03datamig.md",
-      "buildtrans.md",
-      "comptrans.md",
-      "latpmo02.md",
-      "latsec01.md",
-      "lattech03.md",
-      "opstrans.md",
-      "slack20260813.md",
-      "steertrans.md"
-    ],
-    "lastSlackPull": "2026-08-13T20:11:11"
+    "lastSlackTs": "0",
+    "ingestedFiles": []
   },
-  "risks": [
-    {
-      "id": "r1",
-      "kind": "Risk",
-      "urg": "Med",
-      "title": "The go-live penetration test is not booked",
-      "owner": "Unassigned",
-      "note": "The go-live penetration test is not booked.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260810latsec01security",
-        "line": 65,
-        "author": "Will Brown",
-        "messageTs": "2026-08-10",
-        "permalink": null,
-        "quote": "The go-live penetration test is not booked.",
-        "confidence": "low"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "sev": "Y",
-      "status": "open",
-      "reviewed": null,
-      "due": null
-    },
-    {
-      "id": "r2",
-      "kind": "Risk",
-      "urg": "High",
-      "title": "Tester availability for UAT is red",
-      "owner": "Unassigned",
-      "note": "Tester availability for UAT is red.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260812latpmo02weeklypr",
-        "line": 74,
-        "author": "Marissa Feld",
-        "messageTs": "2026-08-12",
-        "permalink": null,
-        "quote": "Tester availability for UAT is red.",
-        "confidence": "low"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "sev": "R",
-      "status": "open",
-      "reviewed": null,
-      "due": null
-    },
-    {
-      "id": "r3",
-      "kind": "Risk",
-      "urg": "High",
-      "title": "It is more red than I'd like, though some of it is red for boring reasons",
-      "owner": "Unassigned",
-      "note": "It is more red than I'd like, though some of it is red for boring reasons.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260814lattech03datamig",
-        "line": 26,
-        "author": "Davis Dean",
-        "messageTs": "2026-08-14",
-        "permalink": null,
-        "quote": "It is more red than I'd like, though some of it is red for boring reasons.",
-        "confidence": "low"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "sev": "R",
-      "status": "open",
-      "reviewed": null,
-      "due": null
-    }
-  ]
+  "risks": []
 }

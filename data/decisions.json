@@ -1,128 +1,14 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T20:11:11",
+    "generatedAt": "2026-08-13T16:09:05",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "scripts/extract.py over data/inbox/transcripts",
+    "source": "clean slate \u2014 every entry comes from #hack-team-7-app-dev",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786651385.035659",
-    "ingestedFiles": [
-      "20260810latsec01security.md",
-      "20260812latpmo02weeklypr.md",
-      "20260814lattech03datamig.md",
-      "buildtrans.md",
-      "comptrans.md",
-      "latpmo02.md",
-      "latsec01.md",
-      "lattech03.md",
-      "opstrans.md",
-      "slack20260813.md",
-      "steertrans.md"
-    ],
-    "lastSlackPull": "2026-08-13T20:11:11"
+    "lastSlackTs": "0",
+    "ingestedFiles": []
   },
-  "decisions": [
-    {
-      "id": "d1",
-      "kind": "Decision",
-      "urg": "Med",
-      "title": "We are not integrating the legacy billing platform with single sign-on",
-      "owner": "Priya Raghunathan",
-      "note": "We are not integrating the legacy billing platform with single sign-on.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260810latsec01security",
-        "line": 57,
-        "author": "Priya Raghunathan",
-        "messageTs": "2026-08-10",
-        "permalink": null,
-        "quote": "We are not integrating the legacy billing platform with single sign-on.",
-        "confidence": "medium"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "date": "2026-08-10"
-    },
-    {
-      "id": "d2",
-      "kind": "Decision",
-      "urg": "Med",
-      "title": "The decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual…",
-      "owner": "Anjali Kalavar",
-      "note": "So the decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual reconciliation for exceptions.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260814lattech03datamig",
-        "line": 77,
-        "author": "Anjali Kalavar",
-        "messageTs": "2026-08-14",
-        "permalink": null,
-        "quote": "So the decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual reconciliation for exceptions.",
-        "confidence": "medium"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "date": "2026-08-14"
-    },
-    {
-      "id": "d3",
-      "kind": "Decision",
-      "urg": "Med",
-      "title": "We're not deleting the legacy platform on the ninth, we're just stopping writes to it",
-      "owner": "Hank Liu",
-      "note": "We're not deleting the legacy platform on the ninth, we're just stopping writes to it.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260814lattech03datamig",
-        "line": 121,
-        "author": "Hank Liu",
-        "messageTs": "2026-08-14",
-        "permalink": null,
-        "quote": "We're not deleting the legacy platform on the ninth, we're just stopping writes to it.",
-        "confidence": "medium"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "date": "2026-08-14"
-    },
-    {
-      "id": "d4",
-      "kind": "Decision",
-      "urg": "Med",
-      "title": "As data owner I'm making the call: only eighteen months of billing history migrates into the new…",
-      "owner": "Renata Voss",
-      "note": "As data owner I'm making the call: only eighteen months of billing history migrates into the new platform, and everything older goes to a separate archive store.",
-      "provenance": {
-        "sourceSystem": "transcript",
-        "docId": "20260814lattech03datamig",
-        "line": 159,
-        "author": "Renata Voss",
-        "messageTs": "2026-08-14",
-        "permalink": null,
-        "quote": "As data owner I'm making the call: only eighteen months of billing history migrates into the new platform, and everything older goes to a separate archive store.",
-        "confidence": "medium"
-      },
-      "verification": {
-        "status": "pending",
-        "decidedBy": null,
-        "decidedAt": null,
-        "note": "Extracted from a transcript by Bridge. No person has checked it."
-      },
-      "date": "2026-08-14"
-    }
-  ]
+  "decisions": []
 }
