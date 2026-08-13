@@ -534,20 +534,6 @@
   .intake-email a{color:var(--navy);font-weight:700}
 
   /* pending changes tray */
-  #pendingBar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(24px);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:58;width:min(560px,92vw)}
-  #pendingBar.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
-  #pendingBar .pb-main{display:flex;align-items:center;gap:10px;background:var(--navy);color:var(--surface);border-radius:12px;padding:10px 12px;box-shadow:0 12px 34px rgba(9,55,95,.32)}
-  .pb-count{background:var(--navy);color:var(--surface);font-weight:800;font-size:12px;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0}
-  .pb-txt{font-size:13px;font-weight:600;flex:1}
-  .pb-rev{background:rgba(255,255,255,.12);border:none;color:var(--surface);font-size:12px;font-weight:700;border-radius:8px;padding:7px 12px;cursor:pointer}
-  .pb-rev:hover{background:rgba(255,255,255,.22)}
-  .pb-save{background:var(--navy);border:none;color:var(--surface);font-size:12.5px;font-weight:800;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
-  .pb-save:hover{background:var(--navy2)}
-  .pb-save:disabled{opacity:.6;cursor:default}
-  .pb-x{background:transparent;border:none;color:var(--link);font-size:14px;cursor:pointer;padding:2px 4px;flex-shrink:0}
-  .pb-x:hover{color:var(--surface)}
-  .pb-list{margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;max-height:210px;overflow:auto;box-shadow:0 12px 34px rgba(9,55,95,.2)}
-  .pb-item{font-size:12px;color:var(--navy);line-height:1.65}
 
   #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:var(--surface);padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(9,55,95,.25);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:90vw;text-align:center}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -803,7 +789,6 @@
   <div class="drawer-body" id="threadList"></div>
 </aside>
 
-<div id="pendingBar"></div>
 <div id="srcModal" class="src-modal"></div>
 <div id="toast"></div>
 <!-- M9: the passphrase widget is gone. There is no endpoint to authenticate to. -->
@@ -1118,8 +1103,6 @@ restoreState();
 /* ---------- helpers ---------- */
 const state = {q:'', ws:'all', kind:'all', docView:'list'};
 const istate = {type:'Action', owner:'all', sort:'priority', showDone:false, expanded:false, unverifiedOnly:false, open:new Set()};
-const pending = new Map(); // key -> human-readable change line, awaiting push to Slack
-const origin = new Map();  // key -> original value, so reverting an edit clears it from the queue
 const OWNERS = [['Unassigned','Unassigned'],['AR','Alex Rivera'],['JC','Jordan Chen'],['SP','Sam Prentice'],['MK','Morgan Keller']];
 const KIND = {
   Action:{c:'var(--link)',bg:'var(--line-soft)',label:'Action'},
@@ -1256,9 +1239,8 @@ function renderItemsBar(){
   const doneToggle=`<label class="ck"><input type="checkbox" ${istate.showDone?'checked':''} onchange="istate.showDone=this.checked;renderItemsBar();renderItems()"> Show completed</label>`;
   const np=pendingCount();
   const unverChip=`<span class="fpill unver ${istate.unverifiedOnly?'on':''}" title="Entries no person has checked yet" onclick="istate.unverifiedOnly=!istate.unverifiedOnly;istate.expanded=false;renderItemsBar();renderItems()">Unverified only · ${np}</span>`;
-  const waiting=AUDIT.length-EXPORTED;
-  const exportBtn=`<button class="btn sm ${waiting>0?'hot':''}" title="Download the verification decisions as structured changes for Claude Code to apply" onclick="exportChanges()">Export changes${waiting>0?' · '+waiting:''}</button>`;
-  document.getElementById('itemsBar').innerHTML=`<div class="ti-chips">${chips}${unverChip}</div><div class="ti-ctrls">${ownerSel}${sortSel}${doneToggle}${exportBtn}</div>`;
+  // Export lives in the callout above the table, where the count it refers to is. One button.
+  document.getElementById('itemsBar').innerHTML=`<div class="ti-chips">${chips}${unverChip}</div><div class="ti-ctrls">${ownerSel}${sortSel}${doneToggle}</div>`;
 }
 function renderItems(){
   let list=DATA.items.filter(it=>typeMatch(it,istate.type));
@@ -1420,42 +1402,17 @@ function renderInfoPop(it){
   return `<div class="ti-pop" onclick="event.stopPropagation()"><div class="pnote">${esc(it.note||'No extra notes.')}</div>${provBlock(it)}${tie?`<div class="pk">${tie}</div>`:''}${editRow}${links.length?`<div class="plinks">${links.join('')}</div>`:''}</div>`;
 }
 function toggleItem(id){ if(istate.open.has(id))istate.open.delete(id); else {istate.open.clear();istate.open.add(id);} renderItems(); }
-function noteChange(key,orig,now,label){
-  if(!origin.has(key)) origin.set(key,orig);
-  if(now===origin.get(key)){ pending.delete(key); } else { pending.set(key,label); }
-  renderPending(); saveState();
+/* One change log, one export. Every edit lands in AUDIT alongside the verifications, so
+   there is a single count of what has not yet been written back to the registers. The old
+   "unsaved changes" bar tracked a second, parallel queue and called saved work unsaved. */
+function noteChange(id,field,orig,now){
+  const it=itemById(id); if(!it || orig===now) return;
+  logAudit(it,'edited',field,orig,now,null);
 }
-function toggleDone(id){const it=itemById(id);if(!it)return;const pre=it.status;it.status=pre==='done'?'open':'done';renderItemsBar();renderItems();renderAttn();renderCalendar();noteChange(id+':status',pre,it.status, (it.status==='done'?'Marked complete: “'+it.title+'”':'Reopened: “'+it.title+'”')+' ['+it.kind+' '+it.id+']');}
-function setOwner(id,v){const it=itemById(id);if(it){const pre=it.owner||'Unassigned';it.owner=v;renderItems();renderCalendar();noteChange(id+':owner',pre,v,'Reassigned “'+it.title+'” to '+ownerName(v)+' ['+it.kind+' '+it.id+']');toast('Reassigned to '+ownerName(v)+'.');}}
-function setDue(id,v){const it=itemById(id);if(it){const pre=it.due;it.due=v;renderItems();renderAttn();noteChange(id+':due',pre,v,'“'+it.title+'” due → '+(v||'no date')+' ['+it.kind+' '+it.id+']');toast('Due set to '+dueMeta(v).label.toLowerCase()+'.');}}
-function saveTitle(id,v){const it=itemById(id);if(it&&v.trim()){const pre=it.title;it.title=v.trim();renderItems();renderCalendar();noteChange(id+':title',pre,it.title,'Renamed to “'+it.title+'” ['+it.kind+' '+it.id+']');toast('Saved.');}}
-
-/* PENDING CHANGES — review then push back to Slack (the source of truth) */
-function renderPending(){
-  const bar=document.getElementById('pendingBar'); const n=pending.size;
-  if(!n){ bar.classList.remove('show'); bar.innerHTML=''; return; }
-  const list=[...pending.values()]; const exp=bar._exp;
-  bar.innerHTML=`
-    ${exp?`<div class="pb-list">${list.map(l=>`<div class="pb-item">• ${esc(l)}</div>`).join('')}</div>`:''}
-    <div class="pb-main">
-      <span class="pb-count">${n}</span>
-      <span class="pb-txt">unsaved change${n>1?'s':''}</span>
-      <button class="pb-rev" onclick="togglePending()">${exp?'Hide':'Review'}</button>
-      <button class="pb-save" onclick="savePending()">Save to Slack</button>
-      <button class="pb-x" title="Discard (reloads the last saved state)" onclick="discardPending()">✕</button>
-    </div>`;
-  bar.classList.add('show');
-}
-function togglePending(){const bar=document.getElementById('pendingBar');bar._exp=!bar._exp;renderPending();}
-function discardPending(){ if(pending.size && confirm('Discard unsaved changes and reload the last saved version?')) location.reload(); }
-/* M9: no passphrase, no server. Inline edits queue locally and leave with the
-   verification decisions through exportChanges(). Nothing here can report a success
-   that did not happen. */
-async function savePending(){
-  if(!pending.size){ toast('No queued edits.'); return; }
-  exportChanges();
-  pending.clear(); origin.clear(); renderPending();
-}
+function toggleDone(id){const it=itemById(id);if(!it)return;const pre=it.status;it.status=pre==='done'?'open':'done';noteChange(id,'status',pre,it.status);renderItemsBar();renderItems();renderAttn();renderCalendar();renderReview();}
+function setOwner(id,v){const it=itemById(id);if(it){const pre=it.owner||'Unassigned';it.owner=v;noteChange(id,'owner',pre,v);renderItems();renderCalendar();renderReview();toast('Reassigned to '+ownerName(v)+'.');}}
+function setDue(id,v){const it=itemById(id);if(it){const pre=it.due;it.due=v;noteChange(id,'due',pre,v);renderItems();renderAttn();renderReview();toast('Due set to '+dueMeta(v).label.toLowerCase()+'.');}}
+function saveTitle(id,v){const it=itemById(id);if(it&&v.trim()){const pre=it.title;it.title=v.trim();noteChange(id,'title',pre,it.title);renderItems();renderCalendar();renderReview();toast('Saved.');}}
 function gotoDeliv(mid,itemId){
   const m=meetingById(mid); if(!m) return;
   const date = m.date || nextRecurDate(m);
@@ -1760,8 +1717,7 @@ function confirmSchedule(id){
   u.scheduled=fmtDate(d)+(rec?' · weekly':'');
   usState.open.delete(id);
   cal.mode='week';cal.anchor=d;renderCalendar();
-  pending.set('sched:'+id,'Scheduled “'+u.title+'” for '+fmtDate(d)+(rec?' (recurring weekly)':''));renderPending();
-  toast('Scheduled “'+shortMeet(u.title)+'” for '+fmtDate(d)+'. Save to Slack to make it permanent.');
+  toast('Scheduled “'+shortMeet(u.title)+'” for '+fmtDate(d)+'.');
 }
 
 /* calendar controls */
