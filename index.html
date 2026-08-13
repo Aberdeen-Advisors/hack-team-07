@@ -565,11 +565,13 @@
   .sec-head .sub{font-size:13.5px}
   /* item rows */
   /* fixed columns so the eye can track down a column instead of hunting */
-  .ti-row2{display:grid;grid-template-columns:26px 78px minmax(180px,1fr) 158px 112px 104px 132px 116px 34px;
-           gap:10px;padding:12px 12px;min-height:52px;align-items:center}
-  .ti-head{display:grid;grid-template-columns:26px 78px minmax(180px,1fr) 158px 112px 104px 132px 116px 34px;
-           gap:10px;padding:6px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
+  .ti-row2{display:grid;grid-template-columns:26px 74px 62px minmax(170px,1fr) 150px 104px 148px 124px 112px 34px;
+           gap:9px;padding:12px 12px;min-height:52px;align-items:center}
+  .ti-head{display:grid;grid-template-columns:26px 74px 62px minmax(170px,1fr) 150px 104px 148px 124px 112px 34px;
+           gap:9px;padding:6px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
            letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--line)}
+  .ti-cell.verify{gap:5px;overflow:visible}
+  .vchip.pending{font-size:9.5px;padding:3px 6px}
   .ti-row2 > *{min-width:0}
   .ti-cell{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
   .ti-cell > *{max-width:100%}
@@ -699,13 +701,7 @@
     <div id="reviewList"></div>
   </section>
 
-<section class="section" id="ask">
-    <div class="sec-head"><h2>Request an update from Claude</h2></div>
-    <div class="ask-card">
-      <textarea id="askText" class="ask-ta" rows="2" placeholder="e.g. “Move the Friday leadership sync to 4pm and update the calendar,” or “Add a build-team kickoff deck to next week’s asks.”" onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')sendAsk()"></textarea>
-      <button id="askSend" class="ask-send" onclick="sendAsk()">Send to Claude</button>
-    </div>
-  </section>
+<!-- "Request an update from Claude" removed: everything goes through Slack for the bot to catch. Future feature. -->
 
 <section class="section" id="workstreams">
     <div class="sec-head"><h2>Workstreams</h2></div>
@@ -1116,7 +1112,7 @@ function renderItems(){
   const total=list.length;
   const shown=istate.expanded?list:list.slice(0,10);
   document.getElementById('itemsList').innerHTML=
-    `<div class="ti-head"><span></span><span>Type</span><span>Item</span><span>Source</span><span>Meeting</span><span>Verified</span><span>Owner</span><span>Due</span><span></span></div>`
+    `<div class="ti-head"><span></span><span>Type</span><span>Priority</span><span>Item</span><span>Source</span><span>Meeting</span><span>Verified</span><span>Owner</span><span>Due</span><span></span></div>`
     +(shown.length?shown.map(renderItemRow).join('')
         :`<div class="ti-empty">Nothing in the register yet. Entries arrive from Slack — the ingest writes them here as unverified.</div>`)||`<div class="ti-empty">Nothing here${istate.showDone?'':' — try “Show completed”'}.</div>`;
   const more=document.getElementById('itemsMore');
@@ -1139,7 +1135,7 @@ function nextRecurDate(r){
    Every item shows where it came from, or says plainly that it has no source.
    A link is only rendered when it actually goes somewhere: an href of '#' is not a
    citation, it is a citation-shaped hole, and it opens a duplicate tab. */
-const isRealUrl=(u)=>typeof u==='string' && /^(https?:|mailto:)/i.test(u.trim());
+const isRealUrl=(u)=>typeof u==='string' && /^(https?:|mailto:)/i.test(u.trim().replace(/^</,''));
 /* linkOr(url, html, fallbackText) — renders a real anchor, or a dead-looking chip that
    says why. Never an href="#": that opens a duplicate tab and lies about being a citation. */
 function linkOut(url,cls,inner,title){
@@ -1150,7 +1146,8 @@ function linkOut(url,cls,inner,title){
 function provOf(it){
   const p=it.provenance||{}, src=it.src||null;
   const doc = (p.docId||(src&&src.docId)) ? docById(p.docId||src.docId) : null;
-  const url = [p.permalink, src&&src.url, doc&&doc.slackUrl, doc&&doc.url].find(isRealUrl) || null;
+  const clean=(u)=> typeof u==='string' ? u.trim().replace(/^<|>$/g,'') : u;
+  const url = [p.permalink, src&&src.url, doc&&doc.slackUrl, doc&&doc.url].map(clean).find(isRealUrl) || null;
   const tr = p.docId && window.BRIDGE_TRANSCRIPTS ? window.BRIDGE_TRANSCRIPTS[p.docId] : null;
   return {
     tr, line: p.line||null, inApp: !!(tr && p.line),
@@ -1207,7 +1204,9 @@ function renderItemRow(it){
   } else if(isDec){ dueCtl=`<span class="ti-date">${esc(it.date||'')}</span>`; }
   else { dueCtl=`<span class="sev-dot" style="background:${it.sev==='R'?hColors.R:hColors.Y}" title="${it.sev==='R'?'High severity':'Medium'}"></span>`; }
   const info=`<button class="info-b ${open?'on':''}" title="Details" onclick="event.stopPropagation();toggleItem('${it.id}')">i</button>`;
-  const urgChip = (!done && it.urg==='High') ? `<span class="urg-chip" title="High urgency">High</span>` : '';
+  const urgChip = done ? '' : (it.urg==='High' ? `<span class="urg-chip">High</span>`
+                   : it.urg==='Low' ? `<span class="lbl-chip" style="color:var(--muted);background:var(--line-soft)">Low</span>`
+                   : `<span class="lbl-chip" style="color:var(--y-fg);background:var(--y-bg)">Med</span>`);
   const v=vstat(it);
   const verifCtl = v==='pending'
     ? `<span class="vchip pending" title="${esc(vTitle(it))}">Unverified</span>`+
@@ -1217,10 +1216,11 @@ function renderItemRow(it){
   return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">`+
     `<span class="ti-cell">${check}</span>`+
     `<span class="ti-cell"><span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span></span>`+
-    `<span class="ti-cell"><span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${urgChip}</span>`+
+    `<span class="ti-cell">${urgChip||'<span class="ti-own" style="color:var(--muted)">—</span>'}</span>`+
+    `<span class="ti-cell"><span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span></span>`+
     `<span class="ti-cell">${src}</span>`+
     `<span class="ti-cell">${dchip}</span>`+
-    `<span class="ti-cell">${verifCtl}</span>`+
+    `<span class="ti-cell verify">${verifCtl}</span>`+
     `<span class="ti-cell">${ownerCtl}</span>`+
     `<span class="ti-cell">${dueCtl}</span>`+
     `<span class="ti-cell">${info}</span>`+
@@ -1535,7 +1535,7 @@ function confirmSchedule(id){
   DATA.meetings['u_'+id]={name:u.title,date:d,time:'TBD',ws:u.ws,audience:'To be confirmed',owner:'TBD',purpose:u.reason,deliverables:[]};
   u.scheduled=fmtDate(d)+(rec?' · weekly':'');
   usState.open.delete(id);
-  cal.mode='week';cal.anchor=d;renderCalendar();renderUnscheduled();
+  cal.mode='week';cal.anchor=d;renderCalendar();
   pending.set('sched:'+id,'Scheduled “'+u.title+'” for '+fmtDate(d)+(rec?' (recurring weekly)':''));renderPending();
   toast('Scheduled “'+shortMeet(u.title)+'” for '+fmtDate(d)+'. Save to Slack to make it permanent.');
 }
@@ -1858,7 +1858,7 @@ document.getElementById('appver').textContent='v'+APP_VERSION;
 renderWsDots();renderUpdated();renderHeroHealth();renderRibbon();renderReview();
 renderAttn();
 renderItemsBar();renderItems();
-renderCalendar();renderUnscheduled();
+renderCalendar();
 renderWs();renderDocFilters();renderDocs();renderTeam();renderThreads();
 setInterval(renderUpdated,60000); // keep the "next refresh" chip live in ET
 document.addEventListener('click',e=>{ // close an open action-item popover when clicking elsewhere

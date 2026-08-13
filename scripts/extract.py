@@ -271,7 +271,11 @@ def ingest_candidates(DATA, meta, seq, existing_quotes):
             print('::warning::unreadable candidate batch %s: %s' % (key, e)); continue
         n = 0
         for c in batch.get('items', []):
-            prov = c.get('provenance') or {}
+            prov = dict(c.get('provenance') or {})
+            # Slack posts links as <https://…>; strip the brackets or the app calls it "no link"
+            for k in ('permalink', 'url'):
+                if isinstance(prov.get(k), str):
+                    prov[k] = prov[k].strip().lstrip('<').rstrip('>').strip() or None
             quote = (prov.get('quote') or '').strip()
             title = (c.get('title') or '').strip()
             if not title:
