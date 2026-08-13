@@ -138,6 +138,15 @@
   .due-lbl.today{color:var(--r-fg);background:var(--r-bg)}
   .due-lbl.tom,.due-lbl.soon{color:var(--y-fg);background:var(--y-bg)}
   .due-lbl.later,.due-lbl.nodate{color:var(--slate);background:#f1f5f9}
+  .vchip{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;border-radius:5px;padding:2px 5px;flex-shrink:0;cursor:default}
+  .vchip.pending{color:var(--y-fg);background:var(--y-bg)}
+  .vchip.ok{color:var(--g-fg);background:var(--g-bg);text-transform:none;letter-spacing:0;font-size:11px;padding:2px 6px}
+  .vbtn{border:1px solid var(--line);background:#fff;border-radius:6px;width:22px;height:22px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;line-height:1;padding:0}
+  .vbtn.ok{color:var(--g-fg)} .vbtn.no{color:var(--r-fg)}
+  .vbtn:hover{border-color:var(--navy)}
+  .ti-row2.unverified{box-shadow:inset 3px 0 0 var(--y-fg)}
+  .fpill.unver.on{background:var(--y-fg);color:#fff;border-color:var(--y-fg)}
+  .btn.sm.hot{border-color:var(--y-fg);color:var(--y-fg);font-weight:800}
   .attn-why{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--slate);background:#f1f5f9;border-radius:5px;padding:2px 5px}
   .attn-why.hot{color:var(--r-fg);background:var(--r-bg)}
   .due3.overdue{color:var(--r-fg);font-weight:800} .due3.today{color:var(--r-fg)}
@@ -777,11 +786,103 @@ if(!DATA){
   });
   throw new Error('BRIDGE_DATA missing: data/snapshot.js did not load');
 }
+
+/* ---------- verification — nothing counts until a person says so ----------
+   Every item carries verification.status. Items captured from a source arrive 'pending';
+   items a person typed into the tracker before Bridge existed are 'verified' with
+   decidedBy 'seeded'. Rejected items leave the register but stay in the audit trail.
+   Decisions live in localStorage and leave as structured changes, never as prose. */
+const VKEY='bridge.verification.v1';
+const REVIEWER='Davis Dean';   // the signed-in PM; a real deployment reads this from auth
+const AUDIT=[];
+let EXPORTED=0;
+const vstat=(it)=>(it.verification&&it.verification.status)||'pending';
+const isPending=(it)=>vstat(it)==='pending';
+const isRejected=(it)=>vstat(it)==='rejected';
+const pendingCount=()=>DATA.items.filter(it=>isPending(it)).length;
+function vTitle(it){
+  const v=it.verification||{};
+  if(v.status==='verified') return v.decidedBy==='seeded' ? ('Seeded — '+(v.note||'')) : ('Verified by '+v.decidedBy+(v.decidedAt?' on '+v.decidedAt.slice(0,10):''));
+  if(v.status==='rejected') return 'Rejected by '+v.decidedBy+(v.note?' — '+v.note:'');
+  return v.note||'Not yet checked by a person';
+}
+function blockReason(it){
+  if(isUnowned(it)) return 'Owner is unclear — set an owner before verifying this one.';
+  if(it.kind==='Action' && !it.due) return 'No date on this one — set a due date before verifying.';
+  return null;
+}
+function logAudit(it,action,field,oldV,newV,note){
+  AUDIT.push({registerId:it.id,list:it.kind,action,field:field||null,
+              oldValue:(oldV===undefined?null:oldV),newValue:(newV===undefined?null:newV),
+              actor:REVIEWER,actedAt:new Date().toISOString(),note:note||null});
+  saveState();
+}
+function approveItem(id){
+  const it=itemById(id); if(!it) return;
+  const why=blockReason(it);
+  if(why){ toast(why); return; }                        // never guesses on the reviewer's behalf
+  const pre=vstat(it);
+  it.verification={status:'verified',decidedBy:REVIEWER,decidedAt:new Date().toISOString(),note:null};
+  logAudit(it,'approved','verification.status',pre,'verified',null);
+  renderItemsBar(); renderItems(); renderAttn();
+  toast('Verified — “'+it.title.slice(0,40)+'”.');
+}
+function rejectItem(id){
+  const it=itemById(id); if(!it) return;
+  let note=''; try{ const r=window.prompt('Why is this being rejected? (recorded in the audit trail)',''); if(r!==null) note=r; }catch(e){}
+  const pre=vstat(it);
+  it.verification={status:'rejected',decidedBy:REVIEWER,decidedAt:new Date().toISOString(),note:note};
+  logAudit(it,'rejected','verification.status',pre,'rejected',note);
+  renderItemsBar(); renderItems(); renderAttn();
+  toast('Rejected — out of the register, kept in the audit trail.');
+}
+function saveState(){
+  try{
+    const patch={};
+    DATA.items.forEach(it=>{ patch[it.id]={verification:it.verification,owner:it.owner,due:it.due,status:it.status,title:it.title}; });
+    localStorage.setItem(VKEY,JSON.stringify({saved:new Date().toISOString(),patch,audit:AUDIT,exported:EXPORTED}));
+  }catch(e){ console.warn('Bridge: state not saved —',e.message); }
+}
+function restoreState(){
+  try{
+    const raw=localStorage.getItem(VKEY); if(!raw) return 0;
+    const st=JSON.parse(raw);
+    (st.audit||[]).forEach(a=>AUDIT.push(a));
+    EXPORTED=st.exported||0;
+    let n=0;
+    DATA.items.forEach(it=>{
+      const q=st.patch&&st.patch[it.id]; if(!q) return;
+      if(q.verification){ it.verification=q.verification; }
+      if(q.owner!==undefined) it.owner=q.owner;
+      if(q.due!==undefined) it.due=q.due;
+      if(q.status!==undefined) it.status=q.status;
+      if(q.title) it.title=q.title;
+      n++;
+    });
+    return n;
+  }catch(e){ console.warn('Bridge: state not restored —',e.message); return 0; }
+}
+function exportChanges(){
+  if(!AUDIT.length){ toast('Nothing to export yet — verify or reject something first.'); return; }
+  const payload={generatedAt:new Date().toISOString(),actor:REVIEWER,schemaVersion:1,
+    changes:AUDIT.map(a=>({registerId:a.registerId,list:a.list,action:a.action,
+      fields:a.field?{[a.field]:a.newValue}:{},previous:a.field?{[a.field]:a.oldValue}:{},
+      actor:a.actor,actedAt:a.actedAt,note:a.note}))};
+  try{
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='pending-changes.json'; document.body.appendChild(a); a.click(); a.remove();
+    EXPORTED=AUDIT.length; saveState(); renderItemsBar();
+    toast(payload.changes.length+' change'+(payload.changes.length>1?'s':'')+' exported for Claude Code to apply.');
+  }catch(e){ toast('Export failed — '+e.message); }
+}
+window.addEventListener('beforeunload',(e)=>{ if(AUDIT.length>EXPORTED){ e.preventDefault(); e.returnValue=''; } });
+restoreState();
 /* ==DATA END== */
 
 /* ---------- helpers ---------- */
 const state = {q:'', ws:'all', kind:'all', docView:'list'};
-const istate = {type:'Action', owner:'all', sort:'priority', showDone:false, expanded:false, open:new Set()};
+const istate = {type:'Action', owner:'all', sort:'priority', showDone:false, expanded:false, unverifiedOnly:false, open:new Set()};
 const pending = new Map(); // key -> human-readable change line, awaiting push to Slack
 const origin = new Map();  // key -> original value, so reverting an edit clears it from the queue
 const UPDATE_ENDPOINT = '/api/update';
@@ -884,10 +985,16 @@ function renderItemsBar(){
   const sortSel=`<select onchange="istate.sort=this.value;renderItems()">`+
     [['priority','Priority'],['due','Due'],['owner','Owner']].map(s=>`<option value="${s[0]}"${istate.sort===s[0]?' selected':''}>Sort: ${s[1]}</option>`).join('')+`</select>`;
   const doneToggle=`<label class="ck"><input type="checkbox" ${istate.showDone?'checked':''} onchange="istate.showDone=this.checked;renderItemsBar();renderItems()"> Show completed</label>`;
-  document.getElementById('itemsBar').innerHTML=`<div class="ti-chips">${chips}</div><div class="ti-ctrls">${ownerSel}${sortSel}${doneToggle}</div>`;
+  const np=pendingCount();
+  const unverChip=`<span class="fpill unver ${istate.unverifiedOnly?'on':''}" title="Entries no person has checked yet" onclick="istate.unverifiedOnly=!istate.unverifiedOnly;istate.expanded=false;renderItemsBar();renderItems()">Unverified only · ${np}</span>`;
+  const waiting=AUDIT.length-EXPORTED;
+  const exportBtn=`<button class="btn sm ${waiting>0?'hot':''}" title="Download the verification decisions as structured changes for Claude Code to apply" onclick="exportChanges()">Export changes${waiting>0?' · '+waiting:''}</button>`;
+  document.getElementById('itemsBar').innerHTML=`<div class="ti-chips">${chips}${unverChip}</div><div class="ti-ctrls">${ownerSel}${sortSel}${doneToggle}${exportBtn}</div>`;
 }
 function renderItems(){
   let list=DATA.items.filter(it=>typeMatch(it,istate.type));
+  list=list.filter(it=>!isRejected(it));                       // rejected leaves the register entirely
+  if(istate.unverifiedOnly)list=list.filter(isPending);
   if(istate.owner!=='all')list=list.filter(it=>(it.owner||'Unassigned')===istate.owner);
   if(!istate.showDone)list=list.filter(it=>it.status!=='done');
   if(istate.sort==='owner')list.sort((a,b)=>ownerName(a.owner).localeCompare(ownerName(b.owner))||urgRank(a)-urgRank(b)||rank(a)-rank(b));
@@ -945,7 +1052,13 @@ function renderItemRow(it){
   else { dueCtl=`<span class="sev-dot" style="background:${it.sev==='R'?hColors.R:hColors.Y}" title="${it.sev==='R'?'High severity':'Medium'}"></span>`; }
   const info=`<button class="info-b ${open?'on':''}" title="Details" onclick="event.stopPropagation();toggleItem('${it.id}')">i</button>`;
   const urgChip = (!done && it.urg==='High') ? `<span class="urg-chip" title="High urgency">High</span>` : '';
-  return `<div class="ti-row2 ${done?'done':''}" id="row-${it.id}">${check}<span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>${urgChip}<span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${src}${dchip}${ownerCtl}${dueCtl}${info}${open?renderInfoPop(it):''}</div>`;
+  const v=vstat(it);
+  const verifCtl = v==='pending'
+    ? `<span class="vchip pending" title="${esc(vTitle(it))}">Unverified</span>`+
+      `<button class="vbtn ok" title="${esc(blockReason(it)||'Verify this entry')}" onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
+      `<button class="vbtn no" title="Reject this entry" onclick="event.stopPropagation();rejectItem('${it.id}')">✕</button>`
+    : `<span class="vchip ok" title="${esc(vTitle(it))}">✓</span>`;
+  return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">${check}<span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>${urgChip}<span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${src}${dchip}${verifCtl}${ownerCtl}${dueCtl}${info}${open?renderInfoPop(it):''}</div>`;
 }
 function renderInfoPop(it){
   const isDec=it.kind==='Decision';
@@ -965,7 +1078,7 @@ function toggleItem(id){ if(istate.open.has(id))istate.open.delete(id); else {is
 function noteChange(key,orig,now,label){
   if(!origin.has(key)) origin.set(key,orig);
   if(now===origin.get(key)){ pending.delete(key); } else { pending.set(key,label); }
-  renderPending();
+  renderPending(); saveState();
 }
 function toggleDone(id){const it=itemById(id);if(!it)return;const pre=it.status;it.status=pre==='done'?'open':'done';renderItemsBar();renderItems();renderAttn();renderCalendar();noteChange(id+':status',pre,it.status, (it.status==='done'?'Marked complete: “'+it.title+'”':'Reopened: “'+it.title+'”')+' ['+it.kind+' '+it.id+']');}
 function setOwner(id,v){const it=itemById(id);if(it){const pre=it.owner||'Unassigned';it.owner=v;renderItems();renderCalendar();noteChange(id+':owner',pre,v,'Reassigned “'+it.title+'” to '+ownerName(v)+' ['+it.kind+' '+it.id+']');toast('Reassigned to '+ownerName(v)+'.');}}
@@ -1468,19 +1581,20 @@ function initIntake(){
 
 /* NEEDS ATTENTION NOW — the exec-facing "what is being asked" summary */
 function attnItems(){
-  const open=DATA.items.filter(it=>it.status!=='done');
-  // Four reasons an item needs a person, computed — not typed by hand.
+  const open=DATA.items.filter(it=>it.status!=='done'&&!isRejected(it));
+  // Five reasons an item needs a person, computed — not typed by hand.
   const why=new Map();
   const add=(it,reason)=>{ if(!why.has(it.id)) why.set(it.id,reason); };
   open.filter(it=>dueMeta(it.due).overdue).sort((a,b)=>dueKey(a)-dueKey(b)).forEach(it=>add(it,'Overdue'));
   open.filter(isUnowned).forEach(it=>add(it,'No owner'));
   open.filter(it=>isRiskFamily(it)&&reviewMeta(it).stale).forEach(it=>add(it,'Not reviewed'));
+  open.filter(it=>isPending(it)).forEach(it=>add(it,'Unverified'));
   open.filter(it=> it.urg==='High' || it.kind==='Blocker').forEach(it=>add(it,'High'));
   // Quotas, so the panel shows the range of failure modes rather than six of the same one.
-  const quota={'Overdue':3,'No owner':2,'Not reviewed':1,'High':6};
-  const taken={'Overdue':0,'No owner':0,'Not reviewed':0,'High':0};
+  const quota={'Overdue':2,'No owner':1,'Unverified':2,'Not reviewed':1,'High':6};
+  const taken={'Overdue':0,'No owner':0,'Unverified':0,'Not reviewed':0,'High':0};
   const picked=[];
-  for(const pass of ['Overdue','No owner','Not reviewed','High']){
+  for(const pass of ['Overdue','Unverified','No owner','Not reviewed','High']){
     for(const it of open){
       if(why.get(it.id)!==pass) continue;
       if(taken[pass]>=quota[pass] || picked.length>=6) continue;

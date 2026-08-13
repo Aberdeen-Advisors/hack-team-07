@@ -267,7 +267,29 @@ Built:
 
 **One number to keep straight:** the app holds **45** items by its own filter (`status !== 'done'`) and **37** with an explicit `status:'open'`. The workstream cards claim 74. M8 should derive against the app's own definition — 45 — which is what the original spec meant.
 
-### M5 — Verification in place, and the loop back to SharePoint
+### M5 — Verification in place — DONE, verified
+
+**How the initial states were derived, which is the only judgement call here.** Every item now carries `verification{status, decidedBy, decidedAt, note}`. The 8 items that carry a `src` block were **captured from a source and no person has checked them** → `pending`. The other 40 were **typed into the tracker by a person before Bridge existed** → `verified`, `decidedBy: 'seeded'`. Both states have a reason recorded in the data and documented in the snapshot header. Nothing was assigned at random to manufacture a mix.
+
+Built:
+
+- **State in place, not in a separate section.** Pending rows carry an amber `Unverified` chip, a left edge stripe, and two buttons — `✓` and `✕`. Verified rows carry a green tick whose tooltip says who verified it and when, or "Seeded" for the pre-existing ones.
+- **"Unverified only · N"** filter chip beside the type chips, with the live count.
+- **Approve, reject, and the guard.** `approveItem()` refuses when the owner is unclear — "Owner is unclear — set an owner before verifying this one" — and refuses an action with no date. It never fills either in. `rejectItem()` takes a note, removes the item from every register view, and keeps it in the audit trail.
+- **Audit trail** — `{registerId, list, action, field, oldValue, newValue, actor, actedAt, note}` per decision.
+- **The loop, without a backend.** "Export changes · N" downloads `pending-changes.json` as **structured changes** (`{registerId, list, action, fields{}, previous{}, actor, actedAt, note}`), never prose. `scripts/apply.md` is what consumes it.
+- **Persistence** to `localStorage` on every decision and every inline edit, restored on load. `beforeunload` warns if decisions are unexported.
+- The attention panel gained `Unverified` as a fifth reason, with a quota so it shares space with overdue and unowned.
+
+**Verified in jsdom, zero errors, zero warnings:** 8 pending / 40 verified at load; the chip reads "Unverified only · 8"; 8 striped rows and 8 approve buttons; the filter returns exactly the 8 and every row under it is pending. Approving `a1` → verified by Davis Dean. Rejecting `a3` with a note → gone from the DOM, present in the audit. Export wrote 2 structured changes and moved the counter. Save/restore round-trips: wiping an item's verification in memory and calling `restoreState()` brings it back.
+
+**The guard was tested synthetically**, because on today's data no pending item is also unowned: setting a pending item's owner to `Unassigned` makes `approveItem()` refuse, leave it pending, and **write nothing to the audit**; assigning an owner then verifies cleanly. Same for a missing date. That case will arrive on its own from ingest, which is exactly when it matters.
+
+**One graceful degradation worth knowing.** `localStorage` is unavailable on an opaque origin, which is what `file://` is in some engines. Every access is wrapped, so the app warns to console and keeps working rather than dying — verified by running the whole suite under both `http://` and `file://`. Chrome does give `file://` a storage bucket, so persistence works in the demo; it just is not *depended* on.
+
+**Not done here, because it needs SharePoint:** applying the export back to the lists. `pending-changes.json` is the handoff, and `scripts/apply.md` is still to write.
+
+<details><summary>Original M5 brief, for reference</summary>
 
 **This is the most important milestone. It is what the PM does with Bridge and it is beat four of the demo.**
 
@@ -278,6 +300,8 @@ The reviewer can approve, edit then approve, or reject, with a note. Where extra
 The loop, without a backend: decisions accumulate in `localStorage`, and an "Export changes" button downloads `pending-changes.json` — **structured changes, not prose sentences** — of the form `{registerId, list, action, fields:{...}, actor, actedAt}`. Then `scripts/apply.md` applies that file to the lists over MCP, writes the audit rows, and regenerates the snapshot. Guard against navigating away with unexported decisions outstanding.
 
 **Acceptance:** approve one item, edit one, reject one; reload and confirm the decisions survived. Export, run `apply.md`, and see all three reflected **in SharePoint** with matching rows in the verification log. The app cannot verify an item whose owner is unclear.
+
+</details>
 
 ### M6 — Provenance that actually resolves
 
