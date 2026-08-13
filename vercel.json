@@ -5,14 +5,12 @@
   "trailingSlash": false,
   "headers": [
     {
-      "comment": "The registers change every ingest. A cached snapshot makes the app look reverted.",
       "source": "/data/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     },
     {
-      "comment": "The app itself changes on every deploy; never serve a stale shell.",
       "source": "/index.html",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
