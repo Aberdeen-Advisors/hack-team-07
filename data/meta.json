@@ -1,11 +1,27 @@
 {
-  "generatedAt": "2026-08-13T15:59:42",
+  "generatedAt": "2026-08-13T20:03:21",
   "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
-  "source": "full backfill from #hack-team-7-app-dev",
+  "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "0",
-  "ingestedFiles": []
+  "lastSlackTs": "1786651385.035659",
+  "ingestedFiles": [
+    "20260810latsec01security.md",
+    "20260812latpmo02weeklypr.md",
+    "20260814lattech03datamig.md",
+    "buildtrans.md",
+    "comptrans.md",
+    "latpmo02.md",
+    "latpmo02weeklyprogrammec.md",
+    "latsec01.md",
+    "latsec01securityampcompl.md",
+    "lattech03.md",
+    "lattech03datamigrationde.md",
+    "opstrans.md",
+    "slack20260813.md",
+    "steertrans.md"
+  ],
+  "lastSlackPull": "2026-08-13T20:03:21"
 }
