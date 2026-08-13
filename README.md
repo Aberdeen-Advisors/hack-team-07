@@ -135,15 +135,41 @@ TEST-PLAN.md                   what a reviewer should try, and what should happe
 
 ## Running it
 
-Nothing to install.
+**Live:** <https://hackathon-build-theta.vercel.app> — hard-reload if you have opened it before, the CDN edge caches `/`.
+
+**Locally — nothing to install.** No Node, no Python, no package manager. The registers are committed, so a fresh clone is a working app.
 
 ```bash
-git clone https://github.com/Aberdeen-Advisors/hack-team-07
+git clone https://github.com/Aberdeen-Advisors/hack-team-07     # private repo — needs org access
 cd hack-team-07
-open index.html          # or double-click it
+start index.html      # Windows · macOS: open index.html · or just double-click it
 ```
 
-To see the pipeline rather than the result: post a transcript in the project channel, tag Claude, and press **Run workflow** on Bridge ingest. The new items appear in the app as `✦ Claude`, unverified, each carrying the sentence it came from.
+It must work with the wifi off. If it doesn't, that's a bug.
+
+**To watch the pipeline rather than the result:** post a transcript in the project channel and tag Claude. Claude replies in-thread with a JSON batch. Then either wait for the 5-minute schedule or press **Run workflow** on Bridge ingest. New items appear in the app flagged `✦ Claude`, unverified, each carrying the sentence it came from.
+
+**To close the loop:** fix a missing owner in the app, verify a row, click **Export**, drop the downloaded `decisions-*.json` into `data/inbox/decisions/`, commit. That push retriggers the workflow, `apply.py` writes the decision into the registers, and the deploy publishes it.
+
+Python is only ever run by the GitHub runner. You never need it on your machine.
+
+---
+
+## Where it's local today
+
+Worth being straight about this, because the gap is smaller than it looks and the shape is deliberate.
+
+**The repo is the database.** Registers are JSON files, and Git is the transaction log — every change to the record is a commit with an author and a diff. That is a real audit trail for free, and for one engagement with a handful of PMs it is genuinely the right call: no schema migrations, no hosting bill, no service to keep alive, and the whole state is greppable.
+
+It is also the ceiling. Concurrent verification by two PMs would race on the same file; the registers are rewritten wholesale rather than patched per-row; and history is a `git log` rather than something queryable.
+
+**The swap is confined to one function.** The app reads `window.BRIDGE_DATA` from a classic `<script src>` and nothing else — no data access is scattered through the UI. Pointing it at Postgres, Airtable or a Supabase endpoint means replacing how `snapshot.js` is produced, not rewriting the app. On the write side, `apply.py` is already the single choke point for changes going back in; it would become an API call instead of a file rewrite. The provenance contract, the verification gate and the register shape all survive that change untouched, because none of them assume a file.
+
+**The one genuinely manual hop** is the decisions file: the browser downloads it, you drop it in a folder. That exists because the page has no server and refuses to pretend otherwise — an app that shows "Saved!" while nothing left the tab is the exact dishonesty this project is arguing against. With any backend, that hop is a `POST` and disappears.
+
+**Not yet plug-and-play, and close.** Standing this up on a second engagement today means: create the channel, paste `claude-tag-config.txt` into its Claude configuration, set three repo secrets, change one channel ID. Perhaps twenty minutes, all of it configuration rather than code. What's missing for a product is multi-tenancy (one repo currently means one engagement), auth on the hosted view (it is public and read-only by design for the demo), and outbound Slack nudges — deliberately left out because it needs a `chat:write` scope, and a half-built thing that messages your client's team is worse than no thing.
+
+---
 
 ## The local gate
 
@@ -163,8 +189,10 @@ node --check data/snapshot.js      # must parse
 
 ---
 
-## What it deliberately does not do
+---
 
-Bridge does not post to Slack, book meetings, or edit SharePoint. It has no write access to anything a person would have to undo. Sending nudges to owners is the obvious next step and needs one new scope (`chat:write`) — it was left out rather than half-built.
+## The one thing it refuses to do
 
-It also does not silently improve on the source. If Claude could not name an owner, the app shows an empty amber box and blocks verification. The alternative — a plausible guess — is how project trackers quietly become fiction.
+Bridge does not silently improve on the source. If nobody named an owner, Claude returns `null`, the app shows an empty amber box, and verification stays blocked until a person fills it in.
+
+Guessing would have been easy and would have demoed better — every row full, every date populated. It is also exactly how project trackers quietly become fiction: a plausible owner nobody agreed to, a due date nobody said. A record you have to double-check is worth less than no record at all, so the gaps are left visible and in your way until someone settles them.
