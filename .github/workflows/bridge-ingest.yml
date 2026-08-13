@@ -13,7 +13,9 @@ name: Bridge ingest
 
 on:
   schedule:
-    - cron: '0,30 13-22 * * 1-5'   # every 30 min, 9am-6pm ET, weekdays (cron is UTC)
+    - cron: '*/5 12-23 * * 1-5'    # every 5 min, 8am-7pm ET, weekdays (cron is UTC).
+    #   GitHub's minimum is 5 minutes and scheduled runs are best-effort — expect 5-20.
+    #   Near-instant needs a Slack Events webhook firing repository_dispatch; see AUTOMATION.md.
   workflow_dispatch:                # a Run workflow button, for the demo
   push:
     paths:
