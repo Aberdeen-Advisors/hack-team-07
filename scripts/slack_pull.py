@@ -175,9 +175,14 @@ def pull():
 
     BOTS = set()                    # Claude Tag's structured output IS a source; loose bot chat is not
     for m in msgs:
-        if m.get('subtype') in ('channel_join', 'channel_leave', 'bot_message'):
+        if m.get('subtype') in ('channel_join', 'channel_leave'):
             continue
-        is_bot = bool(m.get('bot_id')) or m.get('user') in ('U0AB8UM5278',)
+        # Claude Tag posts as an app, so its messages carry subtype 'bot_message' and a
+        # bot_id. Harvest the JSON FIRST — skipping bots before this is what silently
+        # dropped every batch. Only the prose is discarded afterwards.
+        is_bot = (m.get('subtype') == 'bot_message'
+                  or bool(m.get('bot_id'))
+                  or m.get('user') in ('U0AB8UM5278',))
         text_raw = m.get('text') or ''
         blocks = JSON_BLOCK.findall(text_raw)
         if not blocks and '"items"' in text_raw:
@@ -238,8 +243,14 @@ def pull():
     meta['lastSlackPull'] = datetime.datetime.now().isoformat(timespec='seconds')
     json.dump(meta, open(META, 'w', encoding='utf-8'), indent=2)
 
-    print('pulled %d message(s) from %s; wrote: %s'
-          % (len(msgs), CHANNEL, ', '.join(sorted(set(written))) or 'nothing new'))
+    bots = sum(1 for m in msgs if m.get('subtype') == 'bot_message' or m.get('bot_id'))
+    batches = [w for w in written if w.startswith('candidates/')]
+    print('pulled %d message(s) from %s (%d from apps); %d candidate batch(es); wrote: %s'
+          % (len(msgs), CHANNEL, bots, len(batches),
+             ', '.join(sorted(set(written))) or 'nothing new'))
+    if bots and not batches:
+        print('::warning::app messages were seen but no JSON batch was found in them — '
+              'check that Claude Tag is posting a fenced json block')
     return 0
 
 

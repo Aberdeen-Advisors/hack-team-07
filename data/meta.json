@@ -6,7 +6,7 @@
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786654668.342009",
+  "lastSlackTs": "0",
   "ingestedFiles": [],
-  "lastSlackPull": "2026-08-13T21:06:26"
+  "lastSlackPull": "2026-08-13T20:32:21"
 }
