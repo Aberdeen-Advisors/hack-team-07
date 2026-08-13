@@ -1,0 +1,364 @@
+{
+  "batch": "slack-2026-08-13-2053",
+  "capturedAt": "2026-08-13T20:53:00Z",
+  "items": [
+    {
+      "candidateId": "TAG-20260813-07",
+      "register": "meeting",
+      "title": "Digital Transformation Program Weekly Steering Committee",
+      "date": "2026-08-12",
+      "time": "10:00 AM ET",
+      "attendees": "Anjali Kalavar · Will Brown · Davis Dean · Melissa Hart · Carlos Vega · Jennifer Lee · Raj Patel · Amy Chen",
+      "detail": "Roadmap, Wave 1 readiness, security and identity issues, governance and adoption readiness.",
+      "ws": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Today's goal is to review the digital transformation roadmap, discuss readiness for Wave 1 migrations, and address security concerns that emerged during architecture reviews.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    },
+    {
+      "candidateId": "TAG-20260813-08",
+      "register": "action",
+      "title": "Propose an escalation process for applications with no identified business owner",
+      "detail": "Carlos Vega raised it and left the owner as TBD in the meeting.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Let us capture an action to propose an escalation process for applications without identified business owners.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "due"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-09",
+      "register": "action",
+      "title": "Provide updated network segmentation testing status and dependency findings",
+      "detail": "Testing slipped on firewall rule dependencies missed in discovery.",
+      "owner": "Jennifer Lee",
+      "due": "2026-08-21",
+      "ws": "build",
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Jennifer, please provide an updated network segmentation testing status and dependency findings by August 21.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    },
+    {
+      "candidateId": "TAG-20260813-10",
+      "register": "action",
+      "title": "Identify legacy systems that need authentication exception handling",
+      "detail": "Melissa Hart asked for the recommendation before the next steering committee, which the transcript never dates.",
+      "owner": "Raj Patel",
+      "due": null,
+      "ws": "comp",
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "I can work with the application teams to identify systems that require exception handling.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "due"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-11",
+      "register": "action",
+      "title": "Report on change champion identification across business units",
+      "detail": "Carlos Vega said he had no owner or date for it.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Someone from the change management workstream should provide an update on change champion identification, but I do not have a specific owner or date yet.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "due"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-12",
+      "register": "action",
+      "title": "Complete the vendor security assessment review and summarise findings",
+      "detail": "Outstanding responses concern data retention controls. End of the month read as 2026-08-31.",
+      "owner": "Davis Dean",
+      "due": "2026-08-31",
+      "ws": "comp",
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "I can complete the outstanding vendor security assessment response review and summarize the findings by the end of the month.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    },
+    {
+      "candidateId": "TAG-20260813-13",
+      "register": "decision",
+      "title": "Establish a formal Architecture Review Board",
+      "detail": "Recommended by Anjali Kalavar because decisions were being made informally; no objections noted.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "decidedOn": "2026-08-12",
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Alright, let's proceed with establishing the Architecture Review Board.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    },
+    {
+      "candidateId": "TAG-20260813-14",
+      "register": "decision",
+      "title": "Hold the Wave 1 deferral candidates as tentative pending dependency analysis",
+      "detail": "Candidates named were the analytics reporting suite and two departmental workflows. Wave 1 scope itself was not confirmed either way.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "decidedOn": "2026-08-12",
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Let's make that tentative for now until we see updated dependency analysis.",
+        "confidence": "medium"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": []
+    },
+    {
+      "candidateId": "TAG-20260813-15",
+      "register": "risk",
+      "title": "Network segmentation testing is roughly two weeks behind schedule",
+      "detail": "Firewall rule dependencies not captured during discovery. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": "build",
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Regarding Wave 1, the cloud landing zone build is progressing, but network segmentation testing is behind schedule.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-16",
+      "register": "risk",
+      "title": "Cloud consumption is trending above the first-quarter infrastructure budget",
+      "detail": "Overrun size unknown; finance is validating the numbers. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": "fin",
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Current estimates are trending above expectations.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-17",
+      "register": "risk",
+      "title": "Orphaned applications have users but nobody owning maintenance or modernisation",
+      "detail": "About 15% of in-scope systems are still uninventoried, mostly departmental tools. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Some of those applications are effectively orphaned.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-18",
+      "register": "risk",
+      "title": "Legacy systems cannot meet the planned authentication standards",
+      "detail": "May require temporary security exceptions; analysis outstanding. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": "comp",
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Some legacy systems can't support the authentication standards we originally planned.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-19",
+      "register": "risk",
+      "title": "Post-go-live operating model unfinalised, including who approves security exceptions",
+      "detail": "Stakeholder interviews surfaced the same uncertainty on post-migration support ownership. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": "comp",
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "We still haven't finalized the operating model, and people are asking who will approve security exceptions after go-live.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "candidateId": "TAG-20260813-20",
+      "register": "risk",
+      "title": "Adoption readiness is behind: training incomplete and change champions unnamed",
+      "detail": "Raised by Will Brown under adoption readiness. No severity spoken.",
+      "owner": null,
+      "due": null,
+      "ws": null,
+      "severity": null,
+      "meetingId": "TAG-20260813-07",
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Training materials are only partially complete, and several business units haven't identified change champions.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    }
+  ],
+  "postedBy": "Claude Tag",
+  "source": "slack thread reply 1786654668.342009 under 1786654225.628899"
+}
