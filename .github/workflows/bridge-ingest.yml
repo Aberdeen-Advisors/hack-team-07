@@ -97,7 +97,14 @@ jobs:
 
           $(cat ingest-report.txt 2>/dev/null || echo 'no report written')
           MSG
-          git push
+          # The remote may have moved while the job ran. Rebase and retry rather than fail.
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin "$GITHUB_REF_NAME" \
+              && git push origin "HEAD:$GITHUB_REF_NAME" \
+              && { echo "pushed on attempt $attempt"; exit 0; }
+            echo "push attempt $attempt failed, retrying"; sleep 5
+          done
+          echo "::error::could not push after 3 attempts"; exit 1
 
       # No push rights: hand the result back as a download so the run still proves itself.
       - name: Upload the ingested registers
