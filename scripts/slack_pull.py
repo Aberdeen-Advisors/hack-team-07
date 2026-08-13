@@ -26,13 +26,17 @@ META = os.path.join(ROOT, 'data', 'meta.json')
 API = 'https://slack.com/api/'
 
 
+class SlackError(Exception):
+    """Slack said no. Loud in the log, but never fatal to the pipeline."""
+
+
 def call(method, **params):
     url = API + method + ('?' + urllib.parse.urlencode(params) if params else '')
     req = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + TOKEN})
     with urllib.request.urlopen(req, timeout=30) as r:
         data = json.load(r)
     if not data.get('ok'):
-        raise SystemExit('slack %s failed: %s' % (method, data.get('error')))
+        raise SlackError('%s failed: %s' % (method, data.get('error')))
     return data
 
 
@@ -51,6 +55,20 @@ def main():
     if not TOKEN:
         print('SLACK_BOT_TOKEN not set — skipping the Slack pull.')
         return 0
+    try:
+        return pull()
+    except SlackError as e:
+        # Never fail the run: files already in data/inbox/ must still be ingested.
+        print('::warning title=Slack pull skipped::%s' % e)
+        print('If this says channel_not_found on a private channel, invite the app to it '
+              '(/invite @YourApp) and confirm groups:history + groups:read scopes.')
+        return 0
+    except Exception as e:
+        print('::warning title=Slack pull failed::%s: %s' % (type(e).__name__, e))
+        return 0
+
+
+def pull():
 
     meta = json.load(open(META, encoding='utf-8')) if os.path.exists(META) else {}
     oldest = meta.get('lastSlackTs', '0')
@@ -70,8 +88,8 @@ def main():
         if uid not in names:
             try:
                 names[uid] = call('users.info', user=uid)['user'].get('real_name', uid)
-            except SystemExit:
-                names[uid] = uid
+            except (SlackError, Exception):
+                names[uid] = uid   # a missing users:read scope must not lose the message
         return names[uid]
 
     for m in msgs:
