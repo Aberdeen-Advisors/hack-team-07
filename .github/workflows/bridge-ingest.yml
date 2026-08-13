@@ -36,6 +36,7 @@ jobs:
       # Without it the job still runs and uploads the result as an artifact.
       CAN_PUSH: ${{ secrets.GH_PUSH_TOKEN != '' }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +45,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # Phase 2: pulls new channel messages and posted transcripts into data/inbox/.
+      # Does nothing without SLACK_BOT_TOKEN, so it is safe to leave wired up.
+      - name: Pull from Slack
+        env:
+          SLACK_CHANNEL_ID: C0BPZH0JXD4
+        run: python3 scripts/slack_pull.py
 
       # Default path: no credentials required.
       - name: Extract — credential-free
