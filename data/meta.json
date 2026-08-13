@@ -1,18 +1,20 @@
 {
-  "generatedAt": "2026-08-13T21:36:38",
+  "generatedAt": "2026-08-13T21:41:06",
   "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786656971.447229",
+  "lastSlackTs": "1786656996.816229",
   "ingestedFiles": [
     "candidates/tag-1786650032244369.json",
     "candidates/tag-1786652612149049.json",
+    "candidates/tag-1786654668342009.json",
     "candidates/tag-1786655599607259.json",
     "candidates/tag-1786656096098979.json",
-    "candidates/tag-1786656497600339.json"
+    "candidates/tag-1786656497600339.json",
+    "candidates/tag-1786656996816229.json"
   ],
-  "lastSlackPull": "2026-08-13T21:36:38"
+  "lastSlackPull": "2026-08-13T21:41:06"
 }

@@ -1,0 +1,34 @@
+{
+  "batch": "slack-2026-08-13-2136",
+  "capturedAt": "2026-08-13T21:36:30Z",
+  "items": [
+    {
+      "candidateId": "TAG-20260813-24",
+      "register": "action",
+      "title": "Pay Preetish $1000 for his work on the hackathon",
+      "detail": "Anjali Kalavar called it super high priority and due tomorrow, and said explicitly that she will not take it on herself. No one else was named, so it is unowned.",
+      "owner": null,
+      "due": "2026-08-14",
+      "ws": null,
+      "severity": null,
+      "decidedOn": null,
+      "meetingId": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786656971.447229",
+        "permalink": "<https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656971447229>",
+        "quote": "We also need to remember to pay Preetish $1000 for all his hard work on the hackathon.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner"
+      ]
+    }
+  ],
+  "postedBy": "U0AB8UM5278"
+}

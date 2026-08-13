@@ -1,21 +1,82 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:36:38",
+    "generatedAt": "2026-08-13T21:41:06",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786656971.447229",
+    "lastSlackTs": "1786656996.816229",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
+      "candidates/tag-1786654668342009.json",
       "candidates/tag-1786655599607259.json",
       "candidates/tag-1786656096098979.json",
-      "candidates/tag-1786656497600339.json"
+      "candidates/tag-1786656497600339.json",
+      "candidates/tag-1786656996816229.json"
     ],
-    "lastSlackPull": "2026-08-13T21:36:38"
+    "lastSlackPull": "2026-08-13T21:41:06"
   },
-  "decisions": []
+  "decisions": [
+    {
+      "id": "d1",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "Establish a formal Architecture Review Board",
+      "owner": "Unassigned",
+      "note": "Recommended by Anjali Kalavar because decisions were being made informally; no objections noted.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Alright, let's proceed with establishing the Architecture Review Board.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "date": "2026-08-12"
+    },
+    {
+      "id": "d2",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "Hold the Wave 1 deferral candidates as tentative pending dependency analysis",
+      "owner": "Unassigned",
+      "note": "Candidates named were the analytics reporting suite and two departmental workflows. Wave 1 scope itself was not confirmed either way.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Let's make that tentative for now until we see updated dependency analysis.",
+        "confidence": "medium"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "date": "2026-08-12"
+    }
+  ]
 }

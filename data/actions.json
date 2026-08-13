@@ -1,21 +1,23 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:36:38",
+    "generatedAt": "2026-08-13T21:41:06",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786656971.447229",
+    "lastSlackTs": "1786656996.816229",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
+      "candidates/tag-1786654668342009.json",
       "candidates/tag-1786655599607259.json",
       "candidates/tag-1786656096098979.json",
-      "candidates/tag-1786656497600339.json"
+      "candidates/tag-1786656497600339.json",
+      "candidates/tag-1786656996816229.json"
     ],
-    "lastSlackPull": "2026-08-13T21:36:38"
+    "lastSlackPull": "2026-08-13T21:41:06"
   },
   "actions": [
     {
@@ -110,6 +112,200 @@
       },
       "due": "2026-10-01",
       "status": "open"
+    },
+    {
+      "id": "a4",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Propose an escalation process for applications with no identified business owner",
+      "owner": "Unassigned",
+      "note": "Carlos Vega raised it and left the owner as TBD in the meeting.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Let us capture an action to propose an escalation process for applications without identified business owners.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": null,
+      "status": "open",
+      "unclear": [
+        "owner",
+        "due"
+      ]
+    },
+    {
+      "id": "a5",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Provide updated network segmentation testing status and dependency findings",
+      "owner": "Jennifer Lee",
+      "note": "Testing slipped on firewall rule dependencies missed in discovery.",
+      "ws": "build",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Jennifer, please provide an updated network segmentation testing status and dependency findings by August 21.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": "2026-08-21",
+      "status": "open"
+    },
+    {
+      "id": "a6",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Identify legacy systems that need authentication exception handling",
+      "owner": "Raj Patel",
+      "note": "Melissa Hart asked for the recommendation before the next steering committee, which the transcript never dates.",
+      "ws": "comp",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "I can work with the application teams to identify systems that require exception handling.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": null,
+      "status": "open",
+      "unclear": [
+        "due"
+      ]
+    },
+    {
+      "id": "a7",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Report on change champion identification across business units",
+      "owner": "Unassigned",
+      "note": "Carlos Vega said he had no owner or date for it.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Someone from the change management workstream should provide an update on change champion identification, but I do not have a specific owner or date yet.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": null,
+      "status": "open",
+      "unclear": [
+        "owner",
+        "due"
+      ]
+    },
+    {
+      "id": "a8",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Complete the vendor security assessment review and summarise findings",
+      "owner": "Davis Dean",
+      "note": "Outstanding responses concern data retention controls. End of the month read as 2026-08-31.",
+      "ws": "comp",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "I can complete the outstanding vendor security assessment response review and summarize the findings by the end of the month.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": "2026-08-31",
+      "status": "open"
+    },
+    {
+      "id": "a9",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Pay Preetish $1000 for his work on the hackathon",
+      "owner": "Unassigned",
+      "note": "Anjali Kalavar called it super high priority and due tomorrow, and said explicitly that she will not take it on herself. No one else was named, so it is unowned.",
+      "ws": null,
+      "meetingId": null,
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786656971.447229",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786656971447229",
+        "quote": "We also need to remember to pay Preetish $1000 for all his hard work on the hackathon.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "due": "2026-08-14",
+      "status": "open",
+      "unclear": [
+        "owner"
+      ]
     }
   ]
 }

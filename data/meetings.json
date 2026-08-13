@@ -1,23 +1,51 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:36:38",
+    "generatedAt": "2026-08-13T21:41:06",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786656971.447229",
+    "lastSlackTs": "1786656996.816229",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
+      "candidates/tag-1786654668342009.json",
       "candidates/tag-1786655599607259.json",
       "candidates/tag-1786656096098979.json",
-      "candidates/tag-1786656497600339.json"
+      "candidates/tag-1786656497600339.json",
+      "candidates/tag-1786656996816229.json"
     ],
-    "lastSlackPull": "2026-08-13T21:36:38"
+    "lastSlackPull": "2026-08-13T21:41:06"
   },
-  "meetings": {},
+  "meetings": {
+    "m20260812digitaltransfo": {
+      "name": "Digital Transformation Program Weekly Steering Committee",
+      "date": "2026-08-12",
+      "time": "10:00 AM ET",
+      "ws": null,
+      "owner": "TBC",
+      "audience": "Anjali Kalavar · Will Brown · Davis Dean · Melissa Hart · Carlos Vega · Jennifer Lee · Raj Patel · Amy Chen",
+      "purpose": "Roadmap, Wave 1 readiness, security and identity issues, governance and adoption readiness.",
+      "deliverables": [],
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Today's goal is to review the digital transformation roadmap, discuss readiness for Wave 1 migrations, and address security concerns that emerged during architecture reviews.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      }
+    }
+  },
   "recurring": [],
   "standupDays": [],
   "unscheduled": []

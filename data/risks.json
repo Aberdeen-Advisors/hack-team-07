@@ -1,21 +1,23 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T21:36:38",
+    "generatedAt": "2026-08-13T21:41:06",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786656971.447229",
+    "lastSlackTs": "1786656996.816229",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
       "candidates/tag-1786652612149049.json",
+      "candidates/tag-1786654668342009.json",
       "candidates/tag-1786655599607259.json",
       "candidates/tag-1786656096098979.json",
-      "candidates/tag-1786656497600339.json"
+      "candidates/tag-1786656497600339.json",
+      "candidates/tag-1786656996816229.json"
     ],
-    "lastSlackPull": "2026-08-13T21:36:38"
+    "lastSlackPull": "2026-08-13T21:41:06"
   },
   "risks": [
     {
@@ -121,6 +123,222 @@
       "status": "open",
       "reviewed": null,
       "due": "2026-09-22"
+    },
+    {
+      "id": "r4",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Network segmentation testing is roughly two weeks behind schedule",
+      "owner": "Unassigned",
+      "note": "Firewall rule dependencies not captured during discovery. No severity spoken.",
+      "ws": "build",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Regarding Wave 1, the cloud landing zone build is progressing, but network segmentation testing is behind schedule.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r5",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Cloud consumption is trending above the first-quarter infrastructure budget",
+      "owner": "Unassigned",
+      "note": "Overrun size unknown; finance is validating the numbers. No severity spoken.",
+      "ws": "fin",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Current estimates are trending above expectations.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r6",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Orphaned applications have users but nobody owning maintenance or modernisation",
+      "owner": "Unassigned",
+      "note": "About 15% of in-scope systems are still uninventoried, mostly departmental tools. No severity spoken.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Some of those applications are effectively orphaned.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r7",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Legacy systems cannot meet the planned authentication standards",
+      "owner": "Unassigned",
+      "note": "May require temporary security exceptions; analysis outstanding. No severity spoken.",
+      "ws": "comp",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Some legacy systems can't support the authentication standards we originally planned.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r8",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Post-go-live operating model unfinalised, including who approves security exceptions",
+      "owner": "Unassigned",
+      "note": "Stakeholder interviews surfaced the same uncertainty on post-migration support ownership. No severity spoken.",
+      "ws": "comp",
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "We still haven't finalized the operating model, and people are asking who will approve security exceptions after go-live.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r9",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Adoption readiness is behind: training incomplete and change champions unnamed",
+      "owner": "Unassigned",
+      "note": "Raised by Will Brown under adoption readiness. No severity spoken.",
+      "ws": null,
+      "meetingId": "m20260812digitaltransfo",
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Anjali Kalavar",
+        "messageTs": "1786654225.628899",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786654225628899",
+        "quote": "Training materials are only partially complete, and several business units haven't identified change champions.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
     }
   ]
 }
