@@ -1,12 +1,24 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T12:39:06",
+    "generatedAt": "2026-08-13T19:38:16",
     "asOf": "Monday Aug 10, 4:35 PM ET",
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "inline DATA literal, extracted on build day",
+    "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
-    "listVersions": {}
+    "listVersions": {},
+    "lastSlackTs": "1786649852.295399",
+    "lastSlackPull": "2026-08-13T19:38:15",
+    "ingestedFiles": [
+      "buildtrans.md",
+      "comptrans.md",
+      "latpmo02.md",
+      "latsec01.md",
+      "lattech03.md",
+      "opstrans.md",
+      "slack20260813.md",
+      "steertrans.md"
+    ]
   },
   "decisions": [
     {
@@ -161,6 +173,81 @@
         "decidedAt": null,
         "note": "Typed into the tracker by a person before Bridge existed."
       }
+    },
+    {
+      "id": "d9",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "that's the decision",
+      "owner": "Priya Raghunathan",
+      "note": "Then that's the decision. We are not integrating the legacy billing platform with single sign-on. We freeze the legacy account population, wrap it in compensating controls, and it dies with the platform in March.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "latsec01",
+        "line": 57,
+        "author": "Priya Raghunathan",
+        "messageTs": "2026-08-10",
+        "permalink": null,
+        "quote": "Then that's the decision. We are not integrating the legacy billing platform with single sign-on. We freeze the legacy account population, wrap it in compensating controls, and it dies with the platform in March.",
+        "confidence": "medium"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "date": "2026-08-10"
+    },
+    {
+      "id": "d10",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "the decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual…",
+      "owner": "Anjali Kalavar",
+      "note": "So the decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual reconciliation for exceptions. Everyone comfortable?",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "lattech03",
+        "line": 77,
+        "author": "Anjali Kalavar",
+        "messageTs": "2026-08-14",
+        "permalink": null,
+        "quote": "So the decision is: synthesise unique keys in the transform, freeze source-side reference changes, manual reconciliation for exceptions. Everyone comfortable?",
+        "confidence": "medium"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "date": "2026-08-14"
+    },
+    {
+      "id": "d11",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "There's a second option - we point the batch job at the archive copy of the legacy database rather than the…",
+      "owner": "Hank Liu",
+      "note": "There's a second option - we point the batch job at the archive copy of the legacy database rather than the live one. We'll have a frozen copy anyway. We're not deleting the legacy platform on the ninth, we're just stopping writes to it.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "lattech03",
+        "line": 121,
+        "author": "Hank Liu",
+        "messageTs": "2026-08-14",
+        "permalink": null,
+        "quote": "There's a second option - we point the batch job at the archive copy of the legacy database rather than the live one. We'll have a frozen copy anyway. We're not deleting the legacy platform on the ninth, we're just stopping writes to it.",
+        "confidence": "medium"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "date": "2026-08-14"
     }
   ]
 }

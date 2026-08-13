@@ -1,12 +1,24 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T12:39:06",
+    "generatedAt": "2026-08-13T19:38:16",
     "asOf": "Monday Aug 10, 4:35 PM ET",
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "inline DATA literal, extracted on build day",
+    "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
-    "listVersions": {}
+    "listVersions": {},
+    "lastSlackTs": "1786649852.295399",
+    "lastSlackPull": "2026-08-13T19:38:15",
+    "ingestedFiles": [
+      "buildtrans.md",
+      "comptrans.md",
+      "latpmo02.md",
+      "latsec01.md",
+      "lattech03.md",
+      "opstrans.md",
+      "slack20260813.md",
+      "steertrans.md"
+    ]
   },
   "risks": [
     {
@@ -191,6 +203,174 @@
         "decidedAt": null,
         "note": "Typed into the tracker by a person before Bridge existed."
       }
+    },
+    {
+      "id": "r9",
+      "kind": "Risk",
+      "urg": "High",
+      "title": "Right",
+      "owner": "Unassigned",
+      "note": "Right. So I'm calling this a red. Tester availability for UAT is red. I'm not going to dress it up for Gerald either, he'll see through it.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "latpmo02",
+        "line": 74,
+        "author": "Marissa Feld",
+        "messageTs": "2026-08-12",
+        "permalink": null,
+        "quote": "Right. So I'm calling this a red. Tester availability for UAT is red. I'm not going to dress it up for Gerald either, he'll see through it.",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "R",
+      "status": "open",
+      "reviewed": null,
+      "due": null
+    },
+    {
+      "id": "r10",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "The go-live penetration test is not booked",
+      "owner": "Unassigned",
+      "note": "The go-live penetration test is not booked. Not \"provisionally pencilled\", not \"with the supplier awaiting dates\" - not booked. There is no purchase order, there is no scope document, and the two firms on your framework are both quoting eight to ten weeks' lead time for an engagement of this size.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "latsec01",
+        "line": 65,
+        "author": "Will Brown",
+        "messageTs": "2026-08-10",
+        "permalink": null,
+        "quote": "The go-live penetration test is not booked. Not \"provisionally pencilled\", not \"with the supplier awaiting dates\" - not booked. There is no purchase order, there is no scope document, and the two firms on your framework are both quoting…",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null
+    },
+    {
+      "id": "r11",
+      "kind": "Risk",
+      "urg": "High",
+      "title": "That's a red for me",
+      "owner": "Unassigned",
+      "note": "That's a red for me. That is unambiguously a red.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "latsec01",
+        "line": 68,
+        "author": "Priya Raghunathan",
+        "messageTs": "2026-08-10",
+        "permalink": null,
+        "quote": "That's a red for me. That is unambiguously a red.",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "R",
+      "status": "open",
+      "reviewed": null,
+      "due": null
+    },
+    {
+      "id": "r12",
+      "kind": "Risk",
+      "urg": "High",
+      "title": "It is more red than I'd like, though some of it is red for boring reasons",
+      "owner": "Unassigned",
+      "note": "It is more red than I'd like, though some of it is red for boring reasons. So - trial migration run two, executed Tuesday night into Wednesday morning. Full extract from the legacy billing platform, transform, load into the Lattice staging tenant.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "lattech03",
+        "line": 26,
+        "author": "Davis Dean",
+        "messageTs": "2026-08-14",
+        "permalink": null,
+        "quote": "It is more red than I'd like, though some of it is red for boring reasons. So - trial migration run two, executed Tuesday night into Wednesday morning. Full extract from the legacy billing platform, transform, load into the Lattice…",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "R",
+      "status": "open",
+      "reviewed": null,
+      "due": null
+    },
+    {
+      "id": "r13",
+      "kind": "Risk",
+      "urg": "High",
+      "title": "Okay",
+      "owner": "Unassigned",
+      "note": "Okay. That's a red. I want to be clear about that - as the data owner, that's a red for me. Not because it's unfixable, but because we don't know the size of it, and we're eleven weeks from go-live.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "lattech03",
+        "line": 64,
+        "author": "Renata Voss",
+        "messageTs": "2026-08-14",
+        "permalink": null,
+        "quote": "Okay. That's a red. I want to be clear about that - as the data owner, that's a red for me. Not because it's unfixable, but because we don't know the size of it, and we're eleven weeks from go-live.",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "R",
+      "status": "open",
+      "reviewed": null,
+      "due": null
+    },
+    {
+      "id": "r14",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "That we get it wrong and the regulator gets a report built on the wrong data",
+      "owner": "Unassigned",
+      "note": "That we get it wrong and the regulator gets a report built on the wrong data. That's the risk. Which is why I'd want it rehearsed at the dress rehearsal in October rather than discovered on the day.",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "lattech03",
+        "line": 129,
+        "author": "Hank Liu",
+        "messageTs": "2026-08-14",
+        "permalink": null,
+        "quote": "That we get it wrong and the regulator gets a report built on the wrong data. That's the risk. Which is why I'd want it rehearsed at the dress rehearsal in October rather than discovered on the day.",
+        "confidence": "low"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": null
     }
   ]
 }
