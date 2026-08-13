@@ -119,7 +119,12 @@ def pull():
         print('::warning::could not scan for threads: %s' % e)
         parents = list(msgs)
 
-    seen_parents = set()
+    # A reply older than the watermark is not necessarily old news. The watermark advances
+    # to the newest message in the CHANNEL, so one later top-level message buries every
+    # earlier thread reply forever. Replies newer than the watermark are treated normally;
+    # older ones are still frisked for a JSON batch, which save_candidates de-duplicates by
+    # filename. Missing a batch is unrecoverable; re-reading one costs nothing.
+    seen_parents, late_json = set(), []
     for parent in parents + list(msgs):
         ts = parent.get('ts')
         if not parent.get('reply_count') or ts in seen_parents:
@@ -127,19 +132,26 @@ def pull():
         seen_parents.add(ts)
         try:
             rep = call('conversations.replies', channel=CHANNEL, ts=ts, limit=200)
-            new_in_thread = 0
+            new_in_thread = swept = 0
             for r in rep.get('messages', []):
-                if r.get('ts') != ts and float(r.get('ts', 0)) > float(oldest or 0):
+                if r.get('ts') == ts:
+                    continue
+                if float(r.get('ts', 0)) > float(oldest or 0):
                     msgs.append(r); new_in_thread += 1
-            if new_in_thread:
-                print('  thread %s: %d new reply(ies)' % (ts, new_in_thread))
+                elif '"items"' in (r.get('text') or ''):
+                    late_json.append(r); swept += 1
+            if new_in_thread or swept:
+                print('  thread %s: %d new reply(ies), %d older batch(es) re-checked'
+                      % (ts, new_in_thread, swept))
         except SlackError as e:
             print('::warning::could not read thread %s: %s' % (ts, e))
 
     seen_ts = set()
     msgs = [m for m in sorted(msgs, key=lambda m: float(m.get('ts', 0)))
             if not (m.get('ts') in seen_ts or seen_ts.add(m.get('ts')))]
-    if not msgs:
+    late_json = [m for m in sorted(late_json, key=lambda m: float(m.get('ts', 0)))
+                 if not (m.get('ts') in seen_ts or seen_ts.add(m.get('ts')))]
+    if not msgs and not late_json:
         print('no new Slack messages since', oldest)
         return 0
 
@@ -173,6 +185,23 @@ def pull():
         written.append('candidates/' + os.path.basename(path))
         return True
 
+    def harvest(m):
+        """Pull every JSON batch out of one message. Fenced first, bare braces as a fallback."""
+        text_raw = m.get('text') or ''
+        blocks = JSON_BLOCK.findall(text_raw)
+        if not blocks and '"items"' in text_raw:
+            blocks = bare_json_objects(text_raw)   # posted without a code fence
+        for b in blocks:
+            try:
+                save_candidates(json.loads(b), m.get('ts', '0'), m.get('user') or 'bot')
+            except json.JSONDecodeError as e:
+                print('::warning::a JSON block would not parse (%s) — asking for a valid one '
+                      'is better than guessing' % e)
+
+    # Older thread replies: batches only, never prose, never the digest, never the watermark.
+    for m in late_json:
+        harvest(m)
+
     BOTS = set()                    # Claude Tag's structured output IS a source; loose bot chat is not
     for m in msgs:
         if m.get('subtype') in ('channel_join', 'channel_leave'):
@@ -183,16 +212,7 @@ def pull():
         is_bot = (m.get('subtype') == 'bot_message'
                   or bool(m.get('bot_id'))
                   or m.get('user') in ('U0AB8UM5278',))
-        text_raw = m.get('text') or ''
-        blocks = JSON_BLOCK.findall(text_raw)
-        if not blocks and '"items"' in text_raw:
-            blocks = bare_json_objects(text_raw)   # posted without a code fence
-        got_json = False
-        for b in blocks:
-            try:
-                got_json = save_candidates(json.loads(b), m.get('ts', '0'), m.get('user') or 'bot') or got_json
-            except json.JSONDecodeError as e:
-                print('::warning::a JSON block would not parse (%s) — asking for a valid one is better than guessing' % e)
+        harvest(m)
         if is_bot:
             continue                # a bot's prose is never a source; its JSON already landed above
         ts = m.get('ts', '0')
@@ -239,14 +259,17 @@ def pull():
         open(path, 'w', encoding='utf-8').write('\n'.join(existing + loose) + '\n')
         written.append(os.path.basename(path))
 
-    meta['lastSlackTs'] = msgs[-1]['ts']
+    # Only real new channel traffic moves the watermark. A re-checked older reply must not.
+    if msgs:
+        meta['lastSlackTs'] = msgs[-1]['ts']
     meta['lastSlackPull'] = datetime.datetime.now().isoformat(timespec='seconds')
     json.dump(meta, open(META, 'w', encoding='utf-8'), indent=2)
 
     bots = sum(1 for m in msgs if m.get('subtype') == 'bot_message' or m.get('bot_id'))
     batches = [w for w in written if w.startswith('candidates/')]
-    print('pulled %d message(s) from %s (%d from apps); %d candidate batch(es); wrote: %s'
-          % (len(msgs), CHANNEL, bots, len(batches),
+    print('pulled %d message(s) from %s (%d from apps, %d older replies re-checked); '
+          '%d candidate batch(es); wrote: %s'
+          % (len(msgs), CHANNEL, bots, len(late_json), len(batches),
              ', '.join(sorted(set(written))) or 'nothing new'))
     if bots and not batches:
         print('::warning::app messages were seen but no JSON batch was found in them — '
