@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T16:09:05",
+    "generatedAt": "2026-08-13T16:21:30",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "clean slate \u2014 every entry comes from #hack-team-7-app-dev",
+    "source": "clean slate \u2014 Claude Tag JSON is the only input",
     "sourceSite": null,
     "listVersions": {},
     "lastSlackTs": "0",

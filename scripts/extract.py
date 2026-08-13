@@ -23,6 +23,11 @@ import json, os, re, subprocess, sys, datetime, glob
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INBOX = os.path.join(ROOT, 'data', 'inbox', 'transcripts')
 FORCE = '--force' in sys.argv
+# Pattern extraction is OFF by default. Claude Tag's structured JSON is the input;
+# regex over raw dialogue produces plausible-looking rubbish ("Fine", "Thanks", "Me")
+# and this product's whole claim is that the record can be trusted.
+# Turn it on deliberately with --patterns or BRIDGE_ALLOW_PATTERN=1.
+ALLOW_PATTERN = ('--patterns' in sys.argv) or os.environ.get('BRIDGE_ALLOW_PATTERN') == '1'
 
 SPEAKER = re.compile(r'^\[(\d{1,2}:\d{2}(?::\d{2})?)\]\s+([A-Z][A-Za-z.\'-]*(?:\s+[A-Z][A-Za-z.\'-]*){0,3}):\s+(.*)$')
 
@@ -258,8 +263,8 @@ def ingest_candidates(DATA, meta, seq, existing_quotes):
             'deliverable': ('Action', 'a'), 'stakeholder': ('Action', 'a')}
     for path in sorted(glob.glob(os.path.join(CAND, '*.json'))):
         key = 'candidates/' + os.path.basename(path)
-        if key in done and not FORCE:
-            continue
+        if (key in done and not FORCE) or os.path.getsize(path) == 0:
+            continue          # zero-length is an emptied placeholder, not a failure
         try:
             batch = json.load(open(path, encoding='utf-8'))
         except Exception as e:
@@ -317,8 +322,12 @@ def main():
              if os.path.basename(f) not in done and os.path.getsize(f) > 0]
     cand_files = [f for f in glob.glob(os.path.join(ROOT, 'data', 'inbox', 'candidates', '*.json'))
                   if ('candidates/' + os.path.basename(f)) not in done]
+    all_transcripts = [f for f in sorted(glob.glob(os.path.join(INBOX, '*.md')) + glob.glob(os.path.join(INBOX, '*.txt')))
+                       if os.path.getsize(f) > 0]
     if not files and not cand_files:
         print('nothing new in data/inbox/'); return 0
+    if not ALLOW_PATTERN:
+        print('pattern extraction disabled — only Claude Tag JSON batches create entries')
 
     snap = open(dpath('snapshot.js'), encoding='utf-8').read()
     DATA = node_json(dpath('snapshot.js'), 'BRIDGE_DATA')
@@ -337,6 +346,8 @@ def main():
     KIND = {'action': ('Action', 'a'), 'decision': ('Decision', 'd'), 'risk': ('Risk', 'r')}
     added, report = [], []
 
+    if not ALLOW_PATTERN:
+        files = []          # transcripts still get indexed for citations, just not mined
     for path in files:
         slug, title, date, lines, cands = extract(path)
         TR[slug] = {'title': title, 'date': date, 'channel': 'data/inbox/transcripts',
