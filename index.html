@@ -575,11 +575,52 @@
   .sec-head .sub{font-size:13.5px}
   /* item rows */
   /* fixed columns so the eye can track down a column instead of hunting */
-  .ti-row2{display:grid;grid-template-columns:26px 74px 62px minmax(170px,1fr) 150px 104px 148px 124px 112px 34px;
+  .ti-row2{display:grid;grid-template-columns:26px 70px 58px minmax(160px,1fr) 134px 92px 146px 152px 136px 32px;
            gap:9px;padding:12px 12px;min-height:52px;align-items:center}
-  .ti-head{display:grid;grid-template-columns:26px 74px 62px minmax(170px,1fr) 150px 104px 148px 124px 112px 34px;
+  .ti-head{display:grid;grid-template-columns:26px 70px 58px minmax(160px,1fr) 134px 92px 146px 152px 136px 32px;
            gap:9px;padding:6px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
            letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--line)}
+  /* the item cell stacks title over the sentence it came from, so provenance needs no second table */
+  .ti-cell.item{flex-direction:column;align-items:flex-start;gap:2px;overflow:hidden}
+  .ti-quote{font-size:12px;font-style:italic;color:var(--slate);max-width:100%;
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .vchip.claude{color:var(--navy);background:var(--line-soft);text-transform:none;letter-spacing:0;
+                font-size:11px;font-weight:750;white-space:nowrap}
+  .ti-row2.blocked{box-shadow:inset 3px 0 0 var(--r-dot)}
+  /* the callout — a pointer into the rows, never a copy of them */
+  .rv-callout{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px;
+              padding:11px 14px;border-radius:10px;background:var(--surface);
+              border:1px solid var(--line);border-left:4px solid var(--navy);font-size:13.5px;color:var(--ink)}
+  .rv-callout.warn{border-left-color:var(--y-dot);background:#fffdf7}
+  .rv-callout.clear{border-left-color:var(--g-fg);color:var(--slate);font-size:13px}
+  .rv-ic{color:var(--navy);font-size:15px;line-height:1}
+  .rv-say{flex:1;min-width:240px;line-height:1.45}
+  .rv-say b{font-weight:750}
+  .rv-warnbit{color:var(--y-fg);font-weight:650}
+  .rv-link{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+           border:1px solid var(--line);background:var(--surface);color:var(--navy);
+           border-radius:8px;padding:7px 12px;min-height:34px}
+  .rv-link:hover{border-color:var(--navy)}
+  .rv-link.on,.rv-link.go{background:var(--navy);border-color:var(--navy);color:var(--surface)}
+  /* discussed but undated — the rows a date-keyed grid cannot show */
+  .off-card{margin-top:12px;background:var(--surface);border:1px solid var(--line);
+            border-radius:12px;padding:12px 14px}
+  .off-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .off-k{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .off-hint{font-size:12.5px;color:var(--slate)}
+  .off-row{display:grid;grid-template-columns:74px minmax(180px,1fr) minmax(150px,.9fr) auto;
+           gap:10px;align-items:center;width:100%;text-align:left;padding:9px 4px;
+           border-top:1px solid var(--line-soft);background:none;border-left:0;border-right:0;border-bottom:0;font:inherit}
+  .off-row.link{cursor:pointer}
+  .off-row.link:hover{background:var(--line-soft)}
+  .off-tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;
+           border-radius:6px;padding:3px 7px;text-align:center}
+  .off-tag.mtg{color:var(--navy);background:var(--line-soft)}
+  .off-tag.act{color:var(--y-fg);background:var(--y-bg)}
+  .off-t{font-size:13.5px;font-weight:650;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .off-why{font-size:12.5px;color:var(--slate);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .off-act{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap}
+  @media(max-width:860px){ .off-row{grid-template-columns:64px 1fr} .off-why,.off-act{display:none} }
   .ti-cell.verify{gap:5px;overflow:visible}
   .vchip.pending{font-size:9.5px;padding:3px 6px}
   .ti-row2 > *{min-width:0}
@@ -610,42 +651,15 @@
   .seg button,.calnav button{min-height:38px;font-size:13px;padding:8px 14px}
   .calnav{display:flex;align-items:center;gap:8px}
   .calnav #calLabel,.calnav .callabel{flex:1;text-align:center;font-weight:750}
-  /* the review queue */
-  .rv-row{display:grid;grid-template-columns:74px minmax(180px,1.1fr) minmax(160px,1.4fr) 104px 150px 128px 32px 32px;
-          gap:9px;align-items:center;padding:10px 12px;background:var(--surface);
-          border:1px solid var(--line);border-left:4px solid var(--y-dot);border-radius:10px;margin-bottom:7px}
-  .rv-row.blocked{border-left-color:var(--r-dot);background:#fffdf7}
-  .rv-legend{display:grid;grid-template-columns:74px minmax(180px,1.1fr) minmax(160px,1.4fr) 104px 150px 128px 32px 32px;
-             gap:9px;padding:4px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
-             letter-spacing:.06em;color:var(--muted)}
-  .rv-t{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rv-q{font-size:12.5px;font-style:italic;color:var(--slate);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rv-owner{font-size:13px;font-weight:650;color:var(--slate)}
-  .rv-note{font-size:12.5px;color:var(--r-fg);background:var(--r-bg);padding:4px 9px;border-radius:7px}
+  /* the in-place fix controls — amber only where a field is genuinely missing */
   select.fix,input.fix{font:inherit;font-size:12px;padding:5px 7px;border:1.5px solid var(--y-dot);
-                       border-radius:7px;background:#fffdf3;color:var(--ink);max-width:100%}
+                       border-radius:7px;background:#fffdf3;color:var(--ink);width:100%;max-width:100%}
   select.fix:focus,input.fix:focus{outline:none;border-color:var(--navy)}
   .vbtn[disabled]{opacity:.3;cursor:not-allowed}
-  @media(max-width:1100px){ .rv-legend{display:none} .rv-row{grid-template-columns:1fr auto auto} .rv-q{display:none} }
-  .rv-card{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--y-dot);border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 2px var(--shadow)}
-  .rv-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
-  .rv-title{flex:1;min-width:220px;font-size:16.5px;font-weight:700;color:var(--ink);line-height:1.35}
-  .rv-meta{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:13px;color:var(--slate)}
-  .rv-meta b{color:var(--ink);font-weight:700}
-  .rv-quote{margin:12px 0 0;padding:12px 14px;background:var(--surface-2);border-left:3px solid var(--navy);border-radius:0 10px 10px 0;font-size:14.5px;font-style:italic;color:var(--ink);line-height:1.5}
-  .rv-acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
-  .rv-btn{font-size:14px;font-weight:750;border-radius:10px;padding:11px 20px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-height:44px}
-  .rv-btn.ok{background:var(--navy);border-color:var(--navy);color:var(--surface)}
-  .rv-btn.no{color:var(--r-fg);border-color:var(--r-bg)}
-  .rv-btn:hover{filter:brightness(.97)}
-  .rv-block{font-size:13px;color:var(--y-fg);background:var(--y-bg);border-radius:8px;padding:9px 12px;margin-top:12px}
-  .rv-empty{padding:26px;text-align:center;font-size:15px;color:var(--slate);background:var(--surface);border:1px dashed var(--line);border-radius:12px}
-  .rv-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-  .rv-count{font-size:15px;font-weight:750;color:var(--ink)}
   /* input is a footnote now, not a feature */
   #intake .intake-card{max-width:none;opacity:.92}
   #intake .sec-head h2,#ask .sec-head h2{font-size:16px}
-  @media(max-width:860px){ .ti-row2{flex-wrap:wrap} .rv-title{min-width:100%} }
+  @media(max-width:860px){ .ti-row2{flex-wrap:wrap} }
 </style>
 </head>
 <body>
@@ -658,7 +672,6 @@
     <div class="links" id="navlinks">
       <a href="#calendar">Calendar</a>
       <a href="#items">Action Items</a>
-      <a href="#review">Needs review</a>
       <a href="#workstreams">Workstreams</a>
     </div>
   </div>
@@ -716,19 +729,17 @@
       <button class="btn today-b" onclick="goToday()">Today</button>
     </div>
     <div id="calView"></div>
-    <!-- Needs scheduling removed: scheduling is an action item like any other. -->
+    <!-- Anything with a date is above. Anything without one would otherwise vanish. -->
+    <div id="calOff"></div>
   </section>
 
 <section class="section" id="items">
     <div class="sec-head"><h2>Action Items</h2></div>
     <div class="ti-bar" id="itemsBar"></div>
+    <!-- One register. Claude's proposals are flagged in place, not held in a second list. -->
+    <div id="reviewCallout"></div>
     <div class="card ti-list" id="itemsList"></div>
     <div class="ti-more" id="itemsMore"></div>
-  </section>
-
-<section class="section" id="review">
-    <div class="sec-head"><h2>Proposed by Claude · needs review</h2></div>
-    <div id="reviewList"></div>
   </section>
 
 <!-- "Request an update from Claude" removed: everything goes through Slack for the bot to catch. Future feature. -->
@@ -874,12 +885,22 @@ function vTitle(it){
 const BLOCK_MSG={owner:'Nobody was named — choose an owner, then verify.',
                  due:'No date was stated — set one, then verify.',
                  severity:'No severity was stated — set one, then verify.'};
-function blockMessage(it){ const f=blockReason(it); return f?(BLOCK_MSG[f]||('Claude flagged “'+f+'” as unclear.')):null; }
-function blockReason(it){
-  if(isUnowned(it)) return 'owner';
-  if(it.kind==='Action' && !it.due) return 'due';
-  if(it.unclear && it.unclear.length) return it.unclear[0];
-  return null;
+/* EVERY field Claude declined to guess, not just the first. Revealing them one at a time
+   makes a two-field row feel broken: you fill the owner and the tick stays dead. */
+function blockFields(it){
+  const out=new Set();
+  if(isUnowned(it)) out.add('owner');
+  if(it.kind==='Action' && !it.due) out.add('due');
+  if(isRiskFamily(it) && !it.sev) out.add('severity');
+  (it.unclear||[]).forEach(f=>out.add(f));
+  return [...out];
+}
+function blockReason(it){ return blockFields(it)[0] || null; }
+function blockMessage(it){
+  const f=blockFields(it); if(!f.length) return null;
+  if(f.length===1) return BLOCK_MSG[f[0]] || ('Claude flagged “'+f[0]+'” as unclear.');
+  const named=f.map(x=>BLOCK_MSG[x]?x:('“'+x+'”'));
+  return 'Still missing '+named.slice(0,-1).join(', ')+' and '+named.slice(-1)+' — fill them in, then verify.';
 }
 /* Everyone Bridge has seen — owners on items, and the people quoted in provenance.
    The register is the only source; there is no separate people list to maintain. */
@@ -1323,6 +1344,7 @@ function provBlock(it){
 function renderItemRow(it){
   const k=KIND[it.kind]; const done=it.status==='done'; const open=istate.open.has(it.id);
   const isDec=it.kind==='Decision';
+  const v=vstat(it);
   const check = isDec
     ? `<span class="ti-check dec" title="Decision">◆</span>`
     : `<span class="ti-check ${done?'on':''}" onclick="event.stopPropagation();toggleDone('${it.id}')" title="${done?'Reopen':'Mark complete'}">${done?'✓':''}</span>`;
@@ -1330,32 +1352,50 @@ function renderItemRow(it){
   const dm = it.deliv?meetingById(it.deliv.mid):null;
   const dchip = dm
     ? `<span class="deliv-chip" title="Part of a deliverable — tap to find it on the calendar" onclick="event.stopPropagation();gotoDeliv('${it.deliv.mid}','${it.id}')">▧ ${esc(shortMeet(dm.name))}</span>` : '';
+  /* A field Claude refused to guess is editable exactly where it is missing — the same
+     control the old review queue held, in the column it belongs to. No second list. */
+  const pend = v==='pending';
+  const need = pend ? blockFields(it) : [];
+  const wants = (f)=>need.indexOf(f)>-1;
+  const people = need.length ? knownPeople() : [];
   let ownerCtl='';
   if(!isDec){
     const un=(!it.owner||it.owner==='Unassigned');
-    ownerCtl=`<span class="ti-own ${un?'un':''}" title="${un?'Nobody owns this':'Owner'}">${un?'— unassigned':esc(ownerName(it.owner))}</span>`;
+    ownerCtl = wants('owner')
+      ? `<select class="fix" title="Nobody was named in the source — pick an owner" onclick="event.stopPropagation()" onchange="setItemOwner('${it.id}',this.value)">`+
+        `<option value="">— who owns this?</option>${people.map(p=>`<option>${esc(p)}</option>`).join('')}</select>`
+      : `<span class="ti-own ${un?'un':''}" title="${un?'Nobody owns this':'Owner'}">${un?'— unassigned':esc(ownerName(it.owner))}</span>`;
   }
   let dueCtl='';
-  if(it.kind==='Action'){
+  if(wants('due')){
+    dueCtl=`<input type="date" class="fix" title="No date was stated in the source — set one" onclick="event.stopPropagation()" onchange="setItemDue('${it.id}',this.value)">`;
+  } else if(wants('severity')){
+    dueCtl=`<select class="fix" title="No severity was stated — set one" onclick="event.stopPropagation()" onchange="setItemSeverity('${it.id}',this.value)">`+
+           `<option value="">— severity?</option><option value="R">Red</option><option value="Y">Amber</option></select>`;
+  } else if(it.kind==='Action'){
     const dm=dueMeta(it.due);
-    dueCtl=`<span class="due-lbl ${dm.cls}" title="Due ${esc(it.due||'not set')} — open the row to change it">${esc(dm.label)}</span>`;
+    dueCtl=`<span class="due-lbl ${dm.cls}" title="Due ${esc(it.due||'not set')}">${esc(dm.label)}</span>`;
   } else if(isDec){ dueCtl=`<span class="ti-date">${esc(it.date||'')}</span>`; }
   else { dueCtl=`<span class="sev-dot" style="background:${it.sev==='R'?hColors.R:hColors.Y}" title="${it.sev==='R'?'High severity':'Medium'}"></span>`; }
   const info=`<button class="info-b ${open?'on':''}" title="Details" onclick="event.stopPropagation();toggleItem('${it.id}')">i</button>`;
   const urgChip = done ? '' : (it.urg==='High' ? `<span class="urg-chip">High</span>`
                    : it.urg==='Low' ? `<span class="lbl-chip" style="color:var(--muted);background:var(--line-soft)">Low</span>`
                    : `<span class="lbl-chip" style="color:var(--y-fg);background:var(--y-bg)">Med</span>`);
-  const v=vstat(it);
-  const verifCtl = v==='pending'
-    ? `<span class="vchip pending" title="${esc(vTitle(it))}">Unverified</span>`+
-      `<button class="vbtn ok" title="${esc(blockMessage(it)||'Verify this entry')}" onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
-      `<button class="vbtn no" title="Reject this entry" onclick="event.stopPropagation();rejectItem('${it.id}')">✕</button>`
+  /* Pending means Claude wrote it and nobody has checked it. Say that, rather than the
+     colder "Unverified" — and block the tick until the missing field is filled. */
+  const verifCtl = pend
+    ? `<span class="vchip claude" title="${esc(vTitle(it))}">✦ Claude</span>`+
+      `<button class="vbtn ok" title="${esc(blockMessage(it)||'Verify — it enters the register as checked by you')}" ${need.length?'disabled':''} onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
+      `<button class="vbtn no" title="Reject — it leaves the register, the audit keeps it" onclick="event.stopPropagation();rejectItem('${it.id}')">✕</button>`
     : `<span class="vchip ok" title="${esc(vTitle(it))}">✓</span>`;
-  return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">`+
+  // The sentence it came from, under the title, only while it is still Claude's word.
+  const q=(it.provenance||{}).quote;
+  const quote = (pend && q) ? `<span class="ti-quote" title="${esc(q)}">“${esc(q)}”</span>` : '';
+  return `<div class="ti-row2 ${done?'done':''} ${pend?'unverified':''} ${need.length?'blocked':''}" id="row-${it.id}">`+
     `<span class="ti-cell">${check}</span>`+
     `<span class="ti-cell"><span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span></span>`+
     `<span class="ti-cell">${urgChip||'<span class="ti-own" style="color:var(--muted)">—</span>'}</span>`+
-    `<span class="ti-cell"><span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span></span>`+
+    `<span class="ti-cell item"><span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${quote}</span>`+
     `<span class="ti-cell">${src}</span>`+
     `<span class="ti-cell">${dchip}</span>`+
     `<span class="ti-cell verify">${verifCtl}</span>`+
@@ -1477,7 +1517,48 @@ function renderCalendar(){
   document.getElementById('segWeek').classList.toggle('on',cal.mode==='week');
   document.getElementById('segMonth').classList.toggle('on',cal.mode==='month');
   cal.mode==='week'?renderWeek():cal.mode==='3day'?renderThree():renderMonth();
+  renderCalOff();
   positionPopovers();
+}
+/* ---------- discussed, but nowhere on the calendar ----------
+   A meeting with no date and an action with no due date are both invisible in a grid
+   drawn by date. That invisibility is the failure mode Bridge exists to catch, so they
+   are listed under the grid rather than dropped. */
+function undatedMeetings(){
+  const out=[];
+  for(const mid in DATA.meetings){
+    const m=DATA.meetings[mid];
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(m.date||'')) out.push({mid,m});
+  }
+  return out;
+}
+function undatedActions(){
+  return DATA.items.filter(it=>it.kind==='Action' && it.status!=='done' && !isRejected(it) && !it.due)
+                   .sort((a,b)=>rank(a)-rank(b));
+}
+function renderCalOff(){
+  const host=document.getElementById('calOff'); if(!host) return;
+  const ms=undatedMeetings(), as=undatedActions();
+  if(!ms.length && !as.length){ host.innerHTML=''; return; }
+  const mrows=ms.map(({mid,m})=>{
+    const mi=meetingItems(mid);
+    const n=mi.all.length;
+    return `<div class="off-row"><span class="off-tag mtg">Meeting</span>`+
+      `<span class="off-t" title="${esc(m.name)}">${esc(m.name)}</span>`+
+      `<span class="off-why">No date was stated${n?` · ${n===1?'1 item hangs':n+' items hang'} off it`:''}</span>`+
+      `<span class="off-act">Needs scheduling in the channel</span></div>`;
+  }).join('');
+  const arows=as.map(it=>{
+    const who = isUnowned(it)?'unassigned':esc(ownerName(it.owner));
+    return `<button class="off-row link" onclick="attnGoto('${it.id}')"><span class="off-tag act">Action</span>`+
+      `<span class="off-t" title="${esc(it.title)}">${esc(it.title)}</span>`+
+      `<span class="off-why">No due date · ${who}</span>`+
+      `<span class="off-act">Set a date ↓</span></button>`;
+  }).join('');
+  host.innerHTML=`<div class="off-card">
+    <div class="off-head"><span class="off-k">Discussed, not on the calendar</span>
+      <span class="off-hint">${ms.length?ms.length+' meeting'+(ms.length===1?'':'s')+' without a date':''}${ms.length&&as.length?' · ':''}${as.length?as.length+' action'+(as.length===1?'':'s')+' without a due date':''}</span></div>
+    ${mrows}${arows}</div>`;
 }
 function wsChips(m){
   if(!m.ws) return '';
@@ -1928,59 +2009,28 @@ function attnGoto(id){
   const row=document.getElementById('row-'+id);
   if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
 }
-/* ---------- the review queue ----------
-   One place a PM can clear the unverified backlog: the sentence, the source, and the two
-   decisions. Everything here is also flagged in place in the item list — this is the fast
-   path, not a separate truth. */
-function reviewRow(it){
-  const pr=provOf(it), dm=dueMeta(it.due), k=KIND[it.kind]||{label:it.kind,c:'var(--navy)',bg:'var(--line-soft)'};
-  const need=blockReason(it);
-  const people=knownPeople();
-  const ownerCtl = (need==='owner'||isUnowned(it))
-    ? `<select class="fix" onchange="setItemOwner('${it.id}',this.value)">
-         <option value="">— who owns this?</option>
-         ${people.map(p=>`<option>${esc(p)}</option>`).join('')}
-       </select>`
-    : `<span class="rv-owner">${esc(ownerName(it.owner))}</span>`;
-  const dueCtl = (it.kind==='Action')
-    ? (need==='due' || !it.due
-        ? `<input type="date" class="fix" title="No date was stated" onchange="setItemDue('${it.id}',this.value)">`
-        : `<span class="due-lbl ${dm.cls}">${esc(dm.label)}</span>`)
-    : (need==='severity'
-        ? `<select class="fix" onchange="setItemSeverity('${it.id}',this.value)">
-             <option value="">— severity?</option><option value="R">Red</option><option value="Y">Amber</option></select>`
-        : `<span class="due-lbl ${dm.cls}">${it.sev==='R'?'Red':it.sev==='Y'?'Amber':esc(dm.label)}</span>`);
-  const cite = pr.inApp
-    ? `<button class="src-chip transcript cite" onclick="openSource('${it.id}')">▤ L${pr.line}</button>`
-    : pr.url ? `<a class="src-chip slack" href="${esc(pr.url)}" target="_blank" rel="noopener">💬 ${esc(pr.author||'Slack')} ↗</a>`
-             : `<span class="src-chip none">◦ none</span>`;
-  const ok = !blockReason(it);
-  return `<div class="rv-row ${ok?'':'blocked'}">
-    <span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>
-    <span class="rv-t" title="${esc(it.title)}">${esc(it.title)}</span>
-    <span class="rv-q" title="${esc(pr.quote||'')}">${pr.quote?'“'+esc(pr.quote)+'”':''}</span>
-    ${cite}${ownerCtl}${dueCtl}
-    <button class="vbtn ok" title="${ok?'Verify — it enters the register':'Fill the highlighted field first'}" ${ok?'':'disabled'} onclick="approveItem('${it.id}')">✓</button>
-    <button class="vbtn no" title="Reject — it leaves the register, the audit keeps it" onclick="rejectItem('${it.id}')">✕</button>
-  </div>`;
-}
-
+/* ---------- the review callout ----------
+   There is one register. Rows Claude proposed are flagged and editable in place; this is
+   only the count and the way into them. A second list would be a second truth. */
 function renderReview(){
-  const host=document.getElementById('reviewList'); if(!host) return;
-  const list=DATA.items.filter(it=>isPending(it)&&!isRejected(it)).sort((a,b)=>dueKey(a)-dueKey(b));
-  const waiting=AUDIT.length-EXPORTED;
+  const host=document.getElementById('reviewCallout'); if(!host) return;
+  const list=DATA.items.filter(it=>isPending(it)&&!isRejected(it));
   const blocked=list.filter(i=>blockReason(i)).length;
-  const head=`<div class="rv-head">
-      <span class="rv-count">${list.length?list.length+' proposed by Claude':'Nothing waiting'}</span>
-      ${blocked?`<span class="rv-note">${blocked} need a field filled in before they can be verified</span>`:''}
-      <button class="rv-btn${waiting>0?' ok':''}" onclick="exportChanges()">Export decisions${waiting>0?' · '+waiting:''}</button>
-    </div>`;
-  if(!list.length){ host.innerHTML=head+`<div class="rv-empty">${DATA.items.length
-      ? 'Everything in the record has been through a person.'
-      : 'The register is empty. Say something in the project channel — the next ingest lands here.'}</div>`; return; }
-  host.innerHTML=head
-    +`<div class="rv-legend"><span>Type</span><span>Item</span><span>What was said</span><span>Source</span><span>Owner</span><span>Due</span><span></span><span></span></div>`
-    +list.map(reviewRow).join('');
+  const waiting=AUDIT.length-EXPORTED;
+  if(!list.length){
+    host.innerHTML = DATA.items.length
+      ? `<div class="rv-callout clear">✓ Every row in the register has been through a person.${waiting>0?` <button class="rv-link" onclick="exportChanges()">Export ${waiting} decision${waiting===1?'':'s'}</button>`:''}</div>`
+      : '';
+    return;
+  }
+  const only=istate.unverifiedOnly;
+  host.innerHTML=`<div class="rv-callout${blocked?' warn':''}">
+    <span class="rv-ic">✦</span>
+    <span class="rv-say"><b>${list.length} row${list.length===1?'':'s'} in this register ${list.length===1?'was':'were'} written by Claude</b> and ${list.length===1?'has':'have'} not been checked by a person. Tick to accept, ✕ to reject.${
+      blocked?` <span class="rv-warnbit">${blocked} ${blocked===1?'is':'are'} missing a field Claude refused to guess — fill the amber box in the row to unlock its ✓.</span>`:''}</span>
+    <button class="rv-link${only?' on':''}" onclick="istate.unverifiedOnly=${!only};istate.expanded=true;renderItemsBar();renderItems();renderReview()">${only?'Show all rows':'Show only these'}</button>
+    ${waiting>0?`<button class="rv-link go" onclick="exportChanges()">Export ${waiting} decision${waiting===1?'':'s'}</button>`:''}
+  </div>`;
 }
 
 function renderAttn(){
