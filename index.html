@@ -36,7 +36,7 @@
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;font-family:'Poppins',Calibri,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  .wrap{max-width:1440px;margin:0 auto;padding:0 24px}
   .section{padding:28px 0 4px}
   .sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
   .sec-head h2{font-size:20px;margin:0;font-weight:800;letter-spacing:-.01em}
@@ -128,7 +128,7 @@
   .ti-empty{padding:16px;color:var(--link);font-size:13px}
   .ti-more{margin-top:8px;text-align:center}
   /* action row v2 — inline editable, source + deliverable + (i) */
-  .ti-row2{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;position:relative;overflow:hidden}
+  .ti-row2{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;position:relative}
   .ti-row2+.ti-row2{border-top:1px solid var(--line-soft)}
   .ti-row2:hover{background:var(--line-soft)}
   .ti-row2.done .ti-title2{text-decoration:line-through;color:var(--link)}
@@ -564,7 +564,18 @@
   .sec-head h2{font-size:21px;letter-spacing:-.01em}
   .sec-head .sub{font-size:13.5px}
   /* item rows */
-  .ti-row2{gap:10px;padding:13px 12px;min-height:52px}
+  /* fixed columns so the eye can track down a column instead of hunting */
+  .ti-row2{display:grid;grid-template-columns:26px 78px minmax(180px,1fr) 158px 112px 104px 132px 116px 34px;
+           gap:10px;padding:12px 12px;min-height:52px;align-items:center}
+  .ti-head{display:grid;grid-template-columns:26px 78px minmax(180px,1fr) 158px 112px 104px 132px 116px 34px;
+           gap:10px;padding:6px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
+           letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--line)}
+  .ti-row2 > *{min-width:0}
+  .ti-cell{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+  .ti-cell > *{max-width:100%}
+  .src-chip,.deliv-chip{max-width:100%}
+  @media(max-width:1100px){ .ti-head{display:none}
+    .ti-row2{grid-template-columns:26px 1fr auto auto;grid-auto-rows:min-content} }
   .ti-title2{font-size:15px;font-weight:650;color:var(--ink)}
   .lbl-chip,.urg-chip,.vchip,.src-chip,.deliv-chip{font-size:11px;padding:4px 9px}
   .src-chip{max-width:168px}
@@ -585,6 +596,8 @@
   #calendar .subhead{font-size:13px;letter-spacing:.04em}
   #calendar .kv{font-size:13.5px}
   .seg button,.calnav button{min-height:38px;font-size:13px;padding:8px 14px}
+  .calnav{display:flex;align-items:center;gap:8px}
+  .calnav #calLabel,.calnav .callabel{flex:1;text-align:center;font-weight:750}
   /* the review queue */
   .rv-card{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--y-dot);border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 2px var(--shadow)}
   .rv-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
@@ -612,7 +625,7 @@
 <nav class="top">
   <div class="inner">
     <a href="#hero" class="brand"><span class="mk">⇄</span> Bridge</a>
-    <button class="histbtn" onclick="openDrawer()" title="Parsed discussion history from Slack"><span class="hb-ic">▤</span> Discussion history</button>
+    <button class="histbtn" onclick="openDrawer()" title="Parsed discussion history from Slack"><span class="hb-ic">▤</span> Channel history</button>
     <button class="histbtn" id="refreshBtn" onclick="triggerRefresh()" title="Ask Claude to re-read the channel and refresh the Bridge now"><span class="hb-ic">⟳</span> Refresh</button>
     <div class="links" id="navlinks">
       <a href="#calendar">Calendar</a>
@@ -658,7 +671,7 @@
   </section>
 
 <section class="section" id="calendar">
-    <div class="sec-head"><h2>Calendar</h2><span class="sub">Meetings &amp; deliverables · today highlighted</span></div>
+    <div class="sec-head"><h2>Calendar</h2></div>
     <div class="caltool">
       <div class="seg">
         <button id="seg3" onclick="setMode('3day')">3-Day</button>
@@ -675,19 +688,19 @@
   </section>
 
 <section class="section" id="items">
-    <div class="sec-head"><h2>Action Items</h2><span class="sub">Actions, decisions, risks &amp; blockers — one list, filterable</span></div>
+    <div class="sec-head"><h2>Action Items</h2></div>
     <div class="ti-bar" id="itemsBar"></div>
     <div class="card ti-list" id="itemsList"></div>
     <div class="ti-more" id="itemsMore"></div>
   </section>
 
 <section class="section" id="review">
-    <div class="sec-head"><h2>Needs a human</h2><span class="sub">Extracted from a source, not yet verified by a PM. Nothing here counts until it is.</span></div>
+    <div class="sec-head"><h2>Needs a human</h2></div>
     <div id="reviewList"></div>
   </section>
 
 <section class="section" id="ask">
-    <div class="sec-head"><h2>Ask Claude</h2><span class="sub">Queued locally for the next export — this page cannot post to Slack</span></div>
+    <div class="sec-head"><h2>Request an update from Claude</h2></div>
     <div class="ask-card">
       <textarea id="askText" class="ask-ta" rows="2" placeholder="e.g. “Move the Friday leadership sync to 4pm and update the calendar,” or “Add a build-team kickoff deck to next week’s asks.”" onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')sendAsk()"></textarea>
       <button id="askSend" class="ask-send" onclick="sendAsk()">Send to Claude</button>
@@ -695,63 +708,12 @@
   </section>
 
 <section class="section" id="workstreams">
-    <div class="sec-head"><h2>Workstreams</h2><span class="sub">Tap a card to expand</span></div>
+    <div class="sec-head"><h2>Workstreams</h2></div>
     <div class="wsgrid" id="wsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div>
       <div id="wsNote" style="font-size:11.5px;color:var(--muted);margin-top:10px"></div>
   </section>
 
-<section class="section" id="intake">
-    <div class="intake-card" id="intakeCard">
-      <div class="intake-head" onclick="toggleIntake()">
-        <div class="intake-title">
-          <span class="intake-ic">＋</span>
-          <div>
-            <h2>Add to the Bridge</h2>
-            <div class="intake-sub">Paste a transcript or a note. It queues locally and leaves with the next export — nothing is uploaded from here.</div>
-          </div>
-        </div>
-        <span class="intake-chev" id="intakeChev">▸</span>
-      </div>
-      <div class="intake-body" id="intakeBody" hidden>
-        <div class="intake-types" id="intakeTypes">
-          <button class="itype on" data-type="upload" onclick="intakeType('upload')">⇪ Upload</button>
-          <button class="itype" data-type="transcript" onclick="intakeType('transcript')">▤ Transcript</button>
-          <button class="itype" data-type="document" onclick="intakeType('document')">▦ Document</button>
-          <button class="itype" data-type="text" onclick="intakeType('text')">💬 Text Claude</button>
-        </div>
-
-        <div class="ipane" id="pane-upload">
-          <div class="dropzone" id="dropzone" onclick="toast('File upload is off in this build — there is no server to receive it. Paste the text instead.')">
-            <div class="dz-ic">⇪</div>
-            <div class="dz-main" id="dzMain">Drag a file here, or click to choose</div>
-            <div class="dz-sub">File upload is off in this build — there is no server to receive it. Paste the text instead.</div>
-          </div>
-          <input class="intake-in" id="upName" placeholder="Name (auto-fills from the file — editable)">
-          <input class="intake-in" id="upCtx" placeholder="Optional context — one line">
-        </div>
-
-        <div class="ipane" id="pane-transcript" hidden>
-          <input class="intake-in" id="trName" placeholder="Title (e.g. 8/7 Steering Committee transcript)">
-          <textarea class="intake-ta" id="trText" rows="5" placeholder="Paste the transcript here…"></textarea>
-        </div>
-
-        <div class="ipane" id="pane-document" hidden>
-          <input class="intake-in" id="dcName" placeholder="Document title">
-          <textarea class="intake-ta" id="dcText" rows="4" placeholder="Paste the document text, or a SharePoint link…"></textarea>
-        </div>
-
-        <div class="ipane" id="pane-text" hidden>
-          <textarea class="intake-ta" id="txText" rows="3" placeholder="Quick note straight to Claude in the channel — e.g. “@Claude the Friday leadership sync moved to 4pm, update the calendar.”"></textarea>
-        </div>
-
-        <div class="intake-row">
-          <button class="intake-submit" id="intakeSubmit" onclick="submitIntake()">Queue for the next export</button>
-        </div>
-        <div class="intake-msg" id="intakeMsg"></div>
-        <div class="intake-email" id="intakeEmailLine"></div>
-      </div>
-    </div>
-  </section>
+<!-- intake section removed: local queue that never reaches Slack — two users would diverge -->
 
 <section class="section" id="documents">
     <div class="sec-head"><h2>Documents</h2><span class="sub"><span class="pill kind-live sm">LIVE</span> SharePoint link · <span class="pill kind-slack sm">IN SLACK</span> transcript link · <span class="pill kind-nsp sm">NEEDS SHAREPOINT</span> loose upload to move</span></div>
@@ -773,10 +735,7 @@
     <div id="docList"></div>
   </section>
 
-<section class="section" id="digest">
-    <div class="sec-head"><h2>Discussion Digest</h2><span class="sub">Synthesized from the project Slack channel, not a raw mirror</span></div>
-    <div id="digestList" style="display:flex;flex-direction:column;gap:10px"></div>
-  </section>
+<!-- digest section removed: static seeded content, nothing synthesises it -->
 
 <section class="section" id="team">
     <div class="sec-head"><h2>Team</h2></div>
@@ -814,7 +773,7 @@
 </footer>
 
 <div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer" aria-label="Discussion history">
+<aside id="drawer" class="drawer" aria-label="Channel history">
   <div class="drawer-head">
     <div>
       <div class="drawer-title">Discussion History</div>
@@ -1058,7 +1017,8 @@ function renderSnapshotAge(){
   const gen=meta.generatedAt||null;
   if(!gen){ el.textContent='Snapshot date unknown'; return; }
   const days=Math.max(0,Math.round((Date.parse(TODAY+'T00:00:00Z')-Date.parse(gen.slice(0,10)+'T00:00:00Z'))/86400000));
-  el.textContent = 'Snapshot generated '+gen.slice(0,10)+(days?' · '+days+' day'+(days===1?'':'s')+' old':' · today');
+  const clock=(gen.slice(11,16)||'');
+  el.textContent = 'Snapshot generated '+gen.slice(0,10)+(clock?' '+clock:'')+(days?' · '+days+' day'+(days===1?'':'s')+' old':' · today');
 }
 function renderRibbon(){
   const el=document.getElementById('ribbonTxt'); if(!el) return;
@@ -1074,7 +1034,9 @@ function renderHeroHealth(){
   const hs=(DATA.workstreams||[]).map(w=>w.health);
   const worst = hs.includes('R') ? 'R' : hs.includes('Y') ? 'Y' : 'G';
   const n = hs.filter(h=>h===worst).length;
-  const txt = worst==='G' ? 'On track' : worst==='Y' ? n+' of '+hs.length+' need watching' : n+' of '+hs.length+' at risk';
+  const txt = worst==='G' ? 'All workstreams on track'
+            : worst==='Y' ? n+' of '+hs.length+' workstreams need watching'
+            : n+' of '+hs.length+' workstreams at risk';
   const col = {G:['rgba(0,166,118,.15)','var(--g-fg)','var(--g-fg)'],Y:['rgba(247,208,2,.16)','var(--y-fg)','var(--y-fg)'],R:['rgba(219,80,74,.16)','var(--r-fg)','var(--r-fg)']}[worst];
   el.style.background=col[0]; el.style.color=col[1];
   el.innerHTML=`<span class="dot" style="background:${col[2]}"></span> ${txt}`;
@@ -1150,7 +1112,9 @@ function renderItems(){
   else list.sort((a,b)=>urgRank(a)-urgRank(b)||rank(a)-rank(b));
   const total=list.length;
   const shown=istate.expanded?list:list.slice(0,10);
-  document.getElementById('itemsList').innerHTML=shown.map(renderItemRow).join('')||`<div class="ti-empty">Nothing here${istate.showDone?'':' — try “Show completed”'}.</div>`;
+  document.getElementById('itemsList').innerHTML=
+    `<div class="ti-head"><span></span><span>Type</span><span>Item</span><span>Source</span><span>Meeting</span><span>Verified</span><span>Owner</span><span>Due</span><span></span></div>`
+    +shown.map(renderItemRow).join('')||`<div class="ti-empty">Nothing here${istate.showDone?'':' — try “Show completed”'}.</div>`;
   const more=document.getElementById('itemsMore');
   more.innerHTML = total>10 ? `<button class="btn sm" onclick="istate.expanded=${!istate.expanded};renderItems()">${istate.expanded?'Show less':'Show all '+total}</button>` : '';
 }
@@ -1246,8 +1210,17 @@ function renderItemRow(it){
       `<button class="vbtn ok" title="${esc(blockReason(it)||'Verify this entry')}" onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
       `<button class="vbtn no" title="Reject this entry" onclick="event.stopPropagation();rejectItem('${it.id}')">✕</button>`
     : `<span class="vchip ok" title="${esc(vTitle(it))}">✓</span>`;
-  const showKind = istate.type==='all' || istate.type==='RAID';
-  return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">${check}${showKind?`<span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>`:''}${urgChip}<span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${src}${dchip}${verifCtl}${ownerCtl}${dueCtl}${info}${open?renderInfoPop(it):''}</div>`;
+  return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">`+
+    `<span class="ti-cell">${check}</span>`+
+    `<span class="ti-cell"><span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span></span>`+
+    `<span class="ti-cell"><span class="ti-title2" title="${esc(it.title)}">${esc(it.title)}</span>${urgChip}</span>`+
+    `<span class="ti-cell">${src}</span>`+
+    `<span class="ti-cell">${dchip}</span>`+
+    `<span class="ti-cell">${verifCtl}</span>`+
+    `<span class="ti-cell">${ownerCtl}</span>`+
+    `<span class="ti-cell">${dueCtl}</span>`+
+    `<span class="ti-cell">${info}</span>`+
+    `${open?renderInfoPop(it):''}</div>`;
 }
 function renderInfoPop(it){
   const isDec=it.kind==='Decision';
@@ -1333,6 +1306,10 @@ function eventsOn(iso){
     }
     evs.push({mid:r.id+'@'+iso,time:r.time,name:r.name,m:Object.assign({date:iso,deliverables:[]},r)});
   }
+  // earliest to latest, so a day reads top-down like a schedule
+  const mins=(t)=>{ const m=/(\d{1,2}):(\d{2})\s*(AM|PM)?/i.exec(t||''); if(!m) return 9999;
+    let h=+m[1]%12; if(/pm/i.test(m[3]||'')) h+=12; if(!m[3]&&+m[1]>=13) h=+m[1]; return h*60+ +m[2]; };
+  evs.sort((a,b)=>mins(a.time)-mins(b.time));
   evs.sort((a,b)=>(a.stand?0:1)-(b.stand?0:1));
   return evs;
 }
@@ -1640,6 +1617,7 @@ function renderDocs(){
 function clearF(){state.q='';state.ws='all';state.kind='all';document.getElementById('q').value='';document.getElementById('fws').value='all';document.getElementById('fkind').value='all';renderDocs();}
 
 function renderDigest(){
+  if(!document.getElementById('digestList')) return;
   document.getElementById('digestList').innerHTML=DATA.digest.map(t=>`
     <div class="card theme">
       <div class="th" onclick="this.parentNode.classList.toggle('open')"><span class="ct">${esc(t.title)}</span><span class="ch">+</span></div>
@@ -1760,6 +1738,7 @@ function toggleIntake(){
   else { body.setAttribute('hidden',''); card.classList.remove('open'); }
 }
 function initIntake(){
+  if(!document.getElementById('intakeCard')) return;
   intakeType('upload'); initDrop(); // stays collapsed on load
   if(INTAKE_EMAIL){ document.getElementById('intakeEmailLine').innerHTML='Can’t upload here? Email it to <a href="mailto:'+INTAKE_EMAIL+'">'+INTAKE_EMAIL+'</a> and it posts to the channel automatically.'; }
 }
@@ -1868,8 +1847,7 @@ renderWsDots();renderUpdated();renderHeroHealth();renderRibbon();renderReview();
 renderAttn();
 renderItemsBar();renderItems();
 renderCalendar();renderUnscheduled();
-renderWs();renderDocFilters();renderDocs();renderDigest();renderTeam();renderThreads();
-initIntake();
+renderWs();renderDocFilters();renderDocs();renderTeam();renderThreads();
 setInterval(renderUpdated,60000); // keep the "next refresh" chip live in ET
 document.addEventListener('click',e=>{ // close an open action-item popover when clicking elsewhere
   if(istate.open.size && !e.target.closest('.ti-row2') && !e.target.closest('.attn-card')){ istate.open.clear(); renderItems(); }
