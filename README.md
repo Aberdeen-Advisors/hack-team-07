@@ -1,66 +1,170 @@
-# Bridge
+# Bridge — an AI Engagement Associate
 
-An AI Engagement Associate for a consulting transformation team. It maintains five registers — actions, decisions, risks, stakeholders, deliverables — from the places the engagement already happens, and does routine coordination work itself.
+**Team 07 · Aberdeen Advisors**
 
-Two rules define the product:
+A consulting team decides things in meetings and Slack. Those decisions live in transcripts nobody re-reads. Bridge turns the conversation into a maintained record — actions, decisions, risks and meetings — and refuses to let anything count until a human has checked it.
 
-1. **Nothing enters a register without a link back to the sentence that created it.**
-2. **Nothing counts until a human project manager has verified it.**
+Two rules define the whole product:
 
-`index.html` is the whole app: one file, no build step, no dependencies, no runtime network requests. Open it from disk.
+1. **Nothing enters a register without the verbatim sentence that created it, and a link back to it.**
+2. **Nothing counts until a human PM verifies it.** Claude proposes; a person decides.
 
-The build plan and its milestones live in [`BUILD.md`](./BUILD.md).
+Everything below exists to serve those two rules.
 
 ---
+
+## The flow, end to end
+
+```
+  Slack channel                GitHub Actions                  Vercel
+  ─────────────                ──────────────                  ──────
+  someone posts a         ┌─►  slack_pull.py                   index.html
+  transcript or talks     │      reads the channel + threads   (static, no
+        │                 │      saves Claude's JSON batches    build step)
+        ▼                 │            │                            ▲
+  @Claude reads it        │            ▼                            │
+  and replies with a      │      extract.py                         │
+  fenced JSON batch  ─────┘        batch → register entries,        │
+  (claude-tag-config.txt)          all marked "pending"             │
+                                          │                         │
+                                          ▼                         │
+                                    apply.py                        │
+                                      writes the PM's decisions ────┘
+                                      back into the registers
+                                          ▲
+                                          │
+  PM opens the app, verifies, fixes a missing owner,
+  clicks Export → drops the file in data/inbox/decisions/
+```
+
+Every arrow is automated except the two a human should own: saying something in Slack, and deciding whether Claude got it right.
+
+---
+
+## The four pieces
+
+### 1. Claude Tag — the input layer
+
+`claude-tag-config.txt` is the system prompt for **Claude in Slack**, pasted into the channel's Claude configuration. It does one job: turn what people said into a **fenced JSON block** of candidates. It is written to refuse rather than guess.
+
+- No owner was named → `"owner": null` and `"unclear": ["owner"]`. Never a guess.
+- No date was stated → `"due": null`. "Friday the twenty-first" is the 21st, not the next Friday.
+- Cannot quote it verbatim → does not propose it at all.
+
+The batch shape (abridged — the full contract is in the config):
+
+```json
+{ "batch": "slack-2026-08-13-2053", "items": [
+  { "candidateId": "TAG-20260813-09", "register": "action",
+    "title": "Provide updated network segmentation testing status",
+    "owner": "Jennifer Lee", "due": "2026-08-21", "meetingId": "TAG-20260813-07",
+    "provenance": { "author": "Anjali Kalavar", "permalink": "https://…/p1786654225628899",
+                    "quote": "Jennifer, please provide an updated network segmentation testing status …" },
+    "verification": { "status": "pending" }, "unclear": [] } ] }
+```
+
+`register` is one of `action`, `decision`, `risk`, `meeting`. An item carrying a `meetingId` is bound to the meeting from the same batch — that binding is what puts commitments on the calendar next to the meeting that produced them.
+
+### 2. GitHub Actions — the back end
+
+`.github/workflows/bridge-ingest.yml` is the whole server. No laptop, no always-on host.
+
+| Step | Script | What it does |
+|---|---|---|
+| Pull from Slack | `scripts/slack_pull.py` | Reads the channel *and every thread*, harvests JSON batches, saves them to `data/inbox/candidates/` |
+| Extract | `scripts/extract.py` | Turns batches into register entries, all `pending`, and links items to their meeting |
+| Apply decisions | `scripts/apply.py` | Writes the PM's verifications and edits back into the registers |
+| Verify | inline | Refuses to publish if `snapshot.js` won't parse, a register is invalid JSON, or `index.html` regained a `fetch()` |
+| Commit + publish | inline | Commits the registers, deploys to Vercel from the runner |
+
+Triggers: every 5 minutes on weekdays, a manual **Run workflow** button, and any push touching `data/inbox/**`.
+
+**Standard library only.** No `pip install`, no SDK, no Anthropic API key required — the credential-free path is the default, because extraction judgement already happened in Slack. `ANTHROPIC_API_KEY` is optional and upgrades extraction; nothing depends on it.
+
+Secrets, all optional except the first:
+
+- `SLACK_BOT_TOKEN` — reads the channel (`channels:history`, `groups:history`, `files:read`, `users:read`)
+- `GH_PUSH_TOKEN` — a PAT, because the org locks `GITHUB_TOKEN` to read-only. Without it the run still completes and uploads the registers as an artifact
+- `VERCEL_TOKEN` — deploys from the runner, so the Vercel project needs no GitHub connection
+
+Two failure modes the workflow is built around: it never fails the run on a Slack error (files already in the inbox must still ingest), and it skips push events whose commit message starts with `ingest:` so the bot cannot trigger itself in a loop.
+
+### 3. The app — `index.html`
+
+One file. No build step, no dependencies, **no runtime network requests**. It opens by double-clicking from disk, and the hosted copy is the same file.
+
+Data arrives through classic `<script src>` tags assigning `window.BRIDGE_DATA` — because `fetch()` and ES modules are both blocked on `file://`, and a demo that only works behind a server is a demo with a hidden dependency.
+
+Three surfaces, in the order a PM needs them:
+
+- **Needs attention now** — the six things being asked of the team, computed from overdue / unowned / unverified / stale, not typed by hand.
+- **Calendar** — meetings with the commitments made in them attached. Underneath, *"Discussed, not on the calendar"*: meetings with no date and actions with no due date. A date-keyed grid structurally cannot show these, and their invisibility is the failure Bridge exists to catch.
+- **Action Items** — one register. Rows Claude wrote are flagged `✦ Claude` with the sentence they came from underneath, and are editable **in the column that is missing**: an owner dropdown in OWNER, a date picker in DUE. The ✓ stays disabled until every field Claude refused to guess is filled. There is no second "review" list, because a second list is a second truth.
+
+Clicking a source chip opens the transcript in-app, scrolled to the highlighted line. A link is only rendered when it goes somewhere — an `href="#"` is a citation-shaped hole, so the app says "no link stored" instead.
+
+### 4. Write-back — the loop closing
+
+The page cannot write to disk, so verification decisions leave as a file. **Export changes** downloads `decisions-<timestamp>.json`; drop it in `data/inbox/decisions/` and commit. That path triggers the workflow, `apply.py` patches the registers and regenerates `snapshot.js`, and the decision is now in the data rather than in one browser's local storage.
+
+`apply.py` accepts only `owner`, `due`, `sev`, `status`, `title` from that file — it arrives from a browser download and is not trusted beyond those. It is idempotent (`meta.appliedDecisions`), and a change pointing at an unknown id is reported, never silently dropped.
+
+---
+
+## Repo layout
+
+```
+index.html                     the app — the entire front end
+claude-tag-config.txt          the Claude in Slack prompt (paste into the channel config)
+.github/workflows/             the back end: schedule, pull, extract, apply, verify, deploy
+scripts/
+  slack_pull.py                channel + thread reader → data/inbox/
+  extract.py                   candidates → registers
+  apply.py                     the app's decisions → registers
+  AUTOMATION.md                how the schedule and near-instant path work
+data/
+  snapshot.js                  what the app reads (file://-safe classic script)
+  transcripts.js               line-indexed sources, so a citation can land on the sentence
+  actions|decisions|risks|meetings.json     the registers
+  inbox/candidates/            raw Claude Tag batches, as posted
+  inbox/decisions/             drop exported decisions here
+TEST-PLAN.md                   what a reviewer should try, and what should happen
+```
+
+---
+
+## Running it
+
+Nothing to install.
+
+```bash
+git clone https://github.com/Aberdeen-Advisors/hack-team-07
+cd hack-team-07
+open index.html          # or double-click it
+```
+
+To see the pipeline rather than the result: post a transcript in the project channel, tag Claude, and press **Run workflow** on Bridge ingest. The new items appear in the app as `✦ Claude`, unverified, each carrying the sentence it came from.
 
 ## The local gate
 
-Every milestone ends here, and **the deploy in M11 is gated on this checklist passing on the current file**. A green hosted build proves nothing that this does not.
+Every change is held to this, with the wifi off. A green hosted build proves nothing this does not.
 
-Run it with the wifi physically off.
+- [ ] Opens from `file://` by double-clicking — no server
+- [ ] Zero console errors, zero outbound network requests after a hard reload
+- [ ] Renders in Poppins (embedded base64 `woff2`, never a CDN — typography cannot depend on a conference network)
+- [ ] Every register row shows a source, or says plainly that it has none
+- [ ] Nothing in the UI reports success for something that did not happen
 
-- [ ] `index.html` opens by double-clicking it — `file://`, no server
-- [ ] **Zero console errors**, and zero warnings you cannot explain
-- [ ] **Zero outbound network requests** in the Network panel after a hard reload
-- [ ] The page renders in **Poppins**, not a fallback — headings and body
-- [ ] The section navigation is reachable at 800px wide
-- [ ] A reload does not lose demo state
-- [ ] No number on screen contradicts the data behind it
-- [ ] Every register item shows either a source or an explicit "no source" marker
-- [ ] Nothing in the UI can report success for an action that did not happen
-
-### Checking the last three quickly
-
-```
-grep -c 'https\?://' index.html          # expect 0 outside comments
-grep -c 'fetch(' index.html              # expect 0 after M9
-grep -o '#[0-9a-fA-F]\{3,8\}' index.html | wc -l   # expect 0 outside tokens after M10
+```bash
+grep -c 'fetch('  index.html      # expect 0
+grep -c 'type="module"' index.html # expect 0
+node --check data/snapshot.js      # must parse
 ```
 
 ---
 
-## Fonts
+## What it deliberately does not do
 
-Poppins is embedded as base64 `woff2` (latin subset, weights 400/500/600/700/800) in the `<style id="bridge-fonts">` block, with a `Calibri` fallback. The Google Fonts links are gone deliberately.
+Bridge does not post to Slack, book meetings, or edit SharePoint. It has no write access to anything a person would have to undo. Sending nudges to owners is the obvious next step and needs one new scope (`chat:write`) — it was left out rather than half-built.
 
-**Do not re-add a font CDN.** The typography cannot change because a conference network dropped. If a weight is missing, add it to that block from a local file rather than linking out.
-
-Never Arial, never Times New Roman.
-
----
-
-## Layout
-
-```
-index.html      the app
-BUILD.md        the build plan, milestone by milestone
-data/           registers — snapshot for the app, written by Claude Code
-scripts/        the prompts Claude Code runs: store, provision, ingest, apply, nudge
-out/            generated digests, pasteable into Slack
-```
-
-## What this is not, today
-
-No backend, no database, no auth, no write endpoint. No live Teams, Outlook or calendar integration. No real-time transcription. One programme at a time.
-
-Those are on the Path to Market slide, not in this file.
+It also does not silently improve on the source. If Claude could not name an owner, the app shows an empty amber box and blocks verification. The alternative — a plausible guess — is how project trackers quietly become fiction.
