@@ -6,7 +6,7 @@
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786651385.035659",
+  "lastSlackTs": "1786652004.670839",
   "ingestedFiles": [
     "20260810latsec01security.md",
     "20260812latpmo02weeklypr.md",
@@ -20,5 +20,5 @@
     "slack20260813.md",
     "steertrans.md"
   ],
-  "lastSlackPull": "2026-08-13T20:12:52"
+  "lastSlackPull": "2026-08-13T20:13:25"
 }
