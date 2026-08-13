@@ -555,6 +555,56 @@
     .top .links a{font-size:11.5px;padding:3px 0}
     .top .inner{flex-wrap:wrap;row-gap:4px}
   }
+
+  /* ---------- glance layer ----------
+     Everything above is the original scale. This block raises type and hit areas so the
+     app reads across a room, and pushes detail behind a deliberate open. Later rules win,
+     so this is the one place to tune sizing. */
+  .section{padding:34px 0 8px}
+  .sec-head h2{font-size:21px;letter-spacing:-.01em}
+  .sec-head .sub{font-size:13.5px}
+  /* item rows */
+  .ti-row2{gap:10px;padding:13px 12px;min-height:52px}
+  .ti-title2{font-size:15px;font-weight:650;color:var(--ink)}
+  .lbl-chip,.urg-chip,.vchip,.src-chip,.deliv-chip{font-size:11px;padding:4px 9px}
+  .src-chip{max-width:168px}
+  .due-lbl{font-size:12.5px;padding:5px 9px}
+  .vbtn{width:32px;height:32px;font-size:14px;border-radius:8px}
+  .info-b{width:30px;height:30px;font-size:14px}
+  .ti-own{font-size:13px;font-weight:650;color:var(--slate);white-space:nowrap;flex-shrink:0}
+  .fpill{font-size:13px;padding:8px 14px}
+  .ti-ctrls select,.ti-ctrls .btn,.ti-ctrls label{font-size:13px;min-height:38px}
+  /* calendar — the primary surface */
+  #calendar .evt{border-radius:12px}
+  #calendar .mhead{padding:14px 14px;min-height:60px;cursor:pointer}
+  #calendar .mname{font-size:16px;font-weight:750}
+  #calendar .mtime,#calendar .mwho{font-size:13px}
+  #calendar .gchip{font-size:11.5px;padding:4px 10px;border-radius:20px}
+  #calendar .dayhead,#calendar .dh{font-size:14px;font-weight:750}
+  #calendar .arow{padding:10px 0;font-size:14px;min-height:44px}
+  #calendar .subhead{font-size:13px;letter-spacing:.04em}
+  #calendar .kv{font-size:13.5px}
+  .seg button,.calnav button{min-height:38px;font-size:13px;padding:8px 14px}
+  /* the review queue */
+  .rv-card{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--y-dot);border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 2px var(--shadow)}
+  .rv-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .rv-title{flex:1;min-width:220px;font-size:16.5px;font-weight:700;color:var(--ink);line-height:1.35}
+  .rv-meta{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:13px;color:var(--slate)}
+  .rv-meta b{color:var(--ink);font-weight:700}
+  .rv-quote{margin:12px 0 0;padding:12px 14px;background:var(--surface-2);border-left:3px solid var(--navy);border-radius:0 10px 10px 0;font-size:14.5px;font-style:italic;color:var(--ink);line-height:1.5}
+  .rv-acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .rv-btn{font-size:14px;font-weight:750;border-radius:10px;padding:11px 20px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-height:44px}
+  .rv-btn.ok{background:var(--navy);border-color:var(--navy);color:var(--surface)}
+  .rv-btn.no{color:var(--r-fg);border-color:var(--r-bg)}
+  .rv-btn:hover{filter:brightness(.97)}
+  .rv-block{font-size:13px;color:var(--y-fg);background:var(--y-bg);border-radius:8px;padding:9px 12px;margin-top:12px}
+  .rv-empty{padding:26px;text-align:center;font-size:15px;color:var(--slate);background:var(--surface);border:1px dashed var(--line);border-radius:12px}
+  .rv-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .rv-count{font-size:15px;font-weight:750;color:var(--ink)}
+  /* input is a footnote now, not a feature */
+  #intake .intake-card{max-width:none;opacity:.92}
+  #intake .sec-head h2,#ask .sec-head h2{font-size:16px}
+  @media(max-width:860px){ .ti-row2{flex-wrap:wrap} .rv-title{min-width:100%} }
 </style>
 </head>
 <body>
@@ -565,11 +615,10 @@
     <button class="histbtn" onclick="openDrawer()" title="Parsed discussion history from Slack"><span class="hb-ic">▤</span> Discussion history</button>
     <button class="histbtn" id="refreshBtn" onclick="triggerRefresh()" title="Ask Claude to re-read the channel and refresh the Bridge now"><span class="hb-ic">⟳</span> Refresh</button>
     <div class="links" id="navlinks">
-      <a href="#items">Action Items</a>
-      <a href="#ask">Ask Claude</a>
       <a href="#calendar">Calendar</a>
+      <a href="#items">Action Items</a>
+      <a href="#review">Needs a human</a>
       <a href="#workstreams">Workstreams</a>
-      <a href="#verify" onclick="istate.unverifiedOnly=true;istate.type='all';renderItemsBar();renderItems();document.getElementById('items').scrollIntoView({behavior:'smooth'});return false;">Needs verifying</a>
     </div>
   </div>
 </nav>
@@ -608,8 +657,50 @@
     <div class="attn-card" id="attnCard"></div>
   </section>
 
-  <!-- ADD TO THE BRIDGE (INTAKE) -->
-  <section class="section" id="intake">
+<section class="section" id="calendar">
+    <div class="sec-head"><h2>Calendar</h2><span class="sub">Meetings &amp; deliverables · today highlighted</span></div>
+    <div class="caltool">
+      <div class="seg">
+        <button id="seg3" onclick="setMode('3day')">3-Day</button>
+        <button id="segWeek" class="on" onclick="setMode('week')">Week</button>
+        <button id="segMonth" onclick="setMode('month')">Month</button>
+      </div>
+      <button class="nav-b" onclick="nav(-1)" title="Previous">‹</button>
+      <span class="calrange" id="calrange"></span>
+      <button class="nav-b" onclick="nav(1)" title="Next">›</button>
+      <button class="btn today-b" onclick="goToday()">Today</button>
+    </div>
+    <div id="calView"></div>
+    <div id="unscheduled"></div>
+  </section>
+
+<section class="section" id="items">
+    <div class="sec-head"><h2>Action Items</h2><span class="sub">Actions, decisions, risks &amp; blockers — one list, filterable</span></div>
+    <div class="ti-bar" id="itemsBar"></div>
+    <div class="card ti-list" id="itemsList"></div>
+    <div class="ti-more" id="itemsMore"></div>
+  </section>
+
+<section class="section" id="review">
+    <div class="sec-head"><h2>Needs a human</h2><span class="sub">Extracted from a source, not yet verified by a PM. Nothing here counts until it is.</span></div>
+    <div id="reviewList"></div>
+  </section>
+
+<section class="section" id="ask">
+    <div class="sec-head"><h2>Ask Claude</h2><span class="sub">Type a quick instruction — it posts to the project channel and Claude picks it up on the next pass</span></div>
+    <div class="ask-card">
+      <textarea id="askText" class="ask-ta" rows="2" placeholder="e.g. “Move the Friday leadership sync to 4pm and update the calendar,” or “Add a build-team kickoff deck to next week’s asks.”" onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')sendAsk()"></textarea>
+      <button id="askSend" class="ask-send" onclick="sendAsk()">Send to Claude</button>
+    </div>
+  </section>
+
+<section class="section" id="workstreams">
+    <div class="sec-head"><h2>Workstreams</h2><span class="sub">Tap a card to expand</span></div>
+    <div class="wsgrid" id="wsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div>
+      <div id="wsNote" style="font-size:11.5px;color:var(--muted);margin-top:10px"></div>
+  </section>
+
+<section class="section" id="intake">
     <div class="intake-card" id="intakeCard">
       <div class="intake-head" onclick="toggleIntake()">
         <div class="intake-title">
@@ -662,50 +753,7 @@
     </div>
   </section>
 
-  <!-- ACTION ITEMS -->
-  <section class="section" id="items">
-    <div class="sec-head"><h2>Action Items</h2><span class="sub">Actions, decisions, risks &amp; blockers — one list, filterable</span></div>
-    <div class="ti-bar" id="itemsBar"></div>
-    <div class="card ti-list" id="itemsList"></div>
-    <div class="ti-more" id="itemsMore"></div>
-  </section>
-
-  <!-- ASK CLAUDE -->
-  <section class="section" id="ask">
-    <div class="sec-head"><h2>Ask Claude</h2><span class="sub">Type a quick instruction — it posts to the project channel and Claude picks it up on the next pass</span></div>
-    <div class="ask-card">
-      <textarea id="askText" class="ask-ta" rows="2" placeholder="e.g. “Move the Friday leadership sync to 4pm and update the calendar,” or “Add a build-team kickoff deck to next week’s asks.”" onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')sendAsk()"></textarea>
-      <button id="askSend" class="ask-send" onclick="sendAsk()">Send to Claude</button>
-    </div>
-  </section>
-
-  <!-- CALENDAR -->
-  <section class="section" id="calendar">
-    <div class="sec-head"><h2>Calendar</h2><span class="sub">Meetings &amp; deliverables · today highlighted</span></div>
-    <div class="caltool">
-      <div class="seg">
-        <button id="seg3" onclick="setMode('3day')">3-Day</button>
-        <button id="segWeek" class="on" onclick="setMode('week')">Week</button>
-        <button id="segMonth" onclick="setMode('month')">Month</button>
-      </div>
-      <button class="nav-b" onclick="nav(-1)" title="Previous">‹</button>
-      <span class="calrange" id="calrange"></span>
-      <button class="nav-b" onclick="nav(1)" title="Next">›</button>
-      <button class="btn today-b" onclick="goToday()">Today</button>
-    </div>
-    <div id="calView"></div>
-    <div id="unscheduled"></div>
-  </section>
-
-  <!-- WORKSTREAMS -->
-  <section class="section" id="workstreams">
-    <div class="sec-head"><h2>Workstreams</h2><span class="sub">Tap a card to expand</span></div>
-    <div class="wsgrid" id="wsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div>
-      <div id="wsNote" style="font-size:11.5px;color:var(--muted);margin-top:10px"></div>
-  </section>
-
-  <!-- DOCUMENTS -->
-  <section class="section" id="documents">
+<section class="section" id="documents">
     <div class="sec-head"><h2>Documents</h2><span class="sub"><span class="pill kind-live sm">LIVE</span> SharePoint link · <span class="pill kind-slack sm">IN SLACK</span> transcript link · <span class="pill kind-nsp sm">NEEDS SHAREPOINT</span> loose upload to move</span></div>
     <div class="filters">
       <input id="q" placeholder="Search documents…" oninput="state.q=this.value;renderDocs()">
@@ -725,17 +773,35 @@
     <div id="docList"></div>
   </section>
 
-  <!-- DIGEST -->
-  <section class="section" id="digest">
+<section class="section" id="digest">
     <div class="sec-head"><h2>Discussion Digest</h2><span class="sub">Synthesized from the project Slack channel, not a raw mirror</span></div>
     <div id="digestList" style="display:flex;flex-direction:column;gap:10px"></div>
   </section>
 
-  <!-- TEAM -->
-  <section class="section" id="team">
+<section class="section" id="team">
     <div class="sec-head"><h2>Team</h2></div>
     <div class="team" id="teamGrid"></div>
   </section>
+
+<!-- ADD TO THE BRIDGE (INTAKE) -->
+  
+
+  <!-- ASK CLAUDE -->
+  
+
+  <!-- CALENDAR -->
+  
+
+  <!-- WORKSTREAMS -->
+  
+
+  <!-- DOCUMENTS -->
+  
+
+  <!-- DIGEST -->
+  
+
+  <!-- TEAM -->
 
 </main>
 
@@ -856,7 +922,7 @@ function approveItem(id){
   const pre=vstat(it);
   it.verification={status:'verified',decidedBy:REVIEWER,decidedAt:new Date().toISOString(),note:null};
   logAudit(it,'approved','verification.status',pre,'verified',null);
-  renderItemsBar(); renderItems(); renderAttn();
+  renderItemsBar(); renderItems(); renderAttn(); renderReview(); renderCalendar();
   toast('Verified — “'+it.title.slice(0,40)+'”.');
 }
 function rejectItem(id){
@@ -865,7 +931,7 @@ function rejectItem(id){
   const pre=vstat(it);
   it.verification={status:'rejected',decidedBy:REVIEWER,decidedAt:new Date().toISOString(),note:note};
   logAudit(it,'rejected','verification.status',pre,'rejected',note);
-  renderItemsBar(); renderItems(); renderAttn();
+  renderItemsBar(); renderItems(); renderAttn(); renderReview(); renderCalendar();
   toast('Rejected — out of the register, kept in the audit trail.');
 }
 function saveState(){
@@ -904,7 +970,7 @@ function exportChanges(){
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
     a.download='pending-changes.json'; document.body.appendChild(a); a.click(); a.remove();
-    EXPORTED=AUDIT.length; saveState(); renderItemsBar();
+    EXPORTED=AUDIT.length; saveState(); renderItemsBar(); renderReview();
     toast(payload.changes.length+' change'+(payload.changes.length>1?'s':'')+' exported for Claude Code to apply.');
   }catch(e){ toast('Export failed — '+e.message); }
 }
@@ -1163,8 +1229,7 @@ function renderItemRow(it){
   let ownerCtl='';
   if(!isDec){
     const un=(!it.owner||it.owner==='Unassigned');
-    ownerCtl=`<select class="inl-owner ${un?'un':''}" title="Assignee — change inline" onclick="event.stopPropagation()" onchange="event.stopPropagation();setOwner('${it.id}',this.value)">`+
-      OWNERS.map(o=>`<option value="${o[0]}"${(it.owner||'Unassigned')===o[0]?' selected':''}>${o[0]==='Unassigned'?'— unassigned':esc(o[1])}</option>`).join('')+`</select>`;
+    ownerCtl=`<span class="ti-own ${un?'un':''}" title="${un?'Nobody owns this':'Owner'}">${un?'— unassigned':esc(ownerName(it.owner))}</span>`;
   }
   let dueCtl='';
   if(it.kind==='Action'){
@@ -1193,8 +1258,7 @@ function renderInfoPop(it){
   if(dm) links.push(`<span class="deliv-chip" onclick="event.stopPropagation();gotoDeliv('${it.deliv.mid}','${it.id}')">▧ Find on calendar</span>`);
   const editRow = isDec
     ? `<div class="fld-note">Decision recorded ${esc(it.date||'')}.</div>`
-    : `<div class="pedit"><input value="${esc(it.title)}" onclick="event.stopPropagation()"><button class="btn sm" onclick="event.stopPropagation();saveTitle('${it.id}',this.previousElementSibling.value)">Save</button></div>
-       ${it.kind==='Action'?`<div class="pk"><span class="fld-note">Due</span><input type="date" class="pdue" value="${esc(it.due||'')}" onclick="event.stopPropagation()" onchange="event.stopPropagation();setDue('${it.id}',this.value)"></div>`:''}
+    : `${it.kind==='Action'?`<div class="pk"><span class="fld-note">Due</span><input type="date" class="pdue" value="${esc(it.due||'')}" onclick="event.stopPropagation()" onchange="event.stopPropagation();setDue('${it.id}',this.value)"><span class="fld-note">Owner and title are maintained in the register, not here.</span></div>`:''}
        <div class="pk"><button class="btn sm ${it.status==='done'?'':'btn-primary'}" onclick="event.stopPropagation();toggleDone('${it.id}')">${it.status==='done'?'Reopen':'Mark complete'}</button></div>`;
   return `<div class="ti-pop" onclick="event.stopPropagation()"><div class="pnote">${esc(it.note||'No extra notes.')}</div>${provBlock(it)}${tie?`<div class="pk">${tie}</div>`:''}${editRow}${links.length?`<div class="plinks">${links.join('')}</div>`:''}</div>`;
 }
@@ -1734,6 +1798,47 @@ function attnGoto(id){
   const row=document.getElementById('row-'+id);
   if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
 }
+/* ---------- the review queue ----------
+   One place a PM can clear the unverified backlog: the sentence, the source, and the two
+   decisions. Everything here is also flagged in place in the item list — this is the fast
+   path, not a separate truth. */
+function renderReview(){
+  const host=document.getElementById('reviewList'); if(!host) return;
+  const list=DATA.items.filter(it=>isPending(it)&&!isRejected(it))
+    .sort((a,b)=>dueKey(a)-dueKey(b)||urgRank(a)-urgRank(b));
+  const waiting=AUDIT.length-EXPORTED;
+  const head=`<div class="rv-head">
+      <span class="rv-count">${list.length?list.length+' waiting on a person':'Nothing waiting'}</span>
+      <button class="rv-btn${waiting>0?' ok':''}" onclick="exportChanges()">Export decisions${waiting>0?' · '+waiting:''}</button>
+      <span class="sub" style="font-size:13px">Approving here writes a decision locally; Claude Code applies it to the register.</span>
+    </div>`;
+  if(!list.length){ host.innerHTML=head+`<div class="rv-empty">Every entry in the record has been through a person. New extractions land here.</div>`; return; }
+  host.innerHTML=head+list.map(it=>{
+    const pr=provOf(it), dm=dueMeta(it.due), why=blockReason(it), k=KIND[it.kind]||{label:it.kind};
+    const cite = pr.inApp
+      ? `<button class="rv-btn" onclick="openSource('${it.id}')">▤ Read it in ${esc((pr.tr.title||'').replace(/ transcript.*$/,''))} · line ${pr.line}</button>`
+      : `<span class="rv-block">No source stored for this entry — it cannot be traced back to a sentence.</span>`;
+    return `<div class="rv-card">
+      <div class="rv-top">
+        <span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>
+        <span class="rv-title">${esc(it.title)}</span>
+      </div>
+      <div class="rv-meta">
+        <span>Owner <b>${it.owner&&it.owner!=='Unassigned'?esc(ownerName(it.owner)):'unclear'}</b></span>
+        <span>Due <b>${esc(dm.label)}</b></span>
+        ${pr.author?`<span>Said by <b>${esc(pr.author)}</b></span>`:''}
+        ${pr.ts?`<span>${esc(pr.ts)}</span>`:''}
+      </div>
+      ${pr.quote?`<blockquote class="rv-quote">“${esc(pr.quote)}”</blockquote>`:''}
+      ${why?`<div class="rv-block">${esc(why)}</div>`:''}
+      <div class="rv-acts">
+        <button class="rv-btn ok" onclick="approveItem('${it.id}')">Verify</button>
+        <button class="rv-btn no" onclick="rejectItem('${it.id}')">Reject</button>
+        ${cite}
+      </div>
+    </div>`;
+  }).join('');
+}
 function renderAttn(){
   const host=document.getElementById('attnCard'); if(!host) return;
   const list=attnItems();
@@ -1758,7 +1863,7 @@ function renderAttn(){
 /* boot */
 const APP_VERSION='2.0.0';
 document.getElementById('appver').textContent='v'+APP_VERSION;
-renderWsDots();renderUpdated();renderHeroHealth();renderRibbon();
+renderWsDots();renderUpdated();renderHeroHealth();renderRibbon();renderReview();
 renderAttn();
 renderItemsBar();renderItems();
 renderCalendar();renderUnscheduled();

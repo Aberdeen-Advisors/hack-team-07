@@ -428,6 +428,8 @@ The page currently spends its space on things that are not the product. Take the
 
 **Acceptance:** every number on screen is derived. The nav holds only verification, items, calendar and registers. "Needs attention" surfaces at least one decision, one overdue item and one unowned item. The nav is reachable at 800px wide. A reload preserves state.
 
+</details>
+
 ### M9 — Delete the dead write path
 
 The app posts to `/api/update` (`UPDATE_ENDPOINT`, defined 949, used 1182), `/api/submit` (1526) and `/api/refresh` (1527), behind a plaintext passphrase held in a page-level variable — seven references, lines 479, 1157, 1182, 1574, 1580, 1601, 1615 — with no client-side validation. The pending tray at `pending.set` (1131, 1394) sends **human-readable English change lines**, which is the "prose not structured changes" problem M5 replaces. **There is no server.** Off a real backend these show error toasts; on a host with a 200 fallback they show a false success — the worst possible behaviour in a live demo.
@@ -462,6 +464,26 @@ Define a complete token set covering every semantic colour role — surfaces, te
 Change no layout, no copy, no behaviour here. Colour, type and tokens only.
 
 **Acceptance:** grep for hex literals outside the token block and the font block returns zero. Zero console errors. Recognisably the same app, in Aberdeen's colours, every contrast pair respected.
+
+### Design pass — visibility first — DONE, verified
+
+**Can the app write local Excel directly? No, and it shouldn't.** Three blockers: a browser can only write in place through the File System Access API, which requires a **secure context** and therefore does not exist on `file://`; real `.xlsx` needs SheetJS (~800KB), which breaks the no-dependency rule we have held all day; and SharePoint still needs the backend that does not exist. Serving from localhost or Vercel would unlock the first, not the other two. The export stays a few KB of structured JSON that Claude Code applies — and a visibility layer holding a write handle to your filesystem is the wrong shape anyway.
+
+**Section order now matches what the PM needs:** needs-attention → **calendar** → action items → **needs a human** → workstreams → intake → the rest. Nav follows. Intake and Ask are demoted below the fold with smaller headings; the app opens on what is true, not on a form.
+
+**A single glance-then-open language, applied throughout.** One CSS block at the end of the stylesheet owns sizing, so it is one place to tune: section headings 21px, row titles 15px, meeting names 16px, calendar rows 14px with 44px minimum height, verify/reject buttons 32px, review buttons 44px. Summary is always visible; detail is behind a deliberate open.
+
+**The app is now read-only except for verification.**
+
+- The owner dropdown on every row became plain text. Title editing is gone. The popover says so: "Owner and title are maintained in the register, not here."
+- What remains interactive: verify, reject, the due date (because the verify guard depends on it), and mark-complete.
+- Zero `fetch(`, no credentials, nothing that can write anywhere except a downloaded JSON file.
+
+**"Needs a human" is a real review queue.** Large cards, one per pending entry: the register chip, the title at 16.5px, owner / due / who said it / when, **the quoted sentence in full**, and three actions — Verify, Reject, and "Read it in <transcript> · line N" which opens the source at the highlighted line. Verifying removes the card and updates the item list, the attention panel and the calendar together. It is the fast path, not a separate truth — every item is still flagged in place.
+
+**One correction worth recording.** The pending/verified split from M5 was accidental: it came from a regex matching `src:{` in the item body, which caught the wrong 8 items. The result was that the items with real quotes were *verified* while the ones with no source were *pending* — exactly backwards. Re-seeded on the principled rule instead: **an item carrying machine provenance has not been checked by a person → pending; an item that predates Bridge was typed by a person → verified, `decidedBy: 'seeded'`.** Now **11 pending, 37 verified**, and every one of the 11 review cards has a real quote and a working citation. Zero cards show a missing-source warning, where before 6 did.
+
+**Verified:** all four regression suites pass with zero errors and zero warnings. 11 review cards / 11 quotes / 11 citations. No owner selects or title inputs anywhere in the item list. External references 0, `fetch` 0, hex outside `:root` 0. 1,879 lines.
 
 ### M11 — Deploy, and only now
 

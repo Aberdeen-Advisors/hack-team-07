@@ -1,0 +1,8 @@
+# The Vercel CLI uploads the whole directory. Keep working material out of the deployment.
+Docs*/
+docs-internal/
+*.pre-*.html
+*.bak
+scripts/*.local
+BRIDGE-BUILD.md
+claude-tag-config.txt
