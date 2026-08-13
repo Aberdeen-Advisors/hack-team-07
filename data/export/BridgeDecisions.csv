@@ -1,0 +1,9 @@
+﻿RegisterId,Title,Detail,Owner,OwnerKey,WS,Status,Priority,Due,MeetingId,RelatedTo,Tags,SourceSystem,SourceChannel,SourceAuthor,SourceTs,SourcePermalink,SourceQuote,Confidence,VerificationStatus,VerifiedBy,VerifiedAt,VerificationNote,DecidedOn,RulesOut,Supersedes
+d1,Phase 1 go-live anchored to end of November 2026,Confirmed on both sides. Supersedes the earlier early-November back-plan. All timeline slides now key off this date.,Team,Team,,,High,,,,,,,,,,,,pending,,,,Aug 7,,
+d2,Delegated approval path is off — standard individual onboarding starts now,"With only 34 partner staff, the delegated agreement is not worth the wait. Individual onboarding begins immediately.",Team,Team,,,High,,,,,,,,,,,,pending,,,,Aug 4,,
+d3,Two-week sprint cadence for phase 1,Chosen over three weeks so there are two full review points before go-live.,Team,Team,,,Med,,,,,,,,,,,,pending,,,,Aug 5,,
+d4,Steering deck rebuilt as a lean four-slide pack,"Title, Focus, Workstream Overview, Two-Sprint Timeline. The old week-by-week slide and the appendix were dropped rather than extended.",Team,Team,,,Med,,,,,,,,,,,,pending,,,,Aug 3,,
+d5,Workflow design sessions split into pre-launch and post-launch groups,"Group 1 covers pre-launch design, Group 2 covers post-launch. Both run weekly.",Team,Team,,,Med,,,,,,,,,,,,pending,,,,Jul 30,,
+d6,The consolidated project plan is the canonical source for milestones,The older tracker is archived. Any milestone question resolves against the consolidated plan.,Team,Team,,,Low,,,,,,,,,,,,pending,,,,Jul 28,,
+d7,"Program renamed from ""Revenue Systems"" to ""Platform Consolidation""",Clarified at steering. The old name understated the scope. All decks updated.,Team,Team,,,Low,,,,,,,,,,,,pending,,,,Aug 7,,
+d8,Cutover treated as a named deliverable with an owner,"Previously tracked as an event with no owner, which is how it kept slipping.",Team,Team,,,Low,,,,,,,,,,,,pending,,,,Aug 6,,

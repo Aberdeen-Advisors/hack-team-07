@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-13T12:39:06",
+    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "timezone": "America/New_York",
+    "schemaVersion": 1,
+    "source": "inline DATA literal, extracted on build day",
+    "sourceSite": null,
+    "listVersions": {}
+  },
+  "decisions": [
+    {
+      "id": "d1",
+      "kind": "Decision",
+      "urg": "High",
+      "title": "Phase 1 go-live anchored to end of November 2026",
+      "owner": "Team",
+      "date": "Aug 7",
+      "note": "Confirmed on both sides. Supersedes the earlier early-November back-plan. All timeline slides now key off this date."
+    },
+    {
+      "id": "d2",
+      "kind": "Decision",
+      "urg": "High",
+      "title": "Delegated approval path is off — standard individual onboarding starts now",
+      "owner": "Team",
+      "date": "Aug 4",
+      "note": "With only 34 partner staff, the delegated agreement is not worth the wait. Individual onboarding begins immediately."
+    },
+    {
+      "id": "d3",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "Two-week sprint cadence for phase 1",
+      "owner": "Team",
+      "date": "Aug 5",
+      "note": "Chosen over three weeks so there are two full review points before go-live."
+    },
+    {
+      "id": "d4",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "Steering deck rebuilt as a lean four-slide pack",
+      "owner": "Team",
+      "date": "Aug 3",
+      "note": "Title, Focus, Workstream Overview, Two-Sprint Timeline. The old week-by-week slide and the appendix were dropped rather than extended."
+    },
+    {
+      "id": "d5",
+      "kind": "Decision",
+      "urg": "Med",
+      "title": "Workflow design sessions split into pre-launch and post-launch groups",
+      "owner": "Team",
+      "date": "Jul 30",
+      "note": "Group 1 covers pre-launch design, Group 2 covers post-launch. Both run weekly."
+    },
+    {
+      "id": "d6",
+      "kind": "Decision",
+      "urg": "Low",
+      "title": "The consolidated project plan is the canonical source for milestones",
+      "owner": "Team",
+      "date": "Jul 28",
+      "note": "The older tracker is archived. Any milestone question resolves against the consolidated plan."
+    },
+    {
+      "id": "d7",
+      "kind": "Decision",
+      "urg": "Low",
+      "title": "Program renamed from \"Revenue Systems\" to \"Platform Consolidation\"",
+      "owner": "Team",
+      "date": "Aug 7",
+      "note": "Clarified at steering. The old name understated the scope. All decks updated."
+    },
+    {
+      "id": "d8",
+      "kind": "Decision",
+      "urg": "Low",
+      "title": "Cutover treated as a named deliverable with an owner",
+      "owner": "Team",
+      "date": "Aug 6",
+      "note": "Previously tracked as an event with no owner, which is how it kept slipping."
+    }
+  ]
+}

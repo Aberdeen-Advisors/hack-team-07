@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-13T12:39:06",
+    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "timezone": "America/New_York",
+    "schemaVersion": 1,
+    "source": "inline DATA literal, extracted on build day",
+    "sourceSite": null,
+    "listVersions": {}
+  },
+  "stakeholders": [
+    {
+      "ini": "AR",
+      "nm": "Alex Rivera",
+      "rl": "Program lead / builder",
+      "side": "Both sides",
+      "color": "#0f2a43",
+      "sidec": "#dcfce7",
+      "sidefg": "#15803d"
+    },
+    {
+      "ini": "JC",
+      "nm": "Jordan Chen",
+      "rl": "Compliance / status reporting",
+      "side": "Both sides",
+      "color": "#7c3aed",
+      "sidec": "#dcfce7",
+      "sidefg": "#15803d"
+    },
+    {
+      "ini": "SP",
+      "nm": "Sam Prentice",
+      "rl": "Testing · integrations · build",
+      "side": "Delivery side",
+      "color": "#0369a1",
+      "sidec": "#e0f2fe",
+      "sidefg": "#0369a1"
+    },
+    {
+      "ini": "MK",
+      "nm": "Morgan Keller",
+      "rl": "Operations / scheduling",
+      "side": "Client side",
+      "color": "#be185d",
+      "sidec": "#fce7f3",
+      "sidefg": "#be185d"
+    }
+  ]
+}

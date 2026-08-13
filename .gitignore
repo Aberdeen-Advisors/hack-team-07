@@ -1,0 +1,22 @@
+# Bridge — nothing here that a public repo should not have
+
+# secrets: the Power Automate trigger URL is signed, treat it as a credential
+scripts/*.local
+*.env
+.env*
+
+# local noise
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+
+# scratch copies
+*.bak
+*.pre-*.html
+
+# working docs — huddle transcript, brainstorming, internal strategy.
+# Not for a public repo.
+Docs*/
+docs-internal/
+*.pre-scrub.html

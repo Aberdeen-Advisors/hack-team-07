@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-13T12:39:06",
+    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "timezone": "America/New_York",
+    "schemaVersion": 1,
+    "source": "inline DATA literal, extracted on build day",
+    "sourceSite": null,
+    "listVersions": {}
+  },
+  "documents": [
+    {
+      "id": "plan",
+      "title": "Consolidated Project Plan.xlsx",
+      "type": "spreadsheet",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "lead",
+      "updated": "Re-shared in thread 8/6",
+      "new": false,
+      "url": "#",
+      "ctx": "The consolidated project plan and risk list. Canonical source for milestones. Dated items currently stop at 9/18; testing, soft launch, training, and go-live rows are still to be filled in."
+    },
+    {
+      "id": "steer",
+      "title": "Weekly Steering Committee.pptx",
+      "type": "deck",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "lead",
+      "updated": "v4 posted 8/7 10:14 AM; structure finalized the same morning ahead of the 3:00 PM meeting",
+      "new": true,
+      "url": "#",
+      "ctx": "Executive steering deck. Rebuilt into a lean four-slide pack (Title, Focus, Workstream Overview, Two-Sprint Timeline). Phase 1 end date updated to end of November."
+    },
+    {
+      "id": "builddeck",
+      "title": "Delivery_Leadership_Status_v4.pptx",
+      "type": "deck",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "build",
+      "updated": "Draft posted 8/7 10:21 AM",
+      "new": true,
+      "url": "#",
+      "ctx": "Deck for the 12:30 ET delivery leadership call. Next steps per workstream plus the System Build drill-down. Flagged as needing cleanup before it goes out."
+    },
+    {
+      "id": "findeck",
+      "title": "Finance_Billing_Compliance_Kickoff_v2.pptx",
+      "type": "deck",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "fin",
+      "updated": "Posted 8/7, reviewed and approved 10:26 AM, sent for input",
+      "new": true,
+      "url": "#",
+      "ctx": "Kickoff deck for the biweekly Finance & Billing review. Mirrors the Compliance deck structure so the two read consistently."
+    },
+    {
+      "id": "compdeck",
+      "title": "Compliance_Onboarding_V1.pptx",
+      "type": "deck",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "comp",
+      "updated": "V1 posted 8/4; standards slides still to be added",
+      "new": false,
+      "url": "#",
+      "ctx": "Working-session deck for the biweekly Compliance & Onboarding call. Still needs the standards slides and a decisions-needed slide."
+    },
+    {
+      "id": "complist",
+      "title": "Onboarding Document Checklist.xlsx",
+      "type": "spreadsheet",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "comp",
+      "updated": "Updated 8/6 with the full 34-person roster",
+      "new": false,
+      "url": "#",
+      "ctx": "Per-person document checklist for the 34 partner staff. Drives the onboarding status column on the steering deck."
+    },
+    {
+      "id": "testtracker",
+      "title": "Integration Test Script Tracker.xlsx",
+      "type": "spreadsheet",
+      "kind": "needs-sp",
+      "source": "Uploaded to the channel",
+      "ws": "build",
+      "updated": "Posted in channel 8/6, not yet moved to SharePoint",
+      "new": true,
+      "ctx": "Combined interface and workflow test scripts with pass/fail status. Loose upload, needs to move to SharePoint so both sides can open the current version."
+    },
+    {
+      "id": "opsmap",
+      "title": "Operational Workflow Map (draft).pdf",
+      "type": "pdf",
+      "kind": "needs-sp",
+      "source": "Uploaded to the channel",
+      "ws": "ops",
+      "updated": "Draft shared 8/4",
+      "new": false,
+      "ctx": "Hand-drawn workflow map from the 8/4 design session, scanned and posted. Needs to be redrawn properly and moved to SharePoint."
+    },
+    {
+      "id": "opsdeck",
+      "title": "Operations_Readiness_Checklist.docx",
+      "type": "doc",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "ops",
+      "updated": "Drafted 8/5, awaiting site lead sign-off",
+      "new": false,
+      "url": "#",
+      "ctx": "Site-by-site readiness checklist. Four of six site leads have signed off."
+    },
+    {
+      "id": "opsstatus",
+      "title": "Workstream Status Roll-up.xlsx",
+      "type": "spreadsheet",
+      "kind": "link",
+      "source": "SharePoint",
+      "ws": "lead",
+      "updated": "Auto-refreshed 8/10 12:07 AM",
+      "new": false,
+      "url": "#",
+      "ctx": "Generated roll-up that feeds the workstream cards on this page. Rebuilt on every refresh pass."
+    },
+    {
+      "id": "steertrans",
+      "title": "Steering Committee transcript — Aug 7",
+      "type": "doc",
+      "kind": "slack",
+      "source": "Posted in channel",
+      "ws": "lead",
+      "updated": "Posted 8/7 4:12 PM",
+      "new": true,
+      "slackUrl": "#",
+      "ctx": "Full transcript. Source for the go-live anchor confirmation, the program rename, and four of the open actions."
+    },
+    {
+      "id": "buildtrans",
+      "title": "Interface Review transcript — Aug 6",
+      "type": "doc",
+      "kind": "slack",
+      "source": "Posted in channel",
+      "ws": "build",
+      "updated": "Posted 8/6 2:40 PM",
+      "new": true,
+      "slackUrl": "#",
+      "ctx": "Source for the duplicate-matching risk, the record-matching weight question, and the portal rendering check."
+    },
+    {
+      "id": "comptrans",
+      "title": "Compliance Working Session transcript — Aug 4",
+      "type": "doc",
+      "kind": "slack",
+      "source": "Posted in channel",
+      "ws": "comp",
+      "updated": "Posted 8/4 4:35 PM",
+      "new": false,
+      "slackUrl": "#",
+      "ctx": "Source for the delegated-versus-standard onboarding decision and the committee timing risk."
+    },
+    {
+      "id": "opstrans",
+      "title": "Operations Design Session transcript — Aug 4",
+      "type": "doc",
+      "kind": "slack",
+      "source": "Posted in channel",
+      "ws": "ops",
+      "updated": "Posted 8/4 11:20 AM",
+      "new": false,
+      "slackUrl": "#",
+      "ctx": "Source for the workflow map and the pre-launch versus post-launch group split."
+    }
+  ]
+}

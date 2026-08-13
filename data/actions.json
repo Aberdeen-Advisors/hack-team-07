@@ -1,0 +1,374 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-13T12:39:06",
+    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "timezone": "America/New_York",
+    "schemaVersion": 1,
+    "source": "inline DATA literal, extracted on build day",
+    "sourceSite": null,
+    "listVersions": {}
+  },
+  "actions": [
+    {
+      "id": "a1",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Send the approved Finance & Billing deck to attendees ahead of the call",
+      "owner": "AR",
+      "due": "Today",
+      "status": "open",
+      "deliv": {
+        "mid": "fincyc"
+      },
+      "note": "Deck reviewed and approved. Requested to go out before the call, by end of day if possible.",
+      "src": {
+        "kind": "slack",
+        "url": "#"
+      }
+    },
+    {
+      "id": "a2",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Chase the partner team on outstanding contract signatures",
+      "owner": "AR",
+      "due": "Today",
+      "status": "open",
+      "note": "No-show at the 8/3 steering call. Overdue from 8/4, in progress."
+    },
+    {
+      "id": "a3",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Finalize the Compliance V1 deck — add standards slides plus a decisions-needed slide",
+      "owner": "AR",
+      "due": "Today",
+      "status": "open",
+      "deliv": {
+        "mid": "compws"
+      },
+      "note": "Overdue from 8/4, in progress.",
+      "src": {
+        "kind": "transcript",
+        "docId": "comptrans"
+      }
+    },
+    {
+      "id": "a4",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Present the system build timeline at the 8/17 leadership deliverable review",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "note": "Sequence: individual meetings, deep dive, timeframes and dependencies, partner overlay, align, present.",
+      "src": {
+        "kind": "transcript",
+        "docId": "buildtrans"
+      }
+    },
+    {
+      "id": "a5",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Send the consolidated project plan to the partner team for validation and discrepancy review",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "note": "From the 8/4 morning standup."
+    },
+    {
+      "id": "a6",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Confirm who owns taking the integration to the Change Advisory Board",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "deliv": {
+        "mid": "itmgr"
+      },
+      "note": "Raised as a deliverable gap on the delivery leadership call."
+    },
+    {
+      "id": "a7",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Add a support and ticketing section to the leadership status — who receives tickets after go-live",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "deliv": {
+        "mid": "itmgr"
+      },
+      "note": "Leadership status deliverable, still unowned."
+    },
+    {
+      "id": "a8",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Merge the consolidated project plan with the partner implementation team plan",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "note": "Loop the partner implementation team into the relevant workstream meetings going forward.",
+      "src": {
+        "kind": "transcript",
+        "docId": "steertrans"
+      }
+    },
+    {
+      "id": "a9",
+      "kind": "Action",
+      "urg": "Low",
+      "title": "Confirm the steering committee roster on the delivery side",
+      "owner": "AR",
+      "due": "Later",
+      "status": "open",
+      "note": "Is a technical executive sponsor needed beyond the current list?"
+    },
+    {
+      "id": "a10",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Build the steering deck timeline slide, date-anchored to an end-of-November phase 1 go-live",
+      "owner": "AR",
+      "due": "Later",
+      "status": "done",
+      "deliv": {
+        "mid": "steer"
+      },
+      "note": "Completed 2026-08-07. Go-live anchor confirmed as end of November 2026, superseding the prior early-November back-plan. v4 posted as a lean four-slide pack."
+    },
+    {
+      "id": "a11",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Book a session with the onboarding team to start standard enrollment immediately",
+      "owner": "JC",
+      "due": "Today",
+      "status": "open",
+      "deliv": {
+        "mid": "compws"
+      },
+      "note": "The delegated path is off. With only 34 partner staff, standard individual onboarding starts now, so there is no agreement to wait on."
+    },
+    {
+      "id": "a12",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Send the partner team the exact onboarding document list and get a review meeting booked",
+      "owner": "JC",
+      "due": "Tomorrow",
+      "status": "open",
+      "note": "From the 8/7 steering transcript.",
+      "src": {
+        "kind": "transcript",
+        "docId": "steertrans"
+      }
+    },
+    {
+      "id": "a13",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Confirm delegated-approval agreement legal review status and return the signed agreement",
+      "owner": "JC",
+      "due": "Later",
+      "status": "open",
+      "note": "Due end of week."
+    },
+    {
+      "id": "a14",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Roll the week of action-item updates into the steering Next Steps slide",
+      "owner": "JC",
+      "due": "Mon",
+      "status": "open",
+      "deliv": {
+        "mid": "steer"
+      },
+      "note": "Folded into the per-workstream next-steps slide."
+    },
+    {
+      "id": "a15",
+      "kind": "Action",
+      "urg": "Low",
+      "title": "Schedule a training-environment walkthrough of the flagged workflows for the clinical reviewers",
+      "owner": "JC",
+      "due": "Later",
+      "status": "open",
+      "note": "Screen-out versus refer-out logic needs a live demo."
+    },
+    {
+      "id": "a16",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Second-pass review of the consolidated project plan draft",
+      "owner": "JC",
+      "due": "Later",
+      "status": "done",
+      "note": "Completed 2026-08-06 with feedback from all three workstream leads folded in."
+    },
+    {
+      "id": "a17",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Resubmit the failed test message using a known-good provider record and notify the workflow tester",
+      "owner": "SP",
+      "due": "Today",
+      "status": "open",
+      "note": "Workaround while partner identity records are unresolved.",
+      "src": {
+        "kind": "transcript",
+        "docId": "buildtrans"
+      }
+    },
+    {
+      "id": "a18",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Confirm partner records exist in the target system with correct identifiers",
+      "owner": "SP",
+      "due": "Today",
+      "status": "open",
+      "note": "Records team to create them if missing. Production intent, which removes the test workaround."
+    },
+    {
+      "id": "a19",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Walk through the partner workflow to test message triggers",
+      "owner": "SP",
+      "due": "Later",
+      "status": "open",
+      "note": "Blocked on the partner delivering the open-item steps."
+    },
+    {
+      "id": "a20",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Share the combined interface script tracker with the partner team",
+      "owner": "SP",
+      "due": "Today",
+      "status": "open",
+      "deliv": {
+        "mid": "wqreview0812"
+      },
+      "note": "Due 8/12 ahead of the work queue review."
+    },
+    {
+      "id": "a21",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Locate and document the record-matching weight configuration; confirm the weighting is adequate",
+      "owner": "SP",
+      "due": "Later",
+      "status": "open",
+      "note": "From the 8/6 interface review."
+    },
+    {
+      "id": "a22",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Determine viable test-run count per script given the partner email and phone reuse limit",
+      "owner": "SP",
+      "due": "Today",
+      "status": "open",
+      "note": "Overdue from 8/5."
+    },
+    {
+      "id": "a23",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Confirm that partner-sourced documents render as expected in the customer portal",
+      "owner": "SP",
+      "due": "Later",
+      "status": "open",
+      "note": "From the 8/6 interface review."
+    },
+    {
+      "id": "a24",
+      "kind": "Action",
+      "urg": "Low",
+      "title": "Clarify the release-of-information process for partner-sourced documents",
+      "owner": "SP",
+      "due": "Later",
+      "status": "open",
+      "note": "Confirm scope with the vendor. May need a separate statement of work."
+    },
+    {
+      "id": "a25",
+      "kind": "Action",
+      "urg": "High",
+      "title": "Lock the second weekly slot for Workflow Design & Build",
+      "owner": "MK",
+      "due": "Tomorrow",
+      "status": "open",
+      "note": "Target is twice weekly per the 7/23 decision. Waiting on availability from two leads."
+    },
+    {
+      "id": "a26",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Schedule the cutover and go-live review after the 8/11 testing sessions",
+      "owner": "MK",
+      "due": "Wed",
+      "status": "open",
+      "note": "Cutover to be treated as a named deliverable, not an event."
+    },
+    {
+      "id": "a27",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Stand up a 15-minute weekly all-group status call",
+      "owner": "MK",
+      "due": "Later",
+      "status": "open",
+      "note": "Deferring one to two weeks until there is enough to report. Target roughly 8/24."
+    },
+    {
+      "id": "a28",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Update meeting dates on steering deck slide 3",
+      "owner": "MK",
+      "due": "Later",
+      "status": "done",
+      "deliv": {
+        "mid": "steer"
+      },
+      "note": "Completed 2026-08-07. Slide 3 stays as an overview; dates moved to the timeline slide."
+    },
+    {
+      "id": "a29",
+      "kind": "Action",
+      "urg": "Low",
+      "title": "Confirm whether the 8/12 session is the last testing round before change control",
+      "owner": "MK",
+      "due": "Later",
+      "status": "open",
+      "note": "From the 8/5 standup."
+    },
+    {
+      "id": "a30",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Fill the open operations program manager seat",
+      "owner": "Unassigned",
+      "due": "Later",
+      "status": "open",
+      "note": "Two new partner-side PM seats are open: operations PM and technical PM."
+    },
+    {
+      "id": "a31",
+      "kind": "Action",
+      "urg": "Med",
+      "title": "Send over the onboarding documentation already on hand for the 34 partner staff",
+      "owner": "Unassigned",
+      "due": "Later",
+      "status": "open",
+      "note": "Speeds the partner packet build. Due end of week."
+    }
+  ]
+}

@@ -1,0 +1,304 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-13T12:39:06",
+    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "timezone": "America/New_York",
+    "schemaVersion": 1,
+    "source": "inline DATA literal, extracted on build day",
+    "sourceSite": null,
+    "listVersions": {}
+  },
+  "meetings": {
+    "test0811a": {
+      "name": "Integration Testing (session 1)",
+      "date": "2026-08-11",
+      "time": "9:00 ET",
+      "ws": "build",
+      "audience": "Testing team",
+      "owner": "Sam Prentice",
+      "purpose": "Testing-process review ahead of change control.",
+      "deliverables": [
+        {
+          "name": "Testing-process review",
+          "required": true,
+          "docId": "testtracker"
+        }
+      ]
+    },
+    "test0811b": {
+      "name": "Integration Testing (session 2)",
+      "date": "2026-08-11",
+      "time": "9:30 ET",
+      "ws": "build",
+      "audience": "Testing team",
+      "owner": "Sam Prentice",
+      "purpose": "Best case, cutover planning (change control plus comms). Worst case, another testing round.",
+      "deliverables": [
+        {
+          "name": "Cutover plan (best case)",
+          "required": false,
+          "docId": null
+        },
+        {
+          "name": "Testing-process review",
+          "required": false,
+          "docId": null
+        }
+      ]
+    },
+    "wqreview0812": {
+      "name": "Work Queue Review",
+      "date": "2026-08-12",
+      "time": "1:00 ET",
+      "ws": "build",
+      "audience": "Riley Novak · Taylor Brooks · Casey Lin · Sam Prentice",
+      "owner": "Sam Prentice",
+      "purpose": "Review the exception and error work queues, decide what changes are needed in the duplicate queues, and agree error-resolution steps plus training.",
+      "deliverables": [
+        {
+          "name": "Interface testing tracker shared with the queue owners",
+          "required": true,
+          "docId": "testtracker"
+        },
+        {
+          "name": "Error-resolution steps and training plan",
+          "required": true,
+          "docId": null
+        }
+      ]
+    },
+    "dfd0818": {
+      "name": "Customer Experience + Change Mgmt, Training & Comms (combined kickoff)",
+      "date": "2026-08-18",
+      "time": "3:30 ET",
+      "ws": "ops",
+      "audience": "Avery Diaz · Priya Raman · Chris Oyelaran · Dana Whitfield · Casey Lin",
+      "owner": "TBD",
+      "purpose": "Combined kickoff, held after the Operational Kickoff so the scope is already agreed.",
+      "deliverables": []
+    },
+    "itmgr0810": {
+      "name": "Weekly Delivery Managers Sync",
+      "date": "2026-08-10",
+      "time": "12:30 ET",
+      "ws": "build",
+      "audience": "Delivery managers, both sides",
+      "owner": "Alex Rivera",
+      "purpose": "Weekly status. Decision pending on whether to keep the meeting or move to an emailed recap.",
+      "deliverables": []
+    }
+  },
+  "recurring": [
+    {
+      "id": "opsweekly",
+      "name": "Operations Integration — Project Weekly",
+      "dow": 2,
+      "time": "9:00 ET",
+      "cadence": "weekly",
+      "from": "2026-07-21",
+      "ws": "ops",
+      "owner": "Morgan Keller · Sam Prentice",
+      "audience": "Riley Novak · Taylor Brooks · Casey Lin · Avery Diaz · Priya Raman",
+      "purpose": "Weekly operational integration status across the site teams.",
+      "deliverables": [
+        {
+          "name": "Weekly ops status roll-up",
+          "required": false,
+          "docId": null
+        }
+      ]
+    },
+    {
+      "id": "build1",
+      "name": "Workflow Design and Build — Group 1",
+      "dow": 3,
+      "time": "10:00 ET",
+      "cadence": "weekly",
+      "from": "2026-07-29",
+      "ws": "build",
+      "owner": "Morgan Keller (relay) · Alex Rivera (build execution)",
+      "audience": "Scheduling — Riley Novak · Front office — Taylor Brooks · Portal — Dana Whitfield · Interfaces — Casey Lin · Reporting — Jamie Ford · Training — Chris Oyelaran",
+      "purpose": "This is the execution track. Identify build needs and work through the build. Target is twice weekly; the second slot is still not locked.",
+      "deliverables": [
+        {
+          "name": "Build-needs list",
+          "required": true,
+          "docId": null
+        }
+      ]
+    },
+    {
+      "id": "itmgr",
+      "name": "Delivery Leadership Project Status",
+      "dow": 1,
+      "time": "12:30 ET",
+      "cadence": "biweekly",
+      "anchor": "2026-08-03",
+      "ws": "build",
+      "owner": "Alex Rivera · Partner delivery leads",
+      "audience": "Delivery leadership, both sides",
+      "purpose": "Biweekly leadership status and workstream ownership review.",
+      "deliverables": [
+        {
+          "name": "Delivery leadership deck",
+          "required": true,
+          "docId": "builddeck"
+        }
+      ]
+    },
+    {
+      "id": "fincyc",
+      "name": "Finance & Billing / Compliance Review",
+      "dow": 3,
+      "time": "11:30 ET",
+      "cadence": "biweekly",
+      "anchor": "2026-08-05",
+      "ws": "fin",
+      "owner": "Morgan Keller (sched) · Alex Rivera (deck)",
+      "audience": "Finance leads · Billing operations · Compliance",
+      "purpose": "Biweekly revenue and billing coordination.",
+      "deliverables": [
+        {
+          "name": "Finance & Billing deck",
+          "required": true,
+          "docId": "findeck"
+        },
+        {
+          "name": "Decisions log seeded",
+          "required": false,
+          "docId": null
+        }
+      ]
+    },
+    {
+      "id": "build2",
+      "name": "Workflow Design and Build — Group 2 (post-launch)",
+      "dow": 4,
+      "time": "11:00 ET",
+      "cadence": "weekly",
+      "from": "2026-08-06",
+      "ws": "build",
+      "owner": "Morgan Keller (relay)",
+      "audience": "Billing — Jamie Ford · Scheduling — Riley Novak · Records — Casey Lin · Interfaces — Taylor Brooks · Training — Chris Oyelaran",
+      "purpose": "Post-launch workflow build session.",
+      "deliverables": []
+    },
+    {
+      "id": "steer",
+      "name": "Weekly Steering Committee",
+      "dow": 1,
+      "time": "3:00 ET",
+      "cadence": "weekly",
+      "from": "2026-07-20",
+      "ws": "lead",
+      "owner": "Alex Rivera (facilitation) · Jordan Chen (deck)",
+      "audience": "Executive sponsors, both sides · Program leads · Workstream owners",
+      "purpose": "Weekly executive steering status. Workstream calls carry the deeper drill-down.",
+      "deliverables": [
+        {
+          "name": "Steering deck",
+          "required": true,
+          "docId": "steer"
+        }
+      ]
+    },
+    {
+      "id": "compws",
+      "name": "Compliance & Onboarding Working Session",
+      "dow": 2,
+      "time": "3:30 ET",
+      "cadence": "biweekly",
+      "anchor": "2026-08-04",
+      "ws": "comp",
+      "owner": "Jordan Chen · Dana Whitfield",
+      "audience": "Compliance · Onboarding · Partner readiness team",
+      "purpose": "Biweekly onboarding and approvals coordination.",
+      "deliverables": [
+        {
+          "name": "Onboarding document list",
+          "required": true,
+          "docId": "complist"
+        }
+      ]
+    },
+    {
+      "id": "leadstrat",
+      "name": "Leadership Strategy Sync (internal)",
+      "dow": 5,
+      "time": "3:30 ET",
+      "cadence": "weekly",
+      "ws": "lead",
+      "owner": "Alex Rivera",
+      "audience": "Program leads only, no vendor present",
+      "purpose": "Internal leadership sync. On hold pending a scheduling follow-up.",
+      "deliverables": []
+    }
+  ],
+  "standupDays": [
+    "2026-08-03",
+    "2026-08-04",
+    "2026-08-05",
+    "2026-08-06",
+    "2026-08-07",
+    "2026-08-10",
+    "2026-08-11",
+    "2026-08-12",
+    "2026-08-13",
+    "2026-08-14",
+    "2026-08-17",
+    "2026-08-18",
+    "2026-08-19",
+    "2026-08-20",
+    "2026-08-21"
+  ],
+  "unscheduled": [
+    {
+      "id": "u1",
+      "title": "System Build & Config (full workstream leads), biweekly",
+      "ws": "build",
+      "reason": "Cadence changed from weekly on 7/20. New slot not yet locked."
+    },
+    {
+      "id": "u2",
+      "title": "Weekly delivery status roll-up (sub-team)",
+      "ws": "build",
+      "reason": "Newly added standing meeting, on top of the biweekly System Build cadence. @mkeller scheduling."
+    },
+    {
+      "id": "u3",
+      "title": "Operations recurring cadence",
+      "ws": "ops",
+      "reason": "Kickoff happened 8/3. Day and time for the weekly still not locked; waiting on availability from three site leads."
+    },
+    {
+      "id": "u4",
+      "title": "Finance and Compliance joint working session",
+      "ws": "fin",
+      "reason": "Covers both workstreams operationally. Not yet scheduled."
+    },
+    {
+      "id": "u5",
+      "title": "Operational Kickoff (full cross-functional)",
+      "ws": "lead",
+      "reason": "Large cross-functional kickoff targeted for week of 8/17, 1 hour. Exact day and time not set."
+    },
+    {
+      "id": "u6",
+      "title": "Executive internal sync, twice weekly",
+      "ws": "lead",
+      "reason": "New request. Two internal syncs per week to drive tracking. @arivera scheduling."
+    },
+    {
+      "id": "u7",
+      "title": "Workflow Design & Build — second weekly slot",
+      "ws": "build",
+      "reason": "First slot is Wed 10:00 ET. Target is twice weekly per the 7/23 decision. Second slot not locked."
+    },
+    {
+      "id": "u8",
+      "title": "Cutover and go-live review",
+      "ws": "build",
+      "reason": "To be scheduled after the 8/11 testing sessions. Cutover to be treated as a named deliverable."
+    }
+  ]
+}

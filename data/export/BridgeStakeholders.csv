@@ -1,0 +1,5 @@
+﻿RegisterId,Title,Initials,Role,Side,Function,Influence,Workstreams,SourceSystem,SourcePermalink,SourceQuote,VerificationStatus
+STK-01,Alex Rivera,AR,Program lead / builder,Both sides,,,,seeded,,,pending
+STK-02,Jordan Chen,JC,Compliance / status reporting,Both sides,,,,seeded,,,pending
+STK-03,Sam Prentice,SP,Testing · integrations · build,Delivery side,,,,seeded,,,pending
+STK-04,Morgan Keller,MK,Operations / scheduling,Client side,,,,seeded,,,pending
