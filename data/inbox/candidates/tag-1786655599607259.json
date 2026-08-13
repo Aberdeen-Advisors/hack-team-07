@@ -1,0 +1,35 @@
+{
+  "batch": "slack-2026-08-13-2112",
+  "capturedAt": "2026-08-13T21:13:00Z",
+  "items": [
+    {
+      "candidateId": "TAG-20260813-21",
+      "register": "risk",
+      "title": "Vendor certificates may not all be in hand by 23 August",
+      "detail": "Raised as a concern by Will Brown in channel, not in a meeting. He did not say which vendors, which certificates, or what the 23rd is a deadline for, and nobody was named to own chasing them.",
+      "owner": null,
+      "due": "2026-08-23",
+      "ws": null,
+      "severity": null,
+      "decidedOn": null,
+      "meetingId": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "author": "Will Brown",
+        "messageTs": "1786655546.544779",
+        "permalink": "<https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786655546544779>",
+        "quote": "I'm worried that we can't get certificates from all the involved vendors by the 23rd.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending"
+      },
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    }
+  ],
+  "postedBy": "U0AB8UM5278"
+}

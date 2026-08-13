@@ -1,18 +1,19 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T16:40:04",
+    "generatedAt": "2026-08-13T21:15:29",
     "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
     "source": "scripts/extract.py over data/inbox/transcripts",
     "sourceSite": null,
     "listVersions": {},
-    "lastSlackTs": "1786652612.149049",
+    "lastSlackTs": "1786655599.607259",
     "ingestedFiles": [
       "candidates/tag-1786650032244369.json",
-      "candidates/tag-1786652612149049.json"
+      "candidates/tag-1786652612149049.json",
+      "candidates/tag-1786655599607259.json"
     ],
-    "lastSlackPull": "2026-08-13T20:32:21"
+    "lastSlackPull": "2026-08-13T21:15:29"
   },
   "risks": [
     {
@@ -46,6 +47,42 @@
       "status": "open",
       "reviewed": null,
       "due": null,
+      "unclear": [
+        "owner",
+        "severity"
+      ]
+    },
+    {
+      "id": "r2",
+      "kind": "Risk",
+      "urg": "Med",
+      "title": "Vendor certificates may not all be in hand by 23 August",
+      "owner": "Unassigned",
+      "note": "Raised as a concern by Will Brown in channel, not in a meeting. He did not say which vendors, which certificates, or what the 23rd is a deadline for, and nobody was named to own chasing them.",
+      "ws": null,
+      "meetingId": null,
+      "relatedTo": null,
+      "provenance": {
+        "sourceSystem": "slack",
+        "channel": "hack-team-7-app-dev",
+        "docId": null,
+        "line": null,
+        "author": "Will Brown",
+        "messageTs": "1786655546.544779",
+        "permalink": "https://aberdeenadv.slack.com/archives/C0BPZH0JXD4/p1786655546544779",
+        "quote": "I'm worried that we can't get certificates from all the involved vendors by the 23rd.",
+        "confidence": "high"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Proposed by Claude Tag. No person has checked it."
+      },
+      "sev": "Y",
+      "status": "open",
+      "reviewed": null,
+      "due": "2026-08-23",
       "unclear": [
         "owner",
         "severity"
