@@ -46,6 +46,28 @@ def download(url):
         return r.read().decode('utf-8', 'replace')
 
 
+def bare_json_objects(text):
+    """Find top-level {...} objects in a message that was posted without a code fence.
+    Brace matching, string-aware, so braces inside quotes do not throw it off."""
+    out, depth, start, in_str, esc = [], 0, None, False, False
+    for i, ch in enumerate(text):
+        if in_str:
+            if esc: esc = False
+            elif ch == '\\': esc = True
+            elif ch == '"': in_str = False
+            continue
+        if ch == '"': in_str = True
+        elif ch == '{':
+            if depth == 0: start = i
+            depth += 1
+        elif ch == '}':
+            if depth:
+                depth -= 1
+                if depth == 0 and start is not None:
+                    out.append(text[start:i + 1]); start = None
+    return out
+
+
 def slug(s, fallback):
     s = re.sub(r'[^a-z0-9]+', '', (s or '').lower())[:24]
     return s or fallback
@@ -87,17 +109,32 @@ def pull():
         if not cursor:
             break
 
-    # conversations.history omits thread replies, and that is where files usually land.
-    for parent in list(msgs):
-        if not parent.get('reply_count'):
+    # Threads are the trap. conversations.history with `oldest` returns only PARENTS newer
+    # than the watermark — so a new reply on an older thread is invisible. Scan recent
+    # parents regardless of the watermark, then take replies newer than it.
+    try:
+        recent = call('conversations.history', channel=CHANNEL, limit=200)
+        parents = recent.get('messages', [])
+    except SlackError as e:
+        print('::warning::could not scan for threads: %s' % e)
+        parents = list(msgs)
+
+    seen_parents = set()
+    for parent in parents + list(msgs):
+        ts = parent.get('ts')
+        if not parent.get('reply_count') or ts in seen_parents:
             continue
+        seen_parents.add(ts)
         try:
-            rep = call('conversations.replies', channel=CHANNEL, ts=parent['ts'], limit=200)
+            rep = call('conversations.replies', channel=CHANNEL, ts=ts, limit=200)
+            new_in_thread = 0
             for r in rep.get('messages', []):
-                if r.get('ts') != parent.get('ts') and float(r.get('ts', 0)) > float(oldest or 0):
-                    msgs.append(r)
+                if r.get('ts') != ts and float(r.get('ts', 0)) > float(oldest or 0):
+                    msgs.append(r); new_in_thread += 1
+            if new_in_thread:
+                print('  thread %s: %d new reply(ies)' % (ts, new_in_thread))
         except SlackError as e:
-            print('::warning::could not read thread %s: %s' % (parent.get('ts'), e))
+            print('::warning::could not read thread %s: %s' % (ts, e))
 
     seen_ts = set()
     msgs = [m for m in sorted(msgs, key=lambda m: float(m.get('ts', 0)))
@@ -141,13 +178,16 @@ def pull():
         if m.get('subtype') in ('channel_join', 'channel_leave', 'bot_message'):
             continue
         is_bot = bool(m.get('bot_id')) or m.get('user') in ('U0AB8UM5278',)
-        blocks = JSON_BLOCK.findall(m.get('text') or '')
+        text_raw = m.get('text') or ''
+        blocks = JSON_BLOCK.findall(text_raw)
+        if not blocks and '"items"' in text_raw:
+            blocks = bare_json_objects(text_raw)   # posted without a code fence
         got_json = False
         for b in blocks:
             try:
                 got_json = save_candidates(json.loads(b), m.get('ts', '0'), m.get('user') or 'bot') or got_json
-            except json.JSONDecodeError:
-                pass
+            except json.JSONDecodeError as e:
+                print('::warning::a JSON block would not parse (%s) — asking for a valid one is better than guessing' % e)
         if is_bot:
             continue                # a bot's prose is never a source; its JSON already landed above
         ts = m.get('ts', '0')

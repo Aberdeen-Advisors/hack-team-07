@@ -6,10 +6,10 @@
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786654668.342009",
+  "lastSlackTs": "1786652612.149049",
   "ingestedFiles": [
     "candidates/tag-1786650032244369.json",
     "candidates/tag-1786652612149049.json"
   ],
-  "lastSlackPull": "2026-08-13T20:58:31"
+  "lastSlackPull": "2026-08-13T20:32:21"
 }
