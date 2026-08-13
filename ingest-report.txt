@@ -1,2 +1,1 @@
-36 candidates extracted, all pending. 6 with no owner, 20 with no date. buildtrans.md: 0 new; comptrans.md: 0 new; latpmo02.md: 12 new; latsec01.md: 12 new; lattech03.md: 12 new; opstrans.md: 0 new; steertrans.md: 0 new
-new ids: a32, a33, a34, r9, a35, a36, a37, a38, a39, a40, a41, a42, a43, a44, a45, d9, a46, a47, r10, r11, a48, a49, a50, a51, a52, r12, a53, a54, r13, d10, a55, a56, a57, a58, d11, r14
+

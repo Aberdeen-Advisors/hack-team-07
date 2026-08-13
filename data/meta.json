@@ -1,13 +1,12 @@
 {
-  "generatedAt": "2026-08-13T19:38:16",
-  "asOf": "Monday Aug 10, 4:35 PM ET",
+  "generatedAt": "2026-08-13T15:59:42",
+  "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
-  "source": "scripts/extract.py over data/inbox/transcripts",
+  "source": "reset for an end-to-end test \u2014 every entry from here comes from Slack",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786650032.244369",
-  "lastSlackPull": "2026-08-13T19:41:22",
+  "lastSlackTs": "1786651182.455114",
   "ingestedFiles": [
     "buildtrans.md",
     "comptrans.md",

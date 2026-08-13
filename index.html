@@ -1034,6 +1034,8 @@ function renderHeroHealth(){
   const hs=(DATA.workstreams||[]).map(w=>w.health);
   const worst = hs.includes('R') ? 'R' : hs.includes('Y') ? 'Y' : 'G';
   const n = hs.filter(h=>h===worst).length;
+  if(!hs.length){ el.style.background='rgba(9,55,95,.25)'; el.style.color='#cfe0ee';
+    el.innerHTML='<span class="dot" style="background:#8aa8c0"></span> Awaiting first ingest'; return; }
   const txt = worst==='G' ? 'All workstreams on track'
             : worst==='Y' ? n+' of '+hs.length+' workstreams need watching'
             : n+' of '+hs.length+' workstreams at risk';
@@ -1114,7 +1116,8 @@ function renderItems(){
   const shown=istate.expanded?list:list.slice(0,10);
   document.getElementById('itemsList').innerHTML=
     `<div class="ti-head"><span></span><span>Type</span><span>Item</span><span>Source</span><span>Meeting</span><span>Verified</span><span>Owner</span><span>Due</span><span></span></div>`
-    +shown.map(renderItemRow).join('')||`<div class="ti-empty">Nothing here${istate.showDone?'':' — try “Show completed”'}.</div>`;
+    +(shown.length?shown.map(renderItemRow).join('')
+        :`<div class="ti-empty">Nothing in the register yet. Entries arrive from Slack — the ingest writes them here as unverified.</div>`)||`<div class="ti-empty">Nothing here${istate.showDone?'':' — try “Show completed”'}.</div>`;
   const more=document.getElementById('itemsMore');
   more.innerHTML = total>10 ? `<button class="btn sm" onclick="istate.expanded=${!istate.expanded};renderItems()">${istate.expanded?'Show less':'Show all '+total}</button>` : '';
 }
@@ -1549,9 +1552,11 @@ function goToday(){cal.anchor=TODAY;renderCalendar();}
 function renderWs(){
   const un=wsUnattributed();
   const note=document.getElementById('wsNote');
-  if(note) note.textContent = un
-    ? un+' open items are not attached to a workstream yet. Attribution is derived from the meeting an item was committed in — items that arrived without one stay uncounted rather than being guessed at.'
-    : 'Every open item is attributed to a workstream.';
+  if(note) note.textContent = !DATA.items.length
+    ? 'No workstreams yet — they appear as the record is built from the channel.'
+    : un
+      ? un+' open items are not attached to a workstream yet. Attribution is derived from the meeting an item was committed in — items that arrived without one stay uncounted rather than being guessed at.'
+      : 'Every open item is attributed to a workstream.';
   document.getElementById('wsGrid').innerHTML=DATA.workstreams.map(w=>{
     const [fg,bg,lbl]=hBg[w.health];
     return `<div class="card" style="overflow:hidden;cursor:pointer" onclick="this.classList.toggle('_o');this.querySelector('._x').style.display=this.classList.contains('_o')?'block':'none'">
@@ -1792,7 +1797,9 @@ function renderReview(){
       <button class="rv-btn${waiting>0?' ok':''}" onclick="exportChanges()">Export decisions${waiting>0?' · '+waiting:''}</button>
       <span class="sub" style="font-size:13px">Approving here writes a decision locally; Claude Code applies it to the register.</span>
     </div>`;
-  if(!list.length){ host.innerHTML=head+`<div class="rv-empty">Every entry in the record has been through a person. New extractions land here.</div>`; return; }
+  if(!list.length){ host.innerHTML=head+`<div class="rv-empty">${DATA.items.length
+      ? 'Every entry in the record has been through a person. New extractions land here.'
+      : 'The register is empty. Say something in the project channel — the next ingest lands here, unverified, with the sentence it came from.'}</div>`; return; }
   host.innerHTML=head+list.map(it=>{
     const pr=provOf(it), dm=dueMeta(it.due), why=blockReason(it), k=KIND[it.kind]||{label:it.kind};
     const cite = pr.inApp
@@ -1822,7 +1829,7 @@ function renderReview(){
 function renderAttn(){
   const host=document.getElementById('attnCard'); if(!host) return;
   const list=attnItems();
-  if(!list.length){ host.innerHTML=`<div class="attn-empty">Nothing urgent right now — the full list is below.</div>`; return; }
+  if(!list.length){ host.innerHTML=`<div class="attn-empty">${DATA.items.length?'Nothing urgent right now — the full list is below.':'Nothing to show yet. Bridge fills this from the project channel.'}</div>`; return; }
   const rows=list.map(it=>{
     const isDec=it.kind==='Decision';
     const badge = isDec ? `<span class="attn-badge dec">Decision</span>`

@@ -1,49 +1,23 @@
 {
   "meta": {
-    "generatedAt": "2026-08-13T12:39:06",
-    "asOf": "Monday Aug 10, 4:35 PM ET",
+    "generatedAt": "2026-08-13T15:59:42",
+    "asOf": null,
     "timezone": "America/New_York",
     "schemaVersion": 1,
-    "source": "inline DATA literal, extracted on build day",
+    "source": "reset for an end-to-end test \u2014 every entry from here comes from Slack",
     "sourceSite": null,
-    "listVersions": {}
+    "listVersions": {},
+    "lastSlackTs": "1786651182.455114",
+    "ingestedFiles": [
+      "buildtrans.md",
+      "comptrans.md",
+      "latpmo02.md",
+      "latsec01.md",
+      "lattech03.md",
+      "opstrans.md",
+      "slack20260813.md",
+      "steertrans.md"
+    ]
   },
-  "stakeholders": [
-    {
-      "ini": "AR",
-      "nm": "Alex Rivera",
-      "rl": "Program lead / builder",
-      "side": "Both sides",
-      "color": "#0f2a43",
-      "sidec": "#dcfce7",
-      "sidefg": "#15803d"
-    },
-    {
-      "ini": "JC",
-      "nm": "Jordan Chen",
-      "rl": "Compliance / status reporting",
-      "side": "Both sides",
-      "color": "#7c3aed",
-      "sidec": "#dcfce7",
-      "sidefg": "#15803d"
-    },
-    {
-      "ini": "SP",
-      "nm": "Sam Prentice",
-      "rl": "Testing · integrations · build",
-      "side": "Delivery side",
-      "color": "#0369a1",
-      "sidec": "#e0f2fe",
-      "sidefg": "#0369a1"
-    },
-    {
-      "ini": "MK",
-      "nm": "Morgan Keller",
-      "rl": "Operations / scheduling",
-      "side": "Client side",
-      "color": "#be185d",
-      "sidec": "#fce7f3",
-      "sidefg": "#be185d"
-    }
-  ]
+  "stakeholders": []
 }
