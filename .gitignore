@@ -20,3 +20,5 @@ node_modules/
 Docs*/
 docs-internal/
 *.pre-scrub.html
+
+.vercel

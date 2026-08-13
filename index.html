@@ -644,7 +644,7 @@
 
 <div class="wrap">
   <div class="ribbon" id="ribbon">
-    <span class="badge">3</span>
+    <span class="badge" id="ribbonBadge"></span>
     <span class="txt" id="ribbonTxt"></span>
     <button onclick="document.getElementById('ribbon').style.display='none'">Mark all seen</button>
   </div>
@@ -687,7 +687,7 @@
   </section>
 
 <section class="section" id="ask">
-    <div class="sec-head"><h2>Ask Claude</h2><span class="sub">Type a quick instruction — it posts to the project channel and Claude picks it up on the next pass</span></div>
+    <div class="sec-head"><h2>Ask Claude</h2><span class="sub">Queued locally for the next export — this page cannot post to Slack</span></div>
     <div class="ask-card">
       <textarea id="askText" class="ask-ta" rows="2" placeholder="e.g. “Move the Friday leadership sync to 4pm and update the calendar,” or “Add a build-team kickoff deck to next week’s asks.”" onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')sendAsk()"></textarea>
       <button id="askSend" class="ask-send" onclick="sendAsk()">Send to Claude</button>
@@ -707,7 +707,7 @@
           <span class="intake-ic">＋</span>
           <div>
             <h2>Add to the Bridge</h2>
-            <div class="intake-sub">Drop a file, paste a transcript, or send a quick note. Posts to the project channel.</div>
+            <div class="intake-sub">Paste a transcript or a note. It queues locally and leaves with the next export — nothing is uploaded from here.</div>
           </div>
         </div>
         <span class="intake-chev" id="intakeChev">▸</span>
@@ -724,7 +724,7 @@
           <div class="dropzone" id="dropzone" onclick="toast('File upload is off in this build — there is no server to receive it. Paste the text instead.')">
             <div class="dz-ic">⇪</div>
             <div class="dz-main" id="dzMain">Drag a file here, or click to choose</div>
-            <div class="dz-sub">PDF, Word, Excel, PowerPoint, text · up to ~3.5 MB</div>
+            <div class="dz-sub">File upload is off in this build — there is no server to receive it. Paste the text instead.</div>
           </div>
           <input class="intake-in" id="upName" placeholder="Name (auto-fills from the file — editable)">
           <input class="intake-in" id="upCtx" placeholder="Optional context — one line">
@@ -745,7 +745,7 @@
         </div>
 
         <div class="intake-row">
-          <button class="intake-submit" id="intakeSubmit" onclick="submitIntake()">Post to the Bridge</button>
+          <button class="intake-submit" id="intakeSubmit" onclick="submitIntake()">Queue for the next export</button>
         </div>
         <div class="intake-msg" id="intakeMsg"></div>
         <div class="intake-email" id="intakeEmailLine"></div>
@@ -807,9 +807,9 @@
 
 <footer>
   <div class="wrap">
-    <strong>Bridge</strong> · A read-only view generated from the project Slack channel and its canvases, which are the source of truth.
-    SharePoint links open the current file, transcripts open in Slack, and loose files are flagged to move to SharePoint. Nothing is hosted here.
-    Rebuilt by Claude 3× on weekdays (8am / 12pm / 4pm ET) and on demand; edits made here post back to Slack. <span id="footupd"></span> <span class="footver" id="appver"></span>
+    <strong>Bridge</strong> · A read-only view of the project record. The registers are the source of truth; this page renders a snapshot of them and changes nothing.
+    Verification decisions made here are held locally and leave as a structured export, which Claude Code applies to the registers. Nothing is written from the browser.
+    <span id="footupd"></span> <span class="footver" id="appver"></span>
   </div>
 </footer>
 
@@ -1065,6 +1065,7 @@ function renderRibbon(){
   const pend=pendingCount(), over=DATA.items.filter(it=>it.status!=='done'&&!isRejected(it)&&dueMeta(it.due).overdue).length;
   const box=document.getElementById('ribbon');
   if(!pend&&!over){ if(box) box.style.display='none'; return; }
+  const badge=document.getElementById('ribbonBadge'); if(badge) badge.textContent=pend+over;
   const bits=[]; if(pend) bits.push(`<strong>${pend} waiting on you</strong> to verify`); if(over) bits.push(`<strong>${over} overdue</strong>`);
   el.innerHTML=bits.join(' · ')+' — everything below is computed from the record, not typed.';
 }
@@ -1702,7 +1703,7 @@ function intakeType(t){
   intakeState.type = t;
   document.querySelectorAll('#intakeTypes .itype').forEach(b=>b.classList.toggle('on', b.dataset.type===t));
   ['upload','transcript','document','text'].forEach(p=>{const el=document.getElementById('pane-'+p); if(el) el.hidden = (p!==t);});
-  const btn=document.getElementById('intakeSubmit'); btn.textContent = t==='text' ? 'Send to Claude' : 'Post to the Bridge';
+  const btn=document.getElementById('intakeSubmit'); btn.textContent = 'Queue for the next export';
 }
 function initDrop(){
   const dz=document.getElementById('dropzone'); if(!dz) return;

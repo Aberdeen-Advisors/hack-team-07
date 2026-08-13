@@ -1,0 +1,120 @@
+name: Bridge ingest
+
+# Turns dropped sources into register entries, on a schedule, with no laptop involved.
+#
+# PHASE 1 (works today, no Slack admin needed): anything committed under data/inbox/
+# is ingested. Drop a transcript, push, and the registers update themselves.
+# PHASE 2 (when a Slack bot token exists): the same job also reads the channel directly.
+#
+# Secrets, in Settings → Secrets and variables → Actions:
+#   ANTHROPIC_API_KEY      required. Without it the job exits cleanly and does nothing.
+#   VERCEL_DEPLOY_HOOK_URL optional. Vercel → Project → Settings → Git → Deploy Hooks.
+#   SLACK_BOT_TOKEN        optional, phase 2. Needs channels:history, groups:history,
+#                          files:read, channels:read on a workspace-installed app.
+
+on:
+  schedule:
+    - cron: '0,30 13-22 * * 1-5'   # every 30 min, 9am-6pm ET, weekdays (cron is UTC)
+  workflow_dispatch:                # and a Run workflow button, for the demo
+  push:
+    paths:
+      - 'data/inbox/**'             # a dropped transcript ingests immediately
+
+permissions:
+  contents: write                   # the job commits the updated registers
+
+concurrency:
+  group: bridge-ingest              # never two runs writing the registers at once
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check configuration
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "::notice::ANTHROPIC_API_KEY is not set — ingest is not configured yet. Exiting cleanly."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -n "${{ secrets.SLACK_BOT_TOKEN }}" ]; then
+            echo "slack=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No SLACK_BOT_TOKEN — phase 1 only, ingesting from data/inbox/."
+            echo "slack=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.cfg.outputs.ready == 'true'
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        if: steps.cfg.outputs.ready == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the ingest prompt
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_ENABLED: ${{ steps.cfg.outputs.slack }}
+        run: |
+          claude -p "Follow scripts/ingest.md exactly. \
+          Source of truth for the rules is that file; do not deviate from it. \
+          Ingest every unprocessed file under data/inbox/ (transcripts/*.md and any *.json drops). \
+          If SLACK_ENABLED is true, also read channel C0BPZH0JXD4 via the Slack Web API using \
+          SLACK_BOT_TOKEN (conversations.history, conversations.replies) and ingest messages newer \
+          than meta.json lastIngestTs. \
+          Every new item arrives verification.status pending. Never guess an owner or a date. \
+          Quotes must be verbatim or the entry is not created. \
+          Update the register files, meta.json (generatedAt and lastIngestTs), and regenerate \
+          data/snapshot.js and data/transcripts.js. Do not touch index.html. \
+          Finish by writing a two-line summary to ingest-report.txt: commitments found, already \
+          tracked, missing an owner, missing a date, and the new ids." \
+            --allowedTools "Read,Write,Edit,Bash,Glob,Grep" \
+            --permission-mode acceptEdits
+
+      - name: Verify nothing is broken
+        if: steps.cfg.outputs.ready == 'true'
+        run: |
+          node --check data/snapshot.js
+          [ -f data/transcripts.js ] && node --check data/transcripts.js || true
+          python3 - <<'EOF'
+          import json,glob,sys
+          for f in glob.glob('data/*.json'):
+              try: json.load(open(f,encoding='utf-8'))
+              except Exception as e: print("INVALID",f,e); sys.exit(1)
+          print("all register files parse")
+          EOF
+          grep -q 'fetch(' index.html && { echo "index.html regained a fetch call"; exit 1; } || true
+
+      - name: Commit the registers
+        if: steps.cfg.outputs.ready == 'true'
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then
+            echo "::notice::Nothing new — registers unchanged."
+            exit 0
+          fi
+          git config user.name  "bridge-ingest[bot]"
+          git config user.email "bridge-ingest@users.noreply.github.com"
+          git add data
+          git commit -m "ingest: update registers from dropped sources
+
+$(cat ingest-report.txt 2>/dev/null || echo 'no report written')"
+          git push
+
+      - name: Publish
+        if: steps.cfg.outputs.ready == 'true' && env.HOOK != ''
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: curl -fsS -X POST "$HOOK" && echo "deploy triggered"
+
+      - name: Report
+        if: always() && steps.cfg.outputs.ready == 'true'
+        run: cat ingest-report.txt 2>/dev/null || echo "no changes this run"
