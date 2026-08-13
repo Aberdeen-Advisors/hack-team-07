@@ -1,11 +1,24 @@
 {
-  "generatedAt": "2026-08-13T16:09:05",
+  "generatedAt": "2026-08-13T20:11:11",
   "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
-  "source": "clean slate \u2014 every entry comes from #hack-team-7-app-dev",
+  "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "0",
-  "ingestedFiles": []
+  "lastSlackTs": "1786651385.035659",
+  "ingestedFiles": [
+    "20260810latsec01security.md",
+    "20260812latpmo02weeklypr.md",
+    "20260814lattech03datamig.md",
+    "buildtrans.md",
+    "comptrans.md",
+    "latpmo02.md",
+    "latsec01.md",
+    "lattech03.md",
+    "opstrans.md",
+    "slack20260813.md",
+    "steertrans.md"
+  ],
+  "lastSlackPull": "2026-08-13T20:11:11"
 }
