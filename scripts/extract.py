@@ -270,7 +270,40 @@ def ingest_candidates(DATA, meta, seq, existing_quotes):
         except Exception as e:
             print('::warning::unreadable candidate batch %s: %s' % (key, e)); continue
         n = 0
-        for c in batch.get('items', []):
+        items = batch.get('items', [])
+
+        # Meetings first: an item in the same batch can point at one by candidateId.
+        cand_to_meeting = {}
+        for c in items:
+            if (c.get('register') or '').lower() != 'meeting':
+                continue
+            title = (c.get('title') or '').strip()
+            date = (c.get('date') or c.get('due') or '').strip()[:10]
+            if not title or not re.match(r'^\d{4}-\d{2}-\d{2}$', date):
+                print('::warning::meeting skipped, needs a title and an ISO date: %r' % title)
+                continue
+            mid = 'm' + date.replace('-', '') + re.sub(r'[^a-z0-9]', '', title.lower())[:14]
+            prov = dict(c.get('provenance') or {})
+            for k in ('permalink', 'url'):
+                if isinstance(prov.get(k), str):
+                    prov[k] = prov[k].strip().lstrip('<').rstrip('>').strip() or None
+            DATA.setdefault('meetings', {})[mid] = {
+                'name': title, 'date': date, 'time': c.get('time') or 'TBC',
+                'ws': c.get('ws'), 'owner': c.get('owner') or 'TBC',
+                'audience': c.get('attendees') or c.get('audience') or 'Not stated',
+                'purpose': c.get('detail') or '', 'deliverables': [],
+                'provenance': prov,
+                'verification': {'status': 'pending', 'decidedBy': None, 'decidedAt': None,
+                                 'note': 'Proposed by Claude Tag. No person has checked it.'}}
+            cand_to_meeting[c.get('candidateId')] = mid
+            cand_to_meeting[title.lower()] = mid
+            n += 1
+        if cand_to_meeting:
+            report.append('%s: %d meeting(s)' % (key, len(set(cand_to_meeting.values()))))
+
+        for c in items:
+            if (c.get('register') or '').lower() == 'meeting':
+                continue
             prov = dict(c.get('provenance') or {})
             # Slack posts links as <https://…>; strip the brackets or the app calls it "no link"
             for k in ('permalink', 'url'):
@@ -289,7 +322,12 @@ def ingest_candidates(DATA, meta, seq, existing_quotes):
                   'urg': 'High' if (c.get('severity') == 'R' or c.get('priority') == 'high') else 'Med',
                   'title': title, 'owner': c.get('owner') or 'Unassigned',
                   'note': c.get('detail') or '',
-                  'ws': c.get('ws'), 'meetingId': c.get('meetingId'), 'relatedTo': c.get('relatedTo'),
+                  'ws': c.get('ws'),
+                  # a meetingId may name a candidate in this batch, or a meeting by title
+                  'meetingId': (cand_to_meeting.get(c.get('meetingId'))
+                                or cand_to_meeting.get(str(c.get('meetingId') or '').lower())
+                                or c.get('meetingId')),
+                  'relatedTo': c.get('relatedTo'),
                   'provenance': {'sourceSystem': prov.get('sourceSystem') or 'slack',
                                  'channel': prov.get('channel'), 'docId': prov.get('docId'),
                                  'line': prov.get('line'), 'author': prov.get('author'),
@@ -398,6 +436,10 @@ def main():
         tj[:tj.index('window.BRIDGE_TRANSCRIPTS')]
         + 'window.BRIDGE_TRANSCRIPTS = ' + json.dumps(TR, ensure_ascii=False) + ';\n')
     json.dump(meta, open(dpath('meta.json'), 'w', encoding='utf-8'), indent=2)
+    json.dump({'meta': meta, 'meetings': DATA.get('meetings', {}),
+               'recurring': DATA.get('recurring', []), 'standupDays': DATA.get('standupDays', []),
+               'unscheduled': DATA.get('unscheduled', [])},
+              open(dpath('meetings.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     for f, key, kinds in [('actions.json', 'actions', ['Action']),
                           ('decisions.json', 'decisions', ['Decision']),
                           ('risks.json', 'risks', ['Risk', 'Blocker', 'Issue'])]:

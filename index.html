@@ -157,6 +157,16 @@
   .gchip.dec{color:var(--navy);background:var(--line-soft)}
   .arow.attached{display:flex;align-items:center;gap:8px;padding:5px 0;cursor:default}
   .arow.attached .atext{flex:1}
+  .hero-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .hero-btn{font-size:12.5px;font-weight:750;color:#fff;background:rgba(255,255,255,.12);
+            border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:8px 13px;cursor:pointer}
+  .hero-btn:hover{background:rgba(255,255,255,.22)}
+  .brief{padding:16px 18px;overflow:auto;font-size:14px;line-height:1.55;color:var(--ink)}
+  .brief h4{margin:16px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .brief ul{margin:0;padding-left:18px} .brief li{margin:4px 0}
+  .brief .none{color:var(--muted);font-style:italic}
+  .brief-bar{display:flex;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .brief-bar select{font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--line);border-radius:8px}
   .src-chip.cite{border:0;cursor:pointer;font-family:inherit}
   .src-chip.cite:hover{filter:brightness(.94)}
   .src-modal{display:none} .src-modal.on{display:block}
@@ -652,6 +662,10 @@
           <div class="wsdots" id="wsdots"></div>
         </div>
         <div class="live"><span class="beat"></span> <span id="updated"></span></div>
+        <div class="hero-acts">
+          <button class="hero-btn" onclick="openBrief('status')">▤ Status report draft</button>
+          <button class="hero-btn" onclick="openBrief('onboard')">＋ Onboard a new member</button>
+        </div>
       </div>
     </div>
   </div>
@@ -686,7 +700,7 @@
       <button class="btn today-b" onclick="goToday()">Today</button>
     </div>
     <div id="calView"></div>
-    <div id="unscheduled"></div>
+    <!-- Needs scheduling removed: scheduling is an action item like any other. -->
   </section>
 
 <section class="section" id="items">
@@ -951,6 +965,84 @@ function openSource(id){
   const t=document.getElementById('tl-'+pr.line);
   if(t&&t.scrollIntoView) t.scrollIntoView({block:'center'});
 }
+/* ---------- generated briefs ----------
+   Built from the register at read time. Nothing is stored and nothing is sent — a person
+   reads it, edits it and sends it. Both are answers to "can it write the status report". */
+function briefLine(it){
+  const dm=dueMeta(it.due), v=isPending(it)?' <em>(unverified)</em>':'';
+  const who=isUnowned(it)?'<strong>no owner</strong>':esc(ownerName(it.owner));
+  return `<li>${esc(it.title)} — ${who}${it.due?' · '+esc(dm.label):' · <strong>no date</strong>'}${v}</li>`;
+}
+const briefList=(a)=>a.length?`<ul>${a.map(briefLine).join('')}</ul>`:`<p class="none">None.</p>`;
+
+function statusBrief(){
+  const live=DATA.items.filter(i=>!isRejected(i));
+  const open=live.filter(i=>i.status!=='done');
+  const overdue=open.filter(i=>dueMeta(i.due).overdue).sort((a,b)=>dueKey(a)-dueKey(b));
+  const soon=open.filter(i=>{const d=dueMeta(i.due).days;return d!==null&&d>=0&&d<=7;});
+  const unowned=open.filter(isUnowned), pend=live.filter(isPending);
+  const risks=open.filter(isRiskFamily), decisions=live.filter(i=>i.kind==='Decision');
+  const done=live.filter(i=>i.status==='done');
+  const mtgs=Object.entries(DATA.meetings||{});
+  return {title:'Status report — draft', sub:'Generated from the register. Edit before sending.', html:`
+    <h4>Where it stands</h4>
+    <ul><li>${open.length} open, ${done.length} completed, ${mtgs.length} meeting${mtgs.length===1?'':'s'} on the calendar.</li>
+        <li>${overdue.length} overdue · ${unowned.length} with nobody named · ${pend.length} not yet verified.</li></ul>
+    <h4>Overdue</h4>${briefList(overdue.slice(0,10))}
+    <h4>Due in the next seven days</h4>${briefList(soon.slice(0,10))}
+    <h4>Nobody owns these</h4>${briefList(unowned.slice(0,10))}
+    <h4>Decisions taken</h4>${decisions.length?`<ul>${decisions.slice(0,10).map(d=>`<li>${esc(d.title)}${d.date?' · '+esc(d.date):''}</li>`).join('')}</ul>`:'<p class="none">None recorded.</p>'}
+    <h4>Open risks</h4>${briefList(risks.slice(0,10))}
+    <h4>Asks</h4>
+    <ul><li>${unowned.length?'Name an owner for '+unowned.length+' item'+(unowned.length===1?'':'s')+'.':'Every open item has an owner.'}</li>
+        <li>${pend.length?pend.length+' entries are waiting on a PM to verify.':'Everything has been verified.'}</li></ul>`};
+}
+
+function onboardBrief(ws){
+  const live=DATA.items.filter(i=>!isRejected(i) && (!ws || wsOf(i)===ws));
+  const open=live.filter(i=>i.status!=='done'), done=live.filter(i=>i.status==='done');
+  const people=[...new Set(live.filter(i=>!isUnowned(i)).map(i=>ownerName(i.owner)))];
+  const decisions=live.filter(i=>i.kind==='Decision'), risks=open.filter(isRiskFamily);
+  const mtgs=Object.entries(DATA.meetings||{}).filter(([id,m])=>!ws||m.ws===ws);
+  const name=((DATA.workstreams||[]).find(w=>w.id===ws)||{}).name || (ws||'the whole programme');
+  return {title:'Onboarding brief — '+name, sub:'What is settled, what is outstanding, and who to ask.', html:`
+    <h4>Who you will work with</h4>
+    ${people.length?`<ul>${people.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:'<p class="none">Nobody is named on any item yet.</p>'}
+    <h4>Meetings you will be in</h4>
+    ${mtgs.length?`<ul>${mtgs.map(([id,m])=>`<li>${esc(m.name)} — ${esc(m.date||'')} ${esc(m.time||'')} · ${meetingItems(id).all.length} item(s) attached</li>`).join('')}</ul>`:'<p class="none">No meetings on the calendar yet.</p>'}
+    <h4>What has already been decided — read this first</h4>
+    ${decisions.length?`<ul>${decisions.map(d=>`<li>${esc(d.title)}${d.date?' · '+esc(d.date):''}${d.note?'<br><span class="none">'+esc(d.note.slice(0,160))+'</span>':''}</li>`).join('')}</ul>`:'<p class="none">No decisions recorded yet.</p>'}
+    <h4>Already done</h4>${briefList(done)}
+    <h4>Outstanding</h4>${briefList(open.filter(i=>!isRiskFamily(i)))}
+    <h4>Open risks to know about</h4>${briefList(risks)}
+    <h4>How to read this</h4>
+    <ul><li>Anything marked unverified has not been checked by a project manager yet.</li>
+        <li>Every entry carries the sentence it came from — open it in the app to see the source.</li></ul>`};
+}
+
+function openBrief(kind, ws){
+  const host=document.getElementById('srcModal');
+  const b = kind==='onboard' ? onboardBrief(ws||'') : statusBrief();
+  const bar = kind==='onboard'
+    ? `<div class="brief-bar"><span class="fld-note">Workstream</span>
+        <select onchange="openBrief('onboard', this.value)">
+          <option value=""${!ws?' selected':''}>The whole programme</option>
+          ${(DATA.workstreams||[]).map(w=>`<option value="${esc(w.id)}"${ws===w.id?' selected':''}>${esc(w.name)}</option>`).join('')}
+        </select><button class="btn sm" onclick="copyBrief()">Copy</button></div>`
+    : `<div class="brief-bar"><button class="btn sm" onclick="copyBrief()">Copy</button>
+        <span class="fld-note">Nothing is sent from here — paste it where it belongs.</span></div>`;
+  host.innerHTML=`<div class="src-backdrop" onclick="closeSource()"></div>
+    <div class="src-sheet" role="dialog" aria-modal="true">
+      <div class="src-head"><div><div class="src-t">${esc(b.title)}</div><div class="src-s">${esc(b.sub)}</div></div>
+        <button class="btn sm" onclick="closeSource()">Close</button></div>
+      ${bar}<div class="brief" id="briefBody">${b.html}</div></div>`;
+  host.classList.add('on');
+}
+function copyBrief(){
+  const el=document.getElementById('briefBody'); if(!el) return;
+  try{ navigator.clipboard.writeText(el.innerText); toast('Brief copied — paste it into Slack or a doc.'); }
+  catch(e){ toast('Copy failed — select the text and copy it manually.'); }
+}
 function closeSource(){ const h=document.getElementById('srcModal'); if(!h) return; h.classList.remove('on'); h.innerHTML=''; }
 document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeSource(); });
 
@@ -1036,7 +1128,10 @@ function renderHeroHealth(){
   const txt = worst==='G' ? 'All workstreams on track'
             : worst==='Y' ? n+' of '+hs.length+' workstreams need watching'
             : n+' of '+hs.length+' workstreams at risk';
-  const col = {G:['rgba(0,166,118,.15)','var(--g-fg)','var(--g-fg)'],Y:['rgba(247,208,2,.16)','var(--y-fg)','var(--y-fg)'],R:['rgba(219,80,74,.16)','var(--r-fg)','var(--r-fg)']}[worst];
+  // light text on navy — the dark status tokens are for light surfaces only
+  const col = {G:['rgba(0,166,118,.24)','#7BE8C4','#00A676'],
+               Y:['rgba(247,208,2,.22)','#FFE066','#F7D002'],
+               R:['rgba(219,80,74,.26)','#FFB3AE','#DB504A']}[worst];
   el.style.background=col[0]; el.style.color=col[1];
   el.innerHTML=`<span class="dot" style="background:${col[2]}"></span> ${txt}`;
 }
@@ -1410,7 +1505,9 @@ function attachedRow(it){
   return `<div class="arow attached"><span class="atext">${esc(it.title)}</span>${badge}${cite}</div>`;
 }
 function renderMeeting(e){
-  const m=e.m, mid=e.mid; const st=delivStatus(m);
+  const m=e.m, mid=e.mid;
+  if(!Array.isArray(m.deliverables)) m.deliverables=[];      // ingested meetings start empty
+  const st=delivStatus(m);
   const miss=m.deliverables.filter(d=>!d.docId).length;
   const baseId=mid.split('@')[0];
   const mi=meetingItems(baseId);
@@ -1430,9 +1527,10 @@ function renderMeeting(e){
     detail=`<div class="mdetail pop">
       ${wsChips(m)?`<div class="wsrow">${wsChips(m)}</div>`:''}
       <div class="metabox">
-        <div class="kv"><span class="kl">Stakeholders</span>${esc(m.audience)}</div>
-        <div class="kv"><span class="kl">Owner</span>${esc(m.owner)}</div>
-        <div class="kv"><span class="kl">Purpose</span>${esc(m.purpose)}</div>
+        <div class="kv"><span class="kl">Stakeholders</span>${esc(m.audience||'Not stated')}</div>
+        <div class="kv"><span class="kl">Owner</span>${esc(m.owner||'TBC')}</div>
+        <div class="kv"><span class="kl">Purpose</span>${esc(m.purpose||'Not stated')}</div>
+        ${m.verification&&m.verification.status==='pending'?`<div class="kv"><span class="kl">Status</span><span class="vchip pending">Unverified meeting</span></div>`:''}
       </div>
       <div class="subsec"><div class="subhead">Deliverables${miss?`<span class="miss-count">${miss} missing</span>`:''}</div>${drows}<div class="addline" onclick="attach('${mid}','a new deliverable')">＋ Add deliverable</div></div>
       <div class="subsec"><div class="subhead">Action Items${acts.length?`<span class="cnt">${acts.length}</span>`:''}</div>${arows}<div class="addline" onclick="toast('Add an action item to ${esc(m.name).replace(/'/g,'')} — owner, task, due.')">＋ Add action item</div></div>
@@ -1506,6 +1604,7 @@ function positionPopovers(){
 const usState={open:new Set()};
 function fmtDate(iso){const[y,m,d]=iso.split('-').map(Number);return `${MONTHS[m-1].slice(0,3)} ${d}`;}
 function renderUnscheduled(){
+  if(!document.getElementById('unscheduled')) return;
   const box=document.getElementById('unscheduled');
   const list=DATA.unscheduled||[];
   if(!list.length){box.innerHTML='';return;}
