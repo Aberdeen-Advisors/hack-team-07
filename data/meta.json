@@ -6,8 +6,8 @@
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786649852.295399",
-  "lastSlackPull": "2026-08-13T19:38:15",
+  "lastSlackTs": "1786650032.244369",
+  "lastSlackPull": "2026-08-13T19:41:22",
   "ingestedFiles": [
     "buildtrans.md",
     "comptrans.md",
