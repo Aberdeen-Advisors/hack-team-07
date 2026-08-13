@@ -10,28 +10,85 @@
   },
   "risks": [
     {
+      "id": "r1",
+      "kind": "Blocker",
+      "urg": "High",
+      "title": "Partner team to provide open-item details — unblocks the workflow test",
+      "owner": "SP",
+      "sev": "R",
+      "reviewed": null,
+      "status": "open",
+      "due": "2026-08-10",
+      "note": "Consent, procedures, exception handling, and update triggers all still outstanding. Being chased.",
+      "src": {
+        "kind": "transcript",
+        "docId": "buildtrans"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
+    },
+    {
       "id": "r2",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "buildtrans",
+        "line": 7,
+        "author": "Sam Prentice",
+        "messageTs": "2026-08-06 14:03 ET",
+        "permalink": null,
+        "quote": "Roughly a third of the 14,500 records in the initial load read as potential duplicates.",
+        "confidence": "high"
+      },
       "kind": "Risk",
       "urg": "High",
       "title": "Record load duplicate matching — roughly a third of 14,500 records read as duplicates",
       "owner": "SP",
       "sev": "R",
+      "reviewed": null,
       "status": "open",
       "note": "Proposed workaround is a provisional-record workflow: hold the load, work the duplicates, then finalize. Internal decision still pending.",
       "src": {
         "kind": "transcript",
         "docId": "buildtrans"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
       }
     },
     {
       "id": "r3",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "comptrans",
+        "line": 11,
+        "author": "Jordan Chen",
+        "messageTs": "2026-08-04 16:15 ET",
+        "permalink": null,
+        "quote": "One risk worth recording — the review committee meets monthly, and the realistic slot is the ninth of November rather than the twenty-sixth of October.",
+        "confidence": "high"
+      },
+      "meetingId": "compws",
       "kind": "Risk",
       "urg": "High",
       "title": "Onboarding timeline is the main risk to the end-of-November go-live",
       "owner": "JC",
       "sev": "R",
+      "reviewed": null,
       "status": "open",
-      "note": "The review committee meets monthly. Nov 9 is more realistic than Oct 26, which pushes past the planned go-live date."
+      "note": "The review committee meets monthly. Nov 9 is more realistic than Oct 26, which pushes past the planned go-live date.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "r4",
@@ -40,8 +97,15 @@
       "title": "Partner workflow spec unclear — which configuration triggers a status message",
       "owner": "SP",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "Behavior on a return interaction within 24 hours versus after is still open. Blocks workflow testing."
+      "note": "Behavior on a return interaction within 24 hours versus after is still open. Blocks workflow testing.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "r5",
@@ -50,8 +114,15 @@
       "title": "Test-record coverage limit — the partner system requires a unique email and phone per record",
       "owner": "SP",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "The tester may be out of test emails and phone numbers, capping coverage."
+      "note": "The tester may be out of test emails and phone numbers, capping coverage.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "r6",
@@ -60,8 +131,15 @@
       "title": "Analytics licensing caps at 4 seats — over-dependent on a single partner-side SME",
       "owner": "MK",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "Additional seats run $6,200 per year each. Plan is to add no-license raw-data access for an internal team member as redundancy."
+      "note": "Additional seats run $6,200 per year each. Plan is to add no-license raw-data access for an internal team member as redundancy.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "r7",
@@ -70,8 +148,15 @@
       "title": "Stale project tracker still circulating",
       "owner": "AR",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "Do not use as-is. The consolidated project plan is canonical. Watching."
+      "note": "Do not use as-is. The consolidated project plan is canonical. Watching.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "r8",
@@ -80,22 +165,14 @@
       "title": "Deck versioning slip — an old version was shared on 8/3",
       "owner": "JC",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "Always share the active version going forward. Watching."
-    },
-    {
-      "id": "r1",
-      "kind": "Blocker",
-      "urg": "High",
-      "title": "Partner team to provide open-item details — unblocks the workflow test",
-      "owner": "SP",
-      "sev": "R",
-      "status": "open",
-      "due": "Today",
-      "note": "Consent, procedures, exception handling, and update triggers all still outstanding. Being chased.",
-      "src": {
-        "kind": "transcript",
-        "docId": "buildtrans"
+      "note": "Always share the active version going forward. Watching.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
@@ -105,8 +182,15 @@
       "title": "Document format needs sign-off — section order differs from the house standard",
       "owner": "SP",
       "sev": "Y",
+      "reviewed": null,
       "status": "open",
-      "note": "Asks on record: remove the dead link, fix the confusing prior-interaction reference, and reorder the summary block to the top."
+      "note": "Asks on record: remove the dead link, fix the confusing prior-interaction reference, and reorder the summary block to the top.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     }
   ]
 }

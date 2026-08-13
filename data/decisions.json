@@ -11,21 +11,55 @@
   "decisions": [
     {
       "id": "d1",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "steertrans",
+        "line": 8,
+        "author": "Morgan Keller",
+        "messageTs": "2026-08-07 09:04 ET",
+        "permalink": null,
+        "quote": "Phase 1 go-live is anchored to the end of November 2026. That is confirmed on both sides, and it supersedes the early-November back-plan.",
+        "confidence": "high"
+      },
+      "meetingId": "steer",
       "kind": "Decision",
       "urg": "High",
       "title": "Phase 1 go-live anchored to end of November 2026",
       "owner": "Team",
       "date": "Aug 7",
-      "note": "Confirmed on both sides. Supersedes the earlier early-November back-plan. All timeline slides now key off this date."
+      "note": "Confirmed on both sides. Supersedes the earlier early-November back-plan. All timeline slides now key off this date.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "d2",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "comptrans",
+        "line": 9,
+        "author": "Morgan Keller",
+        "messageTs": "2026-08-04 16:06 ET",
+        "permalink": null,
+        "quote": "Then the delegated path is not worth the wait. Standard individual onboarding starts now.",
+        "confidence": "high"
+      },
+      "meetingId": "compws",
       "kind": "Decision",
       "urg": "High",
       "title": "Delegated approval path is off — standard individual onboarding starts now",
       "owner": "Team",
       "date": "Aug 4",
-      "note": "With only 34 partner staff, the delegated agreement is not worth the wait. Individual onboarding begins immediately."
+      "note": "With only 34 partner staff, the delegated agreement is not worth the wait. Individual onboarding begins immediately.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "d3",
@@ -34,7 +68,13 @@
       "title": "Two-week sprint cadence for phase 1",
       "owner": "Team",
       "date": "Aug 5",
-      "note": "Chosen over three weeks so there are two full review points before go-live."
+      "note": "Chosen over three weeks so there are two full review points before go-live.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "d4",
@@ -43,7 +83,13 @@
       "title": "Steering deck rebuilt as a lean four-slide pack",
       "owner": "Team",
       "date": "Aug 3",
-      "note": "Title, Focus, Workstream Overview, Two-Sprint Timeline. The old week-by-week slide and the appendix were dropped rather than extended."
+      "note": "Title, Focus, Workstream Overview, Two-Sprint Timeline. The old week-by-week slide and the appendix were dropped rather than extended.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "d5",
@@ -52,7 +98,13 @@
       "title": "Workflow design sessions split into pre-launch and post-launch groups",
       "owner": "Team",
       "date": "Jul 30",
-      "note": "Group 1 covers pre-launch design, Group 2 covers post-launch. Both run weekly."
+      "note": "Group 1 covers pre-launch design, Group 2 covers post-launch. Both run weekly.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "d6",
@@ -61,16 +113,39 @@
       "title": "The consolidated project plan is the canonical source for milestones",
       "owner": "Team",
       "date": "Jul 28",
-      "note": "The older tracker is archived. Any milestone question resolves against the consolidated plan."
+      "note": "The older tracker is archived. Any milestone question resolves against the consolidated plan.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "d7",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "steertrans",
+        "line": 11,
+        "author": "Morgan Keller",
+        "messageTs": "2026-08-07 09:08 ET",
+        "permalink": null,
+        "quote": "Agreed. We rename it to Platform Consolidation. All decks get updated.",
+        "confidence": "high"
+      },
+      "meetingId": "steer",
       "kind": "Decision",
       "urg": "Low",
       "title": "Program renamed from \"Revenue Systems\" to \"Platform Consolidation\"",
       "owner": "Team",
       "date": "Aug 7",
-      "note": "Clarified at steering. The old name understated the scope. All decks updated."
+      "note": "Clarified at steering. The old name understated the scope. All decks updated.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "d8",
@@ -79,7 +154,13 @@
       "title": "Cutover treated as a named deliverable with an owner",
       "owner": "Team",
       "date": "Aug 6",
-      "note": "Previously tracked as an event with no owner, which is how it kept slipping."
+      "note": "Previously tracked as an event with no owner, which is how it kept slipping.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     }
   ]
 }

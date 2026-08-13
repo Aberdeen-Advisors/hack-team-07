@@ -15,8 +15,9 @@
       "urg": "High",
       "title": "Send the approved Finance & Billing deck to attendees ahead of the call",
       "owner": "AR",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
+      "meetingId": "fincyc",
       "deliv": {
         "mid": "fincyc"
       },
@@ -24,17 +25,40 @@
       "src": {
         "kind": "slack",
         "url": "#"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
       "id": "a2",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "steertrans",
+        "line": 15,
+        "author": "Alex Rivera",
+        "messageTs": "2026-08-07 09:17 ET",
+        "permalink": null,
+        "quote": "I will chase the partner team on the outstanding contract signatures.",
+        "confidence": "high"
+      },
+      "meetingId": "steer",
       "kind": "Action",
       "urg": "High",
       "title": "Chase the partner team on outstanding contract signatures",
       "owner": "AR",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
-      "note": "No-show at the 8/3 steering call. Overdue from 8/4, in progress."
+      "note": "No-show at the 8/3 steering call. Overdue from 8/4, in progress.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "a3",
@@ -42,8 +66,9 @@
       "urg": "High",
       "title": "Finalize the Compliance V1 deck — add standards slides plus a decisions-needed slide",
       "owner": "AR",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
+      "meetingId": "compws",
       "deliv": {
         "mid": "compws"
       },
@@ -51,31 +76,70 @@
       "src": {
         "kind": "transcript",
         "docId": "comptrans"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
       "id": "a4",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "buildtrans",
+        "line": 13,
+        "author": "Alex Rivera",
+        "messageTs": "2026-08-06 14:20 ET",
+        "permalink": null,
+        "quote": "On the build timeline — I will present the system build timeline at the leadership deliverable review on the seventeenth.",
+        "confidence": "high"
+      },
       "kind": "Action",
       "urg": "High",
       "title": "Present the system build timeline at the 8/17 leadership deliverable review",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
       "note": "Sequence: individual meetings, deep dive, timeframes and dependencies, partner overlay, align, present.",
       "src": {
         "kind": "transcript",
         "docId": "buildtrans"
+      },
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
       }
     },
     {
       "id": "a5",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "steertrans",
+        "line": 12,
+        "author": "Alex Rivera",
+        "messageTs": "2026-08-07 09:12 ET",
+        "permalink": null,
+        "quote": "I will send the consolidated project plan to the partner team for validation and a discrepancy review.",
+        "confidence": "high"
+      },
+      "meetingId": "steer",
       "kind": "Action",
       "urg": "Med",
       "title": "Send the consolidated project plan to the partner team for validation and discrepancy review",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "From the 8/4 morning standup."
+      "note": "From the 8/4 morning standup.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "a6",
@@ -83,12 +147,19 @@
       "urg": "Med",
       "title": "Confirm who owns taking the integration to the Change Advisory Board",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
+      "meetingId": "itmgr",
       "deliv": {
         "mid": "itmgr"
       },
-      "note": "Raised as a deliverable gap on the delivery leadership call."
+      "note": "Raised as a deliverable gap on the delivery leadership call.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a7",
@@ -96,12 +167,19 @@
       "urg": "Med",
       "title": "Add a support and ticketing section to the leadership status — who receives tickets after go-live",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
+      "meetingId": "itmgr",
       "deliv": {
         "mid": "itmgr"
       },
-      "note": "Leadership status deliverable, still unowned."
+      "note": "Leadership status deliverable, still unowned.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a8",
@@ -109,23 +187,46 @@
       "urg": "Med",
       "title": "Merge the consolidated project plan with the partner implementation team plan",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
       "note": "Loop the partner implementation team into the relevant workstream meetings going forward.",
       "src": {
         "kind": "transcript",
         "docId": "steertrans"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
       "id": "a9",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "steertrans",
+        "line": 17,
+        "author": "Alex Rivera",
+        "messageTs": "2026-08-07 09:22 ET",
+        "permalink": null,
+        "quote": "I will confirm the steering committee roster on the delivery side and come back on whether we need a technical executive sponsor.",
+        "confidence": "high"
+      },
+      "meetingId": "steer",
       "kind": "Action",
       "urg": "Low",
       "title": "Confirm the steering committee roster on the delivery side",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Is a technical executive sponsor needed beyond the current list?"
+      "note": "Is a technical executive sponsor needed beyond the current list?",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "a10",
@@ -133,12 +234,19 @@
       "urg": "High",
       "title": "Build the steering deck timeline slide, date-anchored to an end-of-November phase 1 go-live",
       "owner": "AR",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "done",
+      "meetingId": "steer",
       "deliv": {
         "mid": "steer"
       },
-      "note": "Completed 2026-08-07. Go-live anchor confirmed as end of November 2026, superseding the prior early-November back-plan. v4 posted as a lean four-slide pack."
+      "note": "Completed 2026-08-07. Go-live anchor confirmed as end of November 2026, superseding the prior early-November back-plan. v4 posted as a lean four-slide pack.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a11",
@@ -146,12 +254,19 @@
       "urg": "High",
       "title": "Book a session with the onboarding team to start standard enrollment immediately",
       "owner": "JC",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
+      "meetingId": "compws",
       "deliv": {
         "mid": "compws"
       },
-      "note": "The delegated path is off. With only 34 partner staff, standard individual onboarding starts now, so there is no agreement to wait on."
+      "note": "The delegated path is off. With only 34 partner staff, standard individual onboarding starts now, so there is no agreement to wait on.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a12",
@@ -159,23 +274,46 @@
       "urg": "High",
       "title": "Send the partner team the exact onboarding document list and get a review meeting booked",
       "owner": "JC",
-      "due": "Tomorrow",
+      "due": "2026-08-11",
       "status": "open",
       "note": "From the 8/7 steering transcript.",
       "src": {
         "kind": "transcript",
         "docId": "steertrans"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
       "id": "a13",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "comptrans",
+        "line": 10,
+        "author": "Jordan Chen",
+        "messageTs": "2026-08-04 16:09 ET",
+        "permalink": null,
+        "quote": "I will confirm the delegated-approval agreement legal review status and return the signed agreement. Due end of week.",
+        "confidence": "high"
+      },
+      "meetingId": "compws",
       "kind": "Action",
       "urg": "Med",
       "title": "Confirm delegated-approval agreement legal review status and return the signed agreement",
       "owner": "JC",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Due end of week."
+      "note": "Due end of week.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "a14",
@@ -183,12 +321,19 @@
       "urg": "Med",
       "title": "Roll the week of action-item updates into the steering Next Steps slide",
       "owner": "JC",
-      "due": "Mon",
+      "due": "2026-08-17",
       "status": "open",
+      "meetingId": "steer",
       "deliv": {
         "mid": "steer"
       },
-      "note": "Folded into the per-workstream next-steps slide."
+      "note": "Folded into the per-workstream next-steps slide.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a15",
@@ -196,9 +341,15 @@
       "urg": "Low",
       "title": "Schedule a training-environment walkthrough of the flagged workflows for the clinical reviewers",
       "owner": "JC",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Screen-out versus refer-out logic needs a live demo."
+      "note": "Screen-out versus refer-out logic needs a live demo.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a16",
@@ -206,9 +357,15 @@
       "urg": "Med",
       "title": "Second-pass review of the consolidated project plan draft",
       "owner": "JC",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "done",
-      "note": "Completed 2026-08-06 with feedback from all three workstream leads folded in."
+      "note": "Completed 2026-08-06 with feedback from all three workstream leads folded in.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a17",
@@ -216,23 +373,45 @@
       "urg": "High",
       "title": "Resubmit the failed test message using a known-good provider record and notify the workflow tester",
       "owner": "SP",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
       "note": "Workaround while partner identity records are unresolved.",
       "src": {
         "kind": "transcript",
         "docId": "buildtrans"
+      },
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
       }
     },
     {
       "id": "a18",
+      "provenance": {
+        "sourceSystem": "transcript",
+        "docId": "buildtrans",
+        "line": 11,
+        "author": "Sam Prentice",
+        "messageTs": "2026-08-06 14:12 ET",
+        "permalink": null,
+        "quote": "Configurable. I will confirm the partner records exist in the target system with the correct identifiers, and the records team will create them if they are missing.",
+        "confidence": "high"
+      },
       "kind": "Action",
       "urg": "High",
       "title": "Confirm partner records exist in the target system with correct identifiers",
       "owner": "SP",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
-      "note": "Records team to create them if missing. Production intent, which removes the test workaround."
+      "note": "Records team to create them if missing. Production intent, which removes the test workaround.",
+      "verification": {
+        "status": "pending",
+        "decidedBy": null,
+        "decidedAt": null,
+        "note": "Extracted from a transcript by Bridge. No person has checked it."
+      }
     },
     {
       "id": "a19",
@@ -240,9 +419,15 @@
       "urg": "Med",
       "title": "Walk through the partner workflow to test message triggers",
       "owner": "SP",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Blocked on the partner delivering the open-item steps."
+      "note": "Blocked on the partner delivering the open-item steps.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a20",
@@ -250,12 +435,19 @@
       "urg": "Med",
       "title": "Share the combined interface script tracker with the partner team",
       "owner": "SP",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
+      "meetingId": "wqreview0812",
       "deliv": {
         "mid": "wqreview0812"
       },
-      "note": "Due 8/12 ahead of the work queue review."
+      "note": "Due 8/12 ahead of the work queue review.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a21",
@@ -263,9 +455,15 @@
       "urg": "Med",
       "title": "Locate and document the record-matching weight configuration; confirm the weighting is adequate",
       "owner": "SP",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "From the 8/6 interface review."
+      "note": "From the 8/6 interface review.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a22",
@@ -273,9 +471,15 @@
       "urg": "Med",
       "title": "Determine viable test-run count per script given the partner email and phone reuse limit",
       "owner": "SP",
-      "due": "Today",
+      "due": "2026-08-10",
       "status": "open",
-      "note": "Overdue from 8/5."
+      "note": "Overdue from 8/5.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a23",
@@ -283,9 +487,15 @@
       "urg": "Med",
       "title": "Confirm that partner-sourced documents render as expected in the customer portal",
       "owner": "SP",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "From the 8/6 interface review."
+      "note": "From the 8/6 interface review.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a24",
@@ -293,9 +503,15 @@
       "urg": "Low",
       "title": "Clarify the release-of-information process for partner-sourced documents",
       "owner": "SP",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Confirm scope with the vendor. May need a separate statement of work."
+      "note": "Confirm scope with the vendor. May need a separate statement of work.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a25",
@@ -303,9 +519,15 @@
       "urg": "High",
       "title": "Lock the second weekly slot for Workflow Design & Build",
       "owner": "MK",
-      "due": "Tomorrow",
+      "due": "2026-08-11",
       "status": "open",
-      "note": "Target is twice weekly per the 7/23 decision. Waiting on availability from two leads."
+      "note": "Target is twice weekly per the 7/23 decision. Waiting on availability from two leads.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a26",
@@ -313,9 +535,15 @@
       "urg": "Med",
       "title": "Schedule the cutover and go-live review after the 8/11 testing sessions",
       "owner": "MK",
-      "due": "Wed",
+      "due": "2026-08-12",
       "status": "open",
-      "note": "Cutover to be treated as a named deliverable, not an event."
+      "note": "Cutover to be treated as a named deliverable, not an event.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a27",
@@ -323,9 +551,15 @@
       "urg": "Med",
       "title": "Stand up a 15-minute weekly all-group status call",
       "owner": "MK",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Deferring one to two weeks until there is enough to report. Target roughly 8/24."
+      "note": "Deferring one to two weeks until there is enough to report. Target roughly 8/24.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a28",
@@ -333,12 +567,19 @@
       "urg": "Med",
       "title": "Update meeting dates on steering deck slide 3",
       "owner": "MK",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "done",
+      "meetingId": "steer",
       "deliv": {
         "mid": "steer"
       },
-      "note": "Completed 2026-08-07. Slide 3 stays as an overview; dates moved to the timeline slide."
+      "note": "Completed 2026-08-07. Slide 3 stays as an overview; dates moved to the timeline slide.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a29",
@@ -346,9 +587,15 @@
       "urg": "Low",
       "title": "Confirm whether the 8/12 session is the last testing round before change control",
       "owner": "MK",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "From the 8/5 standup."
+      "note": "From the 8/5 standup.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a30",
@@ -356,9 +603,15 @@
       "urg": "Med",
       "title": "Fill the open operations program manager seat",
       "owner": "Unassigned",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Two new partner-side PM seats are open: operations PM and technical PM."
+      "note": "Two new partner-side PM seats are open: operations PM and technical PM.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     },
     {
       "id": "a31",
@@ -366,9 +619,15 @@
       "urg": "Med",
       "title": "Send over the onboarding documentation already on hand for the 34 partner staff",
       "owner": "Unassigned",
-      "due": "Later",
+      "due": "2026-08-24",
       "status": "open",
-      "note": "Speeds the partner packet build. Due end of week."
+      "note": "Speeds the partner packet build. Due end of week.",
+      "verification": {
+        "status": "verified",
+        "decidedBy": "seeded",
+        "decidedAt": null,
+        "note": "Typed into the tracker by a person before Bridge existed."
+      }
     }
   ]
 }
