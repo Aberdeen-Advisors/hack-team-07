@@ -1003,9 +1003,10 @@ function exportChanges(){
   try{
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-    a.download='pending-changes.json'; document.body.appendChild(a); a.click(); a.remove();
+    const stamp=new Date().toISOString().replace(/[-:T]/g,'').slice(0,14);
+    a.download='decisions-'+stamp+'.json'; document.body.appendChild(a); a.click(); a.remove();
     EXPORTED=AUDIT.length; saveState(); renderItemsBar(); renderReview();
-    toast(payload.changes.length+' change'+(payload.changes.length>1?'s':'')+' exported for Claude Code to apply.');
+    toast(payload.changes.length+' decision'+(payload.changes.length>1?'s':'')+' saved — drop the file in data/inbox/decisions/ and the next sync writes them into the registers.');
   }catch(e){ toast('Export failed — '+e.message); }
 }
 /* ---------- source viewer — a citation has to land on the sentence ---------- */

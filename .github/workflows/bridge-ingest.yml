@@ -19,7 +19,7 @@ on:
   workflow_dispatch:                # a Run workflow button, for the demo
   push:
     paths:
-      - 'data/inbox/**'             # a dropped transcript ingests immediately
+      - 'data/inbox/**'             # a dropped transcript, batch or decisions file lands immediately
 
 permissions:
   contents: write                   # the job commits the updated registers
@@ -64,6 +64,11 @@ jobs:
       - name: Extract — credential-free
         if: env.HAS_KEY == 'false'
         run: python3 scripts/extract.py
+
+      # Closes the loop the other way: verification decisions made in the app are written
+      # back into the same registers, so a refresh shows them as permanent.
+      - name: Apply decisions from the app
+        run: python3 scripts/apply.py
 
       # Upgrade path: same inputs, same output contract, better judgement.
       - name: Extract — Claude
