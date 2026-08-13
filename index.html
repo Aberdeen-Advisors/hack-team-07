@@ -611,6 +611,22 @@
   .calnav{display:flex;align-items:center;gap:8px}
   .calnav #calLabel,.calnav .callabel{flex:1;text-align:center;font-weight:750}
   /* the review queue */
+  .rv-row{display:grid;grid-template-columns:74px minmax(180px,1.1fr) minmax(160px,1.4fr) 104px 150px 128px 32px 32px;
+          gap:9px;align-items:center;padding:10px 12px;background:var(--surface);
+          border:1px solid var(--line);border-left:4px solid var(--y-dot);border-radius:10px;margin-bottom:7px}
+  .rv-row.blocked{border-left-color:var(--r-dot);background:#fffdf7}
+  .rv-legend{display:grid;grid-template-columns:74px minmax(180px,1.1fr) minmax(160px,1.4fr) 104px 150px 128px 32px 32px;
+             gap:9px;padding:4px 12px;font-size:10.5px;font-weight:800;text-transform:uppercase;
+             letter-spacing:.06em;color:var(--muted)}
+  .rv-t{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rv-q{font-size:12.5px;font-style:italic;color:var(--slate);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rv-owner{font-size:13px;font-weight:650;color:var(--slate)}
+  .rv-note{font-size:12.5px;color:var(--r-fg);background:var(--r-bg);padding:4px 9px;border-radius:7px}
+  select.fix,input.fix{font:inherit;font-size:12px;padding:5px 7px;border:1.5px solid var(--y-dot);
+                       border-radius:7px;background:#fffdf3;color:var(--ink);max-width:100%}
+  select.fix:focus,input.fix:focus{outline:none;border-color:var(--navy)}
+  .vbtn[disabled]{opacity:.3;cursor:not-allowed}
+  @media(max-width:1100px){ .rv-legend{display:none} .rv-row{grid-template-columns:1fr auto auto} .rv-q{display:none} }
   .rv-card{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--y-dot);border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 2px var(--shadow)}
   .rv-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
   .rv-title{flex:1;min-width:220px;font-size:16.5px;font-weight:700;color:var(--ink);line-height:1.35}
@@ -642,7 +658,7 @@
     <div class="links" id="navlinks">
       <a href="#calendar">Calendar</a>
       <a href="#items">Action Items</a>
-      <a href="#review">Needs a human</a>
+      <a href="#review">Needs review</a>
       <a href="#workstreams">Workstreams</a>
     </div>
   </div>
@@ -711,7 +727,7 @@
   </section>
 
 <section class="section" id="review">
-    <div class="sec-head"><h2>Needs a human</h2></div>
+    <div class="sec-head"><h2>Proposed by Claude · needs review</h2></div>
     <div id="reviewList"></div>
   </section>
 
@@ -855,11 +871,56 @@ function vTitle(it){
   if(v.status==='rejected') return 'Rejected by '+v.decidedBy+(v.note?' — '+v.note:'');
   return v.note||'Not yet checked by a person';
 }
+const BLOCK_MSG={owner:'Nobody was named — choose an owner, then verify.',
+                 due:'No date was stated — set one, then verify.',
+                 severity:'No severity was stated — set one, then verify.'};
+function blockMessage(it){ const f=blockReason(it); return f?(BLOCK_MSG[f]||('Claude flagged “'+f+'” as unclear.')):null; }
 function blockReason(it){
-  if(isUnowned(it)) return 'Nobody was named for this. Name an owner in the channel, then verify.';
-  if(it.kind==='Action' && !it.due) return 'No date was stated. Agree one in the channel, then verify.';
-  if(it.unclear && it.unclear.length) return 'Claude flagged this as unclear: '+it.unclear.join(', ')+'. Fill it in before verifying.';
+  if(isUnowned(it)) return 'owner';
+  if(it.kind==='Action' && !it.due) return 'due';
+  if(it.unclear && it.unclear.length) return it.unclear[0];
   return null;
+}
+/* Everyone Bridge has seen — owners on items, and the people quoted in provenance.
+   The register is the only source; there is no separate people list to maintain. */
+function knownPeople(){
+  const set=new Set();
+  DATA.items.forEach(i=>{
+    if(i.owner && i.owner!=='Unassigned') set.add(ownerName(i.owner));
+    const a=(i.provenance||{}).author; if(a) set.add(a);
+  });
+  return [...set].sort();
+}
+function clearUnclear(it,field){
+  if(Array.isArray(it.unclear)) it.unclear=it.unclear.filter(u=>u!==field);
+}
+/* The two things Claude refuses to guess. A PM fills them in here, and that
+   decision is audited exactly like a verification. */
+function setItemOwner(id,name){
+  const it=itemById(id); if(!it) return;
+  const pre=it.owner||'Unassigned';
+  it.owner=name||'Unassigned';
+  if(name) clearUnclear(it,'owner');
+  logAudit(it,'edited','owner',pre,it.owner,null);
+  renderReview(); renderItems(); renderAttn(); renderItemsBar();
+  toast(name?('Owner set to '+name+'.'):'Owner cleared.');
+}
+function setItemDue(id,iso){
+  const it=itemById(id); if(!it) return;
+  const pre=it.due||null;
+  it.due=iso||null;
+  if(iso) clearUnclear(it,'due');
+  logAudit(it,'edited','due',pre,it.due,null);
+  renderReview(); renderItems(); renderAttn();
+  toast(iso?('Due '+dueMeta(iso).label.toLowerCase()+'.'):'Date cleared.');
+}
+function setItemSeverity(id,sev){
+  const it=itemById(id); if(!it) return;
+  const pre=it.sev||null; it.sev=sev||null;
+  if(sev) clearUnclear(it,'severity');
+  logAudit(it,'edited','severity',pre,it.sev,null);
+  renderReview(); renderItems();
+  toast('Severity set.');
 }
 function logAudit(it,action,field,oldV,newV,note){
   AUDIT.push({registerId:it.id,list:it.kind,action,field:field||null,
@@ -869,7 +930,7 @@ function logAudit(it,action,field,oldV,newV,note){
 }
 function approveItem(id){
   const it=itemById(id); if(!it) return;
-  const why=blockReason(it);
+  const why=blockMessage(it);
   if(why){ toast(why); return; }                        // never guesses on the reviewer's behalf
   const pre=vstat(it);
   it.verification={status:'verified',decidedBy:REVIEWER,decidedAt:new Date().toISOString(),note:null};
@@ -1287,7 +1348,7 @@ function renderItemRow(it){
   const v=vstat(it);
   const verifCtl = v==='pending'
     ? `<span class="vchip pending" title="${esc(vTitle(it))}">Unverified</span>`+
-      `<button class="vbtn ok" title="${esc(blockReason(it)||'Verify this entry')}" onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
+      `<button class="vbtn ok" title="${esc(blockMessage(it)||'Verify this entry')}" onclick="event.stopPropagation();approveItem('${it.id}')">✓</button>`+
       `<button class="vbtn no" title="Reject this entry" onclick="event.stopPropagation();rejectItem('${it.id}')">✕</button>`
     : `<span class="vchip ok" title="${esc(vTitle(it))}">✓</span>`;
   return `<div class="ti-row2 ${done?'done':''} ${v==='pending'?'unverified':''}" id="row-${it.id}">`+
@@ -1871,49 +1932,57 @@ function attnGoto(id){
    One place a PM can clear the unverified backlog: the sentence, the source, and the two
    decisions. Everything here is also flagged in place in the item list — this is the fast
    path, not a separate truth. */
+function reviewRow(it){
+  const pr=provOf(it), dm=dueMeta(it.due), k=KIND[it.kind]||{label:it.kind,c:'var(--navy)',bg:'var(--line-soft)'};
+  const need=blockReason(it);
+  const people=knownPeople();
+  const ownerCtl = (need==='owner'||isUnowned(it))
+    ? `<select class="fix" onchange="setItemOwner('${it.id}',this.value)">
+         <option value="">— who owns this?</option>
+         ${people.map(p=>`<option>${esc(p)}</option>`).join('')}
+       </select>`
+    : `<span class="rv-owner">${esc(ownerName(it.owner))}</span>`;
+  const dueCtl = (it.kind==='Action')
+    ? (need==='due' || !it.due
+        ? `<input type="date" class="fix" title="No date was stated" onchange="setItemDue('${it.id}',this.value)">`
+        : `<span class="due-lbl ${dm.cls}">${esc(dm.label)}</span>`)
+    : (need==='severity'
+        ? `<select class="fix" onchange="setItemSeverity('${it.id}',this.value)">
+             <option value="">— severity?</option><option value="R">Red</option><option value="Y">Amber</option></select>`
+        : `<span class="due-lbl ${dm.cls}">${it.sev==='R'?'Red':it.sev==='Y'?'Amber':esc(dm.label)}</span>`);
+  const cite = pr.inApp
+    ? `<button class="src-chip transcript cite" onclick="openSource('${it.id}')">▤ L${pr.line}</button>`
+    : pr.url ? `<a class="src-chip slack" href="${esc(pr.url)}" target="_blank" rel="noopener">💬 ${esc(pr.author||'Slack')} ↗</a>`
+             : `<span class="src-chip none">◦ none</span>`;
+  const ok = !blockReason(it);
+  return `<div class="rv-row ${ok?'':'blocked'}">
+    <span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>
+    <span class="rv-t" title="${esc(it.title)}">${esc(it.title)}</span>
+    <span class="rv-q" title="${esc(pr.quote||'')}">${pr.quote?'“'+esc(pr.quote)+'”':''}</span>
+    ${cite}${ownerCtl}${dueCtl}
+    <button class="vbtn ok" title="${ok?'Verify — it enters the register':'Fill the highlighted field first'}" ${ok?'':'disabled'} onclick="approveItem('${it.id}')">✓</button>
+    <button class="vbtn no" title="Reject — it leaves the register, the audit keeps it" onclick="rejectItem('${it.id}')">✕</button>
+  </div>`;
+}
+
 function renderReview(){
   const host=document.getElementById('reviewList'); if(!host) return;
-  const list=DATA.items.filter(it=>isPending(it)&&!isRejected(it))
-    .sort((a,b)=>dueKey(a)-dueKey(b)||urgRank(a)-urgRank(b));
+  const list=DATA.items.filter(it=>isPending(it)&&!isRejected(it)).sort((a,b)=>dueKey(a)-dueKey(b));
   const waiting=AUDIT.length-EXPORTED;
+  const blocked=list.filter(i=>blockReason(i)).length;
   const head=`<div class="rv-head">
-      <span class="rv-count">${list.length?list.length+' waiting on a person':'Nothing waiting'}</span>
+      <span class="rv-count">${list.length?list.length+' proposed by Claude':'Nothing waiting'}</span>
+      ${blocked?`<span class="rv-note">${blocked} need a field filled in before they can be verified</span>`:''}
       <button class="rv-btn${waiting>0?' ok':''}" onclick="exportChanges()">Export decisions${waiting>0?' · '+waiting:''}</button>
-      <span class="sub" style="font-size:13px">Approving here writes a decision locally; Claude Code applies it to the register.</span>
     </div>`;
   if(!list.length){ host.innerHTML=head+`<div class="rv-empty">${DATA.items.length
-      ? 'Every entry in the record has been through a person. New extractions land here.'
-      : 'The register is empty. Say something in the project channel — the next ingest lands here, unverified, with the sentence it came from.'}</div>`; return; }
-  host.innerHTML=head+list.map(it=>{
-    const pr=provOf(it), dm=dueMeta(it.due), why=blockReason(it), k=KIND[it.kind]||{label:it.kind};
-    const cite = pr.inApp
-      ? `<button class="rv-btn" onclick="openSource('${it.id}')">▤ Read it in ${esc((pr.tr.title||'').replace(/ transcript.*$/,''))} · line ${pr.line}</button>`
-      : pr.url
-        ? `<a class="rv-btn" href="${esc(pr.url)}" target="_blank" rel="noopener">💬 Open the message in Slack ↗</a>`
-        : pr.quote
-          ? `<span class="rv-block">Quoted, but no link stored — the sentence is above.</span>`
-          : `<span class="rv-block">No source stored for this entry — it cannot be traced back to a sentence.</span>`;
-    return `<div class="rv-card">
-      <div class="rv-top">
-        <span class="lbl-chip" style="color:${k.c};background:${k.bg}">${k.label}</span>
-        <span class="rv-title">${esc(it.title)}</span>
-      </div>
-      <div class="rv-meta">
-        <span>Owner <b>${it.owner&&it.owner!=='Unassigned'?esc(ownerName(it.owner)):'unclear'}</b></span>
-        <span>Due <b>${esc(dm.label)}</b></span>
-        ${pr.author?`<span>Said by <b>${esc(pr.author)}</b></span>`:''}
-        ${pr.ts?`<span>${esc(pr.ts)}</span>`:''}
-      </div>
-      ${pr.quote?`<blockquote class="rv-quote">“${esc(pr.quote)}”</blockquote>`:''}
-      ${why?`<div class="rv-block">${esc(why)}</div>`:''}
-      <div class="rv-acts">
-        <button class="rv-btn ok" onclick="approveItem('${it.id}')">Verify</button>
-        <button class="rv-btn no" onclick="rejectItem('${it.id}')">Reject</button>
-        ${cite}
-      </div>
-    </div>`;
-  }).join('');
+      ? 'Everything in the record has been through a person.'
+      : 'The register is empty. Say something in the project channel — the next ingest lands here.'}</div>`; return; }
+  host.innerHTML=head
+    +`<div class="rv-legend"><span>Type</span><span>Item</span><span>What was said</span><span>Source</span><span>Owner</span><span>Due</span><span></span><span></span></div>`
+    +list.map(reviewRow).join('');
 }
+
 function renderAttn(){
   const host=document.getElementById('attnCard'); if(!host) return;
   const list=attnItems();
