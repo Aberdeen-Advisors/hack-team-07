@@ -241,15 +241,84 @@ def node_json(js_path, var):
     return json.loads(r.stdout)
 
 
+def ingest_candidates(DATA, meta, seq, existing_quotes):
+    """Claude Tag batches: structured candidates that were already judged by a model.
+
+    This is the preferred path. Titles, owners and dates are taken exactly as authored —
+    nothing is inferred here. Pattern extraction only ever runs on raw transcripts that
+    arrived with no structured counterpart.
+    """
+    CAND = os.path.join(ROOT, 'data', 'inbox', 'candidates')
+    if not os.path.isdir(CAND):
+        return [], []
+    done = set(meta.get('ingestedFiles', []))
+    added, report = [], []
+    KIND = {'action': ('Action', 'a'), 'decision': ('Decision', 'd'), 'risk': ('Risk', 'r'),
+            'blocker': ('Blocker', 'r'), 'issue': ('Issue', 'r'),
+            'deliverable': ('Action', 'a'), 'stakeholder': ('Action', 'a')}
+    for path in sorted(glob.glob(os.path.join(CAND, '*.json'))):
+        key = 'candidates/' + os.path.basename(path)
+        if key in done and not FORCE:
+            continue
+        try:
+            batch = json.load(open(path, encoding='utf-8'))
+        except Exception as e:
+            print('::warning::unreadable candidate batch %s: %s' % (key, e)); continue
+        n = 0
+        for c in batch.get('items', []):
+            prov = c.get('provenance') or {}
+            quote = (prov.get('quote') or '').strip()
+            title = (c.get('title') or '').strip()
+            if not title:
+                continue                      # a candidate with no title is not an entry
+            if quote and quote in existing_quotes:
+                continue
+            kind, pfx = KIND.get((c.get('register') or 'action').lower(), ('Action', 'a'))
+            iid = '%s%d' % (pfx, seq[pfx]); seq[pfx] += 1
+            unclear = c.get('unclear') or []
+            it = {'id': iid, 'kind': kind,
+                  'urg': 'High' if (c.get('severity') == 'R' or c.get('priority') == 'high') else 'Med',
+                  'title': title, 'owner': c.get('owner') or 'Unassigned',
+                  'note': c.get('detail') or '',
+                  'ws': c.get('ws'), 'meetingId': c.get('meetingId'), 'relatedTo': c.get('relatedTo'),
+                  'provenance': {'sourceSystem': prov.get('sourceSystem') or 'slack',
+                                 'channel': prov.get('channel'), 'docId': prov.get('docId'),
+                                 'line': prov.get('line'), 'author': prov.get('author'),
+                                 'messageTs': prov.get('messageTs'), 'permalink': prov.get('permalink'),
+                                 'quote': quote or None,
+                                 'confidence': prov.get('confidence') or 'medium'},
+                  'verification': {'status': 'pending', 'decidedBy': None, 'decidedAt': None,
+                                   'note': 'Proposed by Claude Tag. No person has checked it.'}}
+            if kind == 'Action':
+                it['due'] = c.get('due'); it['status'] = 'open'
+            if kind == 'Decision':
+                it['date'] = c.get('decidedOn') or (prov.get('messageTs') or '')[:10]
+            if kind in ('Risk', 'Blocker', 'Issue'):
+                it['sev'] = c.get('severity') or 'Y'; it['status'] = 'open'
+                it['reviewed'] = None; it['due'] = c.get('due')
+            if unclear:
+                it['unclear'] = unclear        # the app blocks verification until these are filled
+            DATA['items'].append(it); added.append(it)
+            if quote:
+                existing_quotes.add(quote)
+            n += 1
+        report.append('%s: %d from Claude Tag' % (key, n))
+        done.add(key)
+    meta['ingestedFiles'] = sorted(done)
+    return added, report
+
+
 def main():
     dpath = lambda *p: os.path.join(ROOT, 'data', *p)
     meta = json.load(open(dpath('meta.json'), encoding='utf-8'))
     done = set() if FORCE else set(meta.get('ingestedFiles', []))
 
     files = [f for f in sorted(glob.glob(os.path.join(INBOX, '*.md')) + glob.glob(os.path.join(INBOX, '*.txt')))
-             if os.path.basename(f) not in done]
-    if not files:
-        print('nothing new in data/inbox/transcripts/'); return 0
+             if os.path.basename(f) not in done and os.path.getsize(f) > 0]
+    cand_files = [f for f in glob.glob(os.path.join(ROOT, 'data', 'inbox', 'candidates', '*.json'))
+                  if ('candidates/' + os.path.basename(f)) not in done]
+    if not files and not cand_files:
+        print('nothing new in data/inbox/'); return 0
 
     snap = open(dpath('snapshot.js'), encoding='utf-8').read()
     DATA = node_json(dpath('snapshot.js'), 'BRIDGE_DATA')
@@ -262,6 +331,9 @@ def main():
         nxt[pfx] = (max(used) if used else 0) + 1
 
     existing_quotes = {(it.get('provenance') or {}).get('quote') for it in DATA['items']}
+    # Structured batches first — they win over anything the pattern pass would guess.
+    tag_added, tag_report = ingest_candidates(DATA, meta, nxt, existing_quotes)
+    done = set(meta.get('ingestedFiles', []))
     KIND = {'action': ('Action', 'a'), 'decision': ('Decision', 'd'), 'risk': ('Risk', 'r')}
     added, report = [], []
 
@@ -293,6 +365,8 @@ def main():
         report.append('%s: %d new' % (os.path.basename(path), new_here))
         done.add(os.path.basename(path))
 
+    added = tag_added + added
+    report = tag_report + report
     if not added:
         print('no new candidates'); return 0
 

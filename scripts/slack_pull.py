@@ -118,16 +118,50 @@ def pull():
                 names[uid] = uid   # a missing users:read scope must not lose the message
         return names[uid]
 
-    BOTS = {'U0AB8UM5278'}          # Claude in Slack — its own output is not a source
+    CAND = os.path.join(ROOT, 'data', 'inbox', 'candidates')
+    os.makedirs(CAND, exist_ok=True)
+    JSON_BLOCK = re.compile(r'```(?:json)?\s*(\{.*?\})\s*```', re.S)
+
+    def save_candidates(payload, ts, author):
+        """A Claude Tag batch: structured candidates, already judged. This is the good path —
+        titles, owners and dates are authored, not guessed."""
+        if not isinstance(payload, dict) or not isinstance(payload.get('items'), list):
+            return False
+        payload.setdefault('capturedAt', ts)
+        payload.setdefault('postedBy', author)
+        path = os.path.join(CAND, 'tag-%s.json' % ts.replace('.', ''))
+        if os.path.exists(path) and os.path.getsize(path) > 0:
+            return False
+        open(path, 'w', encoding='utf-8').write(json.dumps(payload, indent=2, ensure_ascii=False))
+        written.append('candidates/' + os.path.basename(path))
+        return True
+
+    BOTS = set()                    # Claude Tag's structured output IS a source; loose bot chat is not
     for m in msgs:
         if m.get('subtype') in ('channel_join', 'channel_leave', 'bot_message'):
             continue
-        if m.get('bot_id') or m.get('user') in BOTS:
-            continue
+        is_bot = bool(m.get('bot_id')) or m.get('user') in ('U0AB8UM5278',)
+        blocks = JSON_BLOCK.findall(m.get('text') or '')
+        got_json = False
+        for b in blocks:
+            try:
+                got_json = save_candidates(json.loads(b), m.get('ts', '0'), m.get('user') or 'bot') or got_json
+            except json.JSONDecodeError:
+                pass
+        if is_bot:
+            continue                # a bot's prose is never a source; its JSON already landed above
         ts = m.get('ts', '0')
         stamp = datetime.datetime.fromtimestamp(float(ts)).strftime('%H:%M:%S')
 
         for f in m.get('files', []) or []:
+            if f.get('name', '').endswith('.json'):
+                src = f.get('url_private_download') or f.get('url_private')
+                if src:
+                    try:
+                        save_candidates(json.loads(download(src)), m.get('ts', '0'), m.get('user') or '')
+                    except (json.JSONDecodeError, Exception) as e:
+                        print('::warning::could not read %s: %s' % (f.get('name'), e))
+                continue
             if not (f.get('mimetype', '').startswith('text/') or
                     f.get('name', '').endswith(('.txt', '.md', '.vtt'))):
                 continue
