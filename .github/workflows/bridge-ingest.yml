@@ -32,8 +32,13 @@ jobs:
     env:
       HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
       HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+      # The org locks GITHUB_TOKEN to read-only, so pushing needs a PAT in GH_PUSH_TOKEN.
+      # Without it the job still runs and uploads the result as an artifact.
+      CAN_PUSH: ${{ secrets.GH_PUSH_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PUSH_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -69,6 +74,7 @@ jobs:
           echo "gate passed"
 
       - name: Commit the registers
+        if: env.CAN_PUSH == 'true'
         run: |
           if [ -z "$(git status --porcelain data)" ]; then
             echo "::notice::Nothing new — registers unchanged."
@@ -84,8 +90,18 @@ jobs:
           MSG
           git push
 
+      # No push rights: hand the result back as a download so the run still proves itself.
+      - name: Upload the ingested registers
+        if: env.CAN_PUSH != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-registers
+          path: |
+            data/**
+            ingest-report.txt
+
       - name: Publish
-        if: env.HOOK != ''
+        if: env.CAN_PUSH == 'true' && env.HOOK != ''
         run: curl -fsS -X POST "$HOOK" && echo "deploy triggered"
 
       - name: Report
