@@ -10,5 +10,5 @@
 
    reviewed is null on every risk: the source carried no review date. 'Never reviewed'
    is the honest answer and it is what the app shows. Populating it is ingest's job. */
-window.BRIDGE_META = {"generatedAt": "2026-08-13T15:59:42", "asOf": null, "timezone": "America/New_York", "schemaVersion": 1, "source": "reset for an end-to-end test — every entry from here comes from Slack", "sourceSite": null, "listVersions": {}, "lastSlackTs": "1786651182.455114", "ingestedFiles": ["buildtrans.md", "comptrans.md", "latpmo02.md", "latsec01.md", "lattech03.md", "opstrans.md", "slack20260813.md", "steertrans.md"]};
+window.BRIDGE_META = {"generatedAt": "2026-08-13T15:59:42", "asOf": null, "timezone": "America/New_York", "schemaVersion": 1, "source": "full backfill from #hack-team-7-app-dev", "sourceSite": null, "listVersions": {}, "lastSlackTs": "0", "ingestedFiles": []};
 window.BRIDGE_DATA = {"updated": "awaiting first ingest", "workstreams": [], "meetings": {}, "standupDays": [], "recurring": [], "unscheduled": [], "items": [], "documents": [], "threads": [], "digest": [], "team": []};

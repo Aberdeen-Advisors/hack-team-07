@@ -74,8 +74,34 @@ def pull():
     oldest = meta.get('lastSlackTs', '0')
     os.makedirs(INBOX, exist_ok=True)
 
-    hist = call('conversations.history', channel=CHANNEL, limit=100, oldest=oldest)
-    msgs = sorted(hist.get('messages', []), key=lambda m: float(m.get('ts', 0)))
+    # Page through the whole history, not just the newest 100.
+    msgs, cursor, pages = [], None, 0
+    while pages < 20:
+        params = dict(channel=CHANNEL, limit=200, oldest=oldest)
+        if cursor:
+            params['cursor'] = cursor
+        page = call('conversations.history', **params)
+        msgs.extend(page.get('messages', []))
+        cursor = (page.get('response_metadata') or {}).get('next_cursor') or None
+        pages += 1
+        if not cursor:
+            break
+
+    # conversations.history omits thread replies, and that is where files usually land.
+    for parent in list(msgs):
+        if not parent.get('reply_count'):
+            continue
+        try:
+            rep = call('conversations.replies', channel=CHANNEL, ts=parent['ts'], limit=200)
+            for r in rep.get('messages', []):
+                if r.get('ts') != parent.get('ts') and float(r.get('ts', 0)) > float(oldest or 0):
+                    msgs.append(r)
+        except SlackError as e:
+            print('::warning::could not read thread %s: %s' % (parent.get('ts'), e))
+
+    seen_ts = set()
+    msgs = [m for m in sorted(msgs, key=lambda m: float(m.get('ts', 0)))
+            if not (m.get('ts') in seen_ts or seen_ts.add(m.get('ts')))]
     if not msgs:
         print('no new Slack messages since', oldest)
         return 0

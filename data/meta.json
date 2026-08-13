@@ -3,18 +3,9 @@
   "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
-  "source": "reset for an end-to-end test \u2014 every entry from here comes from Slack",
+  "source": "full backfill from #hack-team-7-app-dev",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786651182.455114",
-  "ingestedFiles": [
-    "buildtrans.md",
-    "comptrans.md",
-    "latpmo02.md",
-    "latsec01.md",
-    "lattech03.md",
-    "opstrans.md",
-    "slack20260813.md",
-    "steertrans.md"
-  ]
+  "lastSlackTs": "0",
+  "ingestedFiles": []
 }
