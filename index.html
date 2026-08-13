@@ -725,25 +725,7 @@
 
 <!-- intake section removed: local queue that never reaches Slack — two users would diverge -->
 
-<section class="section" id="documents">
-    <div class="sec-head"><h2>Documents</h2><span class="sub"><span class="pill kind-live sm">LIVE</span> SharePoint link · <span class="pill kind-slack sm">IN SLACK</span> transcript link · <span class="pill kind-nsp sm">NEEDS SHAREPOINT</span> loose upload to move</span></div>
-    <div class="filters">
-      <input id="q" placeholder="Search documents…" oninput="state.q=this.value;renderDocs()">
-      <select id="fws" onchange="state.ws=this.value;renderDocs()"></select>
-      <select id="fkind" onchange="state.kind=this.value;renderDocs()">
-        <option value="all">All types</option>
-        <option value="link">SharePoint links</option>
-        <option value="slack">In Slack</option>
-        <option value="needs-sp">Needs SharePoint</option>
-        <option value="transcript">Transcripts</option>
-      </select>
-      <div class="seg" style="margin-left:auto">
-        <button id="dvList" class="on" onclick="setDocView('list')">List</button>
-        <button id="dvCards" onclick="setDocView('cards')">Cards</button>
-      </div>
-    </div>
-    <div id="docList"></div>
-  </section>
+<!-- Documents section removed: SharePoint/document tracking is a go-to-market feature, not today. -->
 
 <!-- digest section removed: static seeded content, nothing synthesises it -->
 
@@ -874,8 +856,8 @@ function vTitle(it){
   return v.note||'Not yet checked by a person';
 }
 function blockReason(it){
-  if(isUnowned(it)) return 'Owner is unclear — set an owner before verifying this one.';
-  if(it.kind==='Action' && !it.due) return 'No date on this one — set a due date before verifying.';
+  if(isUnowned(it)) return 'Nobody was named for this. Name an owner in the channel, then verify.';
+  if(it.kind==='Action' && !it.due) return 'No date was stated. Agree one in the channel, then verify.';
   if(it.unclear && it.unclear.length) return 'Claude flagged this as unclear: '+it.unclear.join(', ')+'. Fill it in before verifying.';
   return null;
 }
@@ -1331,7 +1313,7 @@ function renderInfoPop(it){
   if(dm) links.push(`<span class="deliv-chip" onclick="event.stopPropagation();gotoDeliv('${it.deliv.mid}','${it.id}')">▧ Find on calendar</span>`);
   const editRow = isDec
     ? `<div class="fld-note">Decision recorded ${esc(it.date||'')}.</div>`
-    : `${it.kind==='Action'?`<div class="pk"><span class="fld-note">Due</span><input type="date" class="pdue" value="${esc(it.due||'')}" onclick="event.stopPropagation()" onchange="event.stopPropagation();setDue('${it.id}',this.value)"><span class="fld-note">Owner and title are maintained in the register, not here.</span></div>`:''}
+    : `<div class="pk"><span class="fld-note">Owner, title and dates come from the channel. Say it in Slack and Bridge updates the record.</span></div>
        <div class="pk"><button class="btn sm ${it.status==='done'?'':'btn-primary'}" onclick="event.stopPropagation();toggleDone('${it.id}')">${it.status==='done'?'Reopen':'Mark complete'}</button></div>`;
   return `<div class="ti-pop" onclick="event.stopPropagation()"><div class="pnote">${esc(it.note||'No extra notes.')}</div>${provBlock(it)}${tie?`<div class="pk">${tie}</div>`:''}${editRow}${links.length?`<div class="plinks">${links.join('')}</div>`:''}</div>`;
 }
@@ -1681,6 +1663,7 @@ function renderWs(){
 
 /* DOCUMENTS */
 function renderDocFilters(){
+  if(!document.getElementById('fkind')) return;
   document.getElementById('fws').innerHTML=`<option value="all">All workstreams</option>`+DATA.workstreams.map(w=>`<option value="${w.id}">${esc(w.name)}</option>`).join('');
 }
 const docIcon={deck:'▧',spreadsheet:'▤',doc:'▦',image:'▣',pdf:'▥'};
@@ -1698,6 +1681,7 @@ function kindPill(d,small){const k=DKIND[d.kind]||DKIND.link;return `<span class
 function transTag(small){return `<span class="pill tag-transcript${small?' sm':''}">Transcript</span>`;}
 function setDocView(v){state.docView=v;document.getElementById('dvList').classList.toggle('on',v==='list');document.getElementById('dvCards').classList.toggle('on',v==='cards');renderDocs();}
 function renderDocs(){
+  if(!document.getElementById('docList')) return;
   const list=docList(); const box=document.getElementById('docList');
   if(!list.length){box.className='';box.innerHTML=`<div style="text-align:center;padding:40px;color:var(--link);font-size:14px">No documents match. <button onclick="clearF()" style="background:none;border:0;padding:0;font:inherit;color:var(--blue);font-weight:600;cursor:pointer">Clear filters</button></div>`;return;}
   if(state.docView==='cards'){
@@ -1958,7 +1942,7 @@ renderWsDots();renderUpdated();renderHeroHealth();renderRibbon();renderReview();
 renderAttn();
 renderItemsBar();renderItems();
 renderCalendar();
-renderWs();renderDocFilters();renderDocs();renderTeam();renderThreads();
+renderWs();renderTeam();renderThreads();
 setInterval(renderUpdated,60000); // keep the "next refresh" chip live in ET
 document.addEventListener('click',e=>{ // close an open action-item popover when clicking elsewhere
   if(istate.open.size && !e.target.closest('.ti-row2') && !e.target.closest('.attn-card')){ istate.open.clear(); renderItems(); }
