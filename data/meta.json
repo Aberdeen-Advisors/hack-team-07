@@ -1,11 +1,15 @@
 {
-  "generatedAt": "2026-08-13T16:21:30",
+  "generatedAt": "2026-08-13T20:24:10",
   "asOf": null,
   "timezone": "America/New_York",
   "schemaVersion": 1,
-  "source": "clean slate \u2014 Claude Tag JSON is the only input",
+  "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "0",
-  "ingestedFiles": []
+  "lastSlackTs": "1786652612.149049",
+  "ingestedFiles": [
+    "candidates/tag-1786650032244369.json",
+    "candidates/tag-1786652612149049.json"
+  ],
+  "lastSlackPull": "2026-08-13T20:24:09"
 }
