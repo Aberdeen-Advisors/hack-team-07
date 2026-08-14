@@ -6,7 +6,7 @@
   "source": "scripts/extract.py over data/inbox/transcripts",
   "sourceSite": null,
   "listVersions": {},
-  "lastSlackTs": "1786656996.816229",
+  "lastSlackTs": "1786726549.282529",
   "ingestedFiles": [
     "candidates/tag-1786650032244369.json",
     "candidates/tag-1786652612149049.json",
@@ -16,5 +16,5 @@
     "candidates/tag-1786656497600339.json",
     "candidates/tag-1786656996816229.json"
   ],
-  "lastSlackPull": "2026-08-14T16:05:34"
+  "lastSlackPull": "2026-08-14T17:06:33"
 }
